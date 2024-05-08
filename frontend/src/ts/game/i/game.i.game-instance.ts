@@ -9,10 +9,8 @@ import { GameStats } from "./game.i.game-stats";
 import { GAME_STATE } from "./game.e.state";
 
 export interface GameInstance {
-    gameMode: GAME_MODE,
-    gameSettings: GameSettings,
-    handlingSettings: HandlingSettings,
-    initialSeed: number,
+    playerInstance: boolean,
+
 
     gameState: GAME_STATE,
     bubbleSeed: number,

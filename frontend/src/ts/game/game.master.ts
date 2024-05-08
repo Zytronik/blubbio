@@ -22,68 +22,68 @@ import { getSprintSettings } from "./settings/game.settings.sprint";
 import { getHandlingSettings } from "./settings/game.settings.handling";
 import { setupGrid } from "./logic/game.logic.grid-manager";
 
-export const playerGameVisuals: GameVisuals = {
-    asciiBoard: {
-        playGridASCII: ref(""),
-        holdString: ref(""),
-        queueString: ref(""),
-        incomingGarbage: ref(""),
-        floatingText: ref(""),
-    },
-    statNumbers: {
-        formattedCurrentTime: ref(""),
-        bubbleClearToWin: ref(0),
-        bubblesCleared: ref(0),
-        bubblesLeftToClear: ref(0),
-        bubblesShot: ref(0),
-        bubblesPerSecond: ref(0),
-        attackPerMinute: ref(0),
-        currentCombo: ref(0),
-        spikeNumber: ref(""),
-    },
-    timeDifference: 0,
-    playerName: "",
-};
-export const playerGameInstance: GameInstance = {
-    gameMode: GAME_MODE.SPRINT,
-    gameSettings: getSprintSettings(),
-    handlingSettings: getHandlingSettings(),
-    initialSeed: 0,
-    gameState: GAME_STATE.IS_IN_MENU,
-    bubbleSeed: 0,
-    garbageSeed: 0,
-    angle: 0,
-    currentAPS: 0,
-    currentBubble: {
-        ascii: "",
-        type: 0,
-        spriteSheetName: "",
-    },
-    bubbleQueue: [],
-    playGrid: setupGrid(getSprintSettings()),
-    queuedGarbage: 0,
-    stats: getEmptyStats(getSprintSettings()),
-    gameStateHistory: {
-        inputHistory: [],
-        boardHistory: [],
-        bubbleQueueHistory: [],
-        angleHistory: [],
-        sentgarbagehistory: [],
-        receivedgarbagehistory: []
-    },
-    processedInputsIndex: 0,
-    matchID: "none",
-    gameTransitions: {
-        /* eslint-disable @typescript-eslint/no-empty-function */
-        onGameStart: () => { },
-        onGameLeave: () => { },
-        onGameReset: () => { },
-        onGameDefeat: () => { },
-        onGameVictory: () => { },
-    },
-    sendGarbage: (garbageAmount: number) => { }
-    /* eslint-enable @typescript-eslint/no-empty-function */
-};
+// export const playerGameVisuals: GameVisuals = {
+//     asciiBoard: {
+//         playGridASCII: ref(""),
+//         holdString: ref(""),
+//         queueString: ref(""),
+//         incomingGarbage: ref(""),
+//         floatingText: ref(""),
+//     },
+//     statNumbers: {
+//         formattedCurrentTime: ref(""),
+//         bubbleClearToWin: ref(0),
+//         bubblesCleared: ref(0),
+//         bubblesLeftToClear: ref(0),
+//         bubblesShot: ref(0),
+//         bubblesPerSecond: ref(0),
+//         attackPerMinute: ref(0),
+//         currentCombo: ref(0),
+//         spikeNumber: ref(""),
+//     },
+//     timeDifference: 0,
+//     playerName: "",
+// };
+// export const playerGameInstance: GameInstance = {
+//     gameMode: GAME_MODE.SPRINT,
+//     gameSettings: getSprintSettings(),
+//     handlingSettings: getHandlingSettings(),
+//     initialSeed: 0,
+//     gameState: GAME_STATE.IS_IN_MENU,
+//     bubbleSeed: 0,
+//     garbageSeed: 0,
+//     angle: 0,
+//     currentAPS: 0,
+//     currentBubble: {
+//         ascii: "",
+//         type: 0,
+//         spriteSheetName: "",
+//     },
+//     bubbleQueue: [],
+//     playGrid: setupGrid(getSprintSettings()),
+//     queuedGarbage: 0,
+//     stats: getEmptyStats(getSprintSettings()),
+//     gameStateHistory: {
+//         inputHistory: [],
+//         boardHistory: [],
+//         bubbleQueueHistory: [],
+//         angleHistory: [],
+//         sentgarbagehistory: [],
+//         receivedgarbagehistory: []
+//     },
+//     processedInputsIndex: 0,
+//     matchID: "none",
+//     gameTransitions: {
+//         /* eslint-disable @typescript-eslint/no-empty-function */
+//         onGameStart: () => { },
+//         onGameLeave: () => { },
+//         onGameReset: () => { },
+//         onGameDefeat: () => { },
+//         onGameVictory: () => { },
+//     },
+//     sendGarbage: (garbageAmount: number) => { }
+//     /* eslint-enable @typescript-eslint/no-empty-function */
+// };
 export function setupSprintGame(): void {
     const gameMode = GAME_MODE.SPRINT;
     const gameSettings = getSprintSettings();
@@ -109,7 +109,7 @@ export function setupSprintGame(): void {
         onGameDefeat: sprintDeath,
         onGameVictory: sprintVictory,
     }
-    const onGarbageSend = function (garbageAmount: number): void {console.log("show fancy grafix")}
+    const onGarbageSend = function (garbageAmount: number): void {/*nothing*/}
     const startSeed = getNextSeed(Date.now());
     const instance = createGameInstance(gameMode, gameSettings, handlingSettings, transitions, startSeed, "none", onGarbageSend);
     preparePlayerGameInstance(instance);
@@ -242,7 +242,4 @@ export function triggerHold(): void {
     playerGameInstance.gameStateHistory.inputHistory.push(inputFrame);
     holdBubble(playerGameInstance);
     network_sendInputs(playerGameInstance);
-}
-export function debugTriggerGarbage(): void {
-    playerGameInstance.queuedGarbage += 1;
 }
