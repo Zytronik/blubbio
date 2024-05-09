@@ -8,7 +8,7 @@ import { GameTransitions } from "../i/game.i.game-transitions";
 import { getHandlingSettings } from "../settings/game.settings.handling";
 import { disableBackInputs, disableChannelInput, disableResetInput } from "@/ts/input/input.input-manager";
 import { fillAsciiStrings } from "../visuals/game.visuals.ascii";
-import { GAME_STATE } from "../i/game.e.state";
+import { GAME_STATE } from "../i/game.e.game-state";
 import { network_listenToQueuedInputsIndex, network_sendInputs, network_stopListenToQueuedInputsIndex } from "./game.network.game";
 import { dto_GameInstance } from "./dto/game.network.dto.game-instance";
 import { GameVisuals, getEmptyGameVisuals } from "../visuals/i/game.visuals.i.game-visuals";
@@ -33,70 +33,70 @@ const O_RANKED_SHOW_END_SCREEN = "output_rankedShowEndScreen";
 
 const O_PLAYER_SPECTATOR = "update_playerSpectator";
 const O_RECEIVE_GARBAGE = "output_receiveGarbage";
-export let enemyGameInstance: GameInstance
-export const enemyVisuals: GameVisuals = getEmptyGameVisuals();
-export const versusScreenData: dto_VersusScreen = {
-    matchID: "",
-    player1Data: {
-        playerID: 0,
-        playerName: "",
-        playerRank: "",
-        playerGlobalRank: 0,
-        playerNationalRank: 0,
-        playerGlicko: 0,
-        playerRD: 0,
-        playerProfilePicture: "",
-        playerCountry: ""
-    },
-    player2Data: {
-        playerID: 0,
-        playerName: "",
-        playerRank: "",
-        playerGlobalRank: 0,
-        playerNationalRank: 0,
-        playerGlicko: 0,
-        playerRD: 0,
-        playerProfilePicture: "",
-        playerCountry: ""
-    },
+// export let enemyGameInstance: GameInstance
+// export const enemyVisuals: GameVisuals = getEmptyGameVisuals();
+// export const versusScreenData: dto_VersusScreen = {
+//     matchID: "",
+//     player1Data: {
+//         playerID: 0,
+//         playerName: "",
+//         playerRank: "",
+//         playerGlobalRank: 0,
+//         playerNationalRank: 0,
+//         playerGlicko: 0,
+//         playerRD: 0,
+//         playerProfilePicture: "",
+//         playerCountry: ""
+//     },
+//     player2Data: {
+//         playerID: 0,
+//         playerName: "",
+//         playerRank: "",
+//         playerGlobalRank: 0,
+//         playerNationalRank: 0,
+//         playerGlicko: 0,
+//         playerRD: 0,
+//         playerProfilePicture: "",
+//         playerCountry: ""
+//     },
 
-};
-export const scoreScreenData: dto_ScoreScreen = {
-    matchID: "",
-    firstTo: 0,
-    player1Data: {
-        playerID: 0,
-        playerName: "",
-        playerScore: 0
-    },
-    player2Data: {
-        playerID: 0,
-        playerName: "",
-        playerScore: 0
-    },
-};
-export const endScreenData: dto_EndScreen = {
-    matchID: "",
-    firstTo: 0,
-    player1Data: {
-        playerID: 0,
-        playerName: "",
-        playerProfilePic: "",
-        playerScore: 0,
-        hasWon: false,
-        eloDiff: 0,
-        playerStats: undefined,
-    },
-    player2Data: {
-        playerID: 0,
-        playerName: "",
-        playerProfilePic: "",
-        playerScore: 0,
-        hasWon: false,
-        eloDiff: 0,
-        playerStats: undefined,
-    }
-};
+// };
+// export const scoreScreenData: dto_ScoreScreen = {
+//     matchID: "",
+//     firstTo: 0,
+//     player1Data: {
+//         playerID: 0,
+//         playerName: "",
+//         playerScore: 0
+//     },
+//     player2Data: {
+//         playerID: 0,
+//         playerName: "",
+//         playerScore: 0
+//     },
+// };
+// export const endScreenData: dto_EndScreen = {
+//     matchID: "",
+//     firstTo: 0,
+//     player1Data: {
+//         playerID: 0,
+//         playerName: "",
+//         playerProfilePic: "",
+//         playerScore: 0,
+//         hasWon: false,
+//         eloDiff: 0,
+//         playerStats: undefined,
+//     },
+//     player2Data: {
+//         playerID: 0,
+//         playerName: "",
+//         playerProfilePic: "",
+//         playerScore: 0,
+//         hasWon: false,
+//         eloDiff: 0,
+//         playerStats: undefined,
+//     }
+// };
 export function network_listenToMatchFound(): void {
     const socket = state.socket;
     if (socket) {

@@ -1,18 +1,18 @@
 import { GAME_MODE } from "../settings/i/game.settings.e.game-modes";
 import { GameSettings } from "../settings/i/game.settings.i.game-settings";
-import { HandlingSettings } from "../settings/i/game.settings.i.handling-settings";
+import { MATCH_STATE } from "./game.e.match-state";
 import { GameInstance } from "./game.i.game-instance";
+import { PlayerData } from "./game.i.player-data";
 
 export interface Match {
+    matchID: string,
+    playerData: Map<string, PlayerData>, // Map<PlayerName, PlayerData>
     gameInstances: Map<string, GameInstance>, // Map<PlayerName, GameInstance>
-    scoresMap: Map<string, number>, //<client.id, number>
     firstTo: number,
-
     gameMode: GAME_MODE,
     gameSettings: GameSettings,
-    globalHandlingSettings: HandlingSettings,
     initialSeed: number,
-
-    gameStartTime: number,
+    matchStartTime: number,
+    currentStateStartTime: number,
     matchState: MATCH_STATE,
 }

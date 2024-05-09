@@ -5,7 +5,7 @@ import { GameInstance } from "../i/game.i.game-instance";
 import { playerGameInstance, playerGameVisuals, setGameStateAndNotify } from "../game.master";
 import { calculatePreview } from "../logic/game.logic.shoot";
 import { Bubble } from "../i/game.i.bubble";
-import { GAME_STATE } from "../i/game.e.state";
+import { GAME_STATE } from "../i/game.e.game-state";
 
 let asciiAnimationRunning = false;
 let asciiAnimationFrameId: number | null = null;

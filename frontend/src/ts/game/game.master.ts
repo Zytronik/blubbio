@@ -17,7 +17,7 @@ import { InputFrame } from "./i/game.i.game-state-history";
 import { GameVisuals } from "./visuals/i/game.visuals.i.game-visuals";
 import { ref } from "vue";
 import { createStatGraphData } from "./logic/game.logic.stat-tracker";
-import { GAME_STATE } from "./i/game.e.state";
+import { GAME_STATE } from "./i/game.e.game-state";
 import { getSprintSettings } from "./settings/game.settings.sprint";
 import { getHandlingSettings } from "./settings/game.settings.handling";
 import { setupGrid } from "./logic/game.logic.grid-manager";

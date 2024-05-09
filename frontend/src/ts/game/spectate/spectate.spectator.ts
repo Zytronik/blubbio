@@ -3,11 +3,11 @@ import { dto_SpectationEntry } from "../network/dto/game.network.dto.spectation-
 import { GameVisuals } from "../visuals/i/game.visuals.i.game-visuals";
 import { formatTimeNumberToString } from "../visuals/game.visuals.stat-display";
 import { GameInstance } from "../i/game.i.game-instance";
-import { GAME_STATE } from "../i/game.e.state";
+import { GAME_STATE } from "../i/game.e.game-state";
 
 export const allSpectationEntries = reactive<dto_SpectationEntry[]>([]);
-export const playerNameInstanceMap = new Map<string, GameInstance>();
-export const playerNameVisualsMap = reactive(new Map<string, GameVisuals>());
+// export const playerNameInstanceMap = new Map<string, GameInstance>();
+// export const playerNameVisualsMap = reactive(new Map<string, GameVisuals>());
 
 let spectatorFrameID: number | null = null;
 let spectatingAnimRunning = false;

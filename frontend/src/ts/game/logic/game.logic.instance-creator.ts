@@ -7,7 +7,7 @@ import { GameSettings } from "../settings/i/game.settings.i.game-settings";
 import { GAME_MODE } from "../settings/i/game.settings.e.game-modes";
 import { HandlingSettings } from "../settings/i/game.settings.i.handling-settings";
 import { prefillBoard } from "./game.logic.garbage";
-import { GAME_STATE } from "../i/game.e.state";
+import { GAME_STATE } from "../i/game.e.game-state";
 
 export function createGameInstance(
     gameMode: GAME_MODE,

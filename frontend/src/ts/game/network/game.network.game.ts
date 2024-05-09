@@ -2,7 +2,7 @@ import state from "../../networking/networking.client-websocket";
 import eventBus from "@/ts/page/page.event-bus";
 import { GameInstance } from "../i/game.i.game-instance";
 import { dto_GameSetup } from "./dto/game.network.dto.game-setup";
-import { GAME_STATE } from "../i/game.e.state";
+import { GAME_STATE } from "../i/game.e.game-state";
 import { dto_Inputs } from "./dto/game.network.dto.input";
 import { dto_CountDown } from "./dto/game.network.dto.count-down";
 import { GAME_MODE } from "../settings/i/game.settings.e.game-modes";

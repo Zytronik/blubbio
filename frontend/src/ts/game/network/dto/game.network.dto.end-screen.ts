@@ -6,13 +6,3 @@ export interface dto_EndScreen {
     player1Data: PlayerData;
     player2Data: PlayerData;
 }
-
-export interface PlayerData {
-    playerID: number;
-    playerName: string;
-    playerProfilePic: string;
-    playerScore: number;
-    hasWon: boolean;
-    eloDiff: number;
-    playerStats?: GameStats[];
-}
