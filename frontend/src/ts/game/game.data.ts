@@ -17,15 +17,15 @@ export function createNewMatch(gameSettings: GameSettings): void {
         matchState: MATCH_STATE.SETUP,
         roundHistory: new Map<string, GameStats[]>()
     }
-    const emptyPlayerData = getPlayerData()
+    const userData = getUserData();
     const playerName = eventBus.getUserData()?.username || "PLAYER";
-    newmatch.playerData.set(playerName, emptyPlayerData)
+    newmatch.playerData.set(playerName, userData)
     match = newmatch
 }
 
-function getPlayerData(): PlayerData {
+function getUserData(): PlayerData {
     const userData = eventBus.getUserData();
-    let playerData: PlayerData = {
+    let userPlayerData: PlayerData = {
         playerID: 0,
         playerName: "",
         playerRank: "",
@@ -37,8 +37,8 @@ function getPlayerData(): PlayerData {
         playerCountry: "",
     };
     if (userData && userData.id) {
-        playerData.playerID = userData.id;
-        playerData.playerName = userData.username;
+        userPlayerData.playerID = userData.id;
+        userPlayerData.playerName = userData.username;
     }
-    return playerData;
+    return userPlayerData;
 }
