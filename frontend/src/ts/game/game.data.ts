@@ -1,6 +1,7 @@
 import eventBus from "../page/page.event-bus";
 import { MATCH_STATE } from "./i/game.e.match-state";
 import { GameInstance } from "./i/game.i.game-instance";
+import { GameStats } from "./i/game.i.game-stats";
 import { Match } from "./i/game.i.match";
 import { PlayerData } from "./i/game.i.player-data";
 import { GameSettings } from "./settings/i/game.settings.i.game-settings";
@@ -11,22 +12,20 @@ export function createNewMatch(gameSettings: GameSettings): void {
         matchID: "",
         playerData: new Map<string, PlayerData>(),
         gameInstances: new Map<string, GameInstance>(),
-        firstTo: gameSettings.firstTo,
-        gameMode: gameSettings.gameMode,
         gameSettings: gameSettings,
-        initialSeed: 0,
-        matchStartTime: 0,
         currentStateStartTime: 0,
         matchState: MATCH_STATE.SETUP,
+        roundHistory: new Map<string, GameStats[]>()
     }
-    const emptyPlayerData = createEmptyPlayerData()
+    const emptyPlayerData = getPlayerData()
     const playerName = eventBus.getUserData()?.username || "PLAYER";
     newmatch.playerData.set(playerName, emptyPlayerData)
     match = newmatch
 }
 
-function createEmptyPlayerData(): PlayerData {
-    const emptyPlayerData: PlayerData = {
+function getPlayerData(): PlayerData {
+    const userData = eventBus.getUserData();
+    let playerData: PlayerData = {
         playerID: 0,
         playerName: "",
         playerRank: "",
@@ -36,10 +35,10 @@ function createEmptyPlayerData(): PlayerData {
         playerRD: 0,
         playerProfilePicture: "",
         playerCountry: "",
-        playerScore: 0,
-        hasWon: false,
-        eloDiff: 0,
-        playerStats: []
+    };
+    if (userData && userData.id) {
+        playerData.playerID = userData.id;
+        playerData.playerName = userData.username;
     }
-    return emptyPlayerData;
+    return playerData;
 }

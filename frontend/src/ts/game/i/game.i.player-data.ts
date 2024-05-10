@@ -1,5 +1,3 @@
-import { GameStats } from "./game.i.game-stats";
-
 export interface PlayerData {
     playerID: number;
     playerName: string;
@@ -10,8 +8,4 @@ export interface PlayerData {
     playerRD: number;
     playerProfilePicture: string;
     playerCountry: string;
-    playerScore: number;
-    hasWon: boolean;
-    eloDiff: number;
-    playerStats: GameStats[];
 }

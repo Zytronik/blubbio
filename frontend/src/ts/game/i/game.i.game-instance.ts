@@ -5,6 +5,7 @@ import { Grid } from "./game.i.grid";
 import { GameStats } from "./game.i.game-stats";
 
 export interface GameInstance {
+    initialSeed: number,
     bubbleSeed: number,
     garbageSeed: number,
     angle: number,
