@@ -1,4 +1,4 @@
-import { GAME_INPUT } from "../network/i/game.network.i.game-input";
+import { GAME_INPUT } from "../../network/i/game.network.i.game-input";
 import { Bubble } from "./game.i.bubble";
 
 export interface GameStateHistory {

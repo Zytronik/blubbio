@@ -1,5 +1,5 @@
 import { fillAsciiStrings, startASCIIAnimation, startCountdownAnimation, stopASCIIAnimation, stopCountdownAnimation } from "./visuals/game.visuals.ascii";
-import { GameInstance } from "./i/game.i.game-instance";
+import { GameInstance } from "./logic/i/game.i.game-instance";
 import { disableChannelInput, disableGameInputs, disableResetInput, enableChannelInput, enableGameInputs, enableResetInput } from "../input/input.input-manager";
 import { cleanUpAngle } from "./logic/game.logic.angle";
 import { angleLeftInput, angleRightInput } from "../input/input.all-inputs";
@@ -7,17 +7,17 @@ import { executeShot } from "./logic/game.logic.shoot";
 import { resetStatDisplays, startStatDisplay, stopStatDisplay } from "./visuals/game.visuals.stat-display";
 import { createGameInstance, getEmptyStats, resetGameInstance } from "./logic/game.logic.instance-creator";
 import { GAME_MODE } from "./settings/i/game.settings.e.game-modes";
-import { GameTransitions } from "./i/game.i.game-transitions";
+import { GameTransitions } from "./match/game.i.game-transitions";
 import { holdBubble } from "./logic/game.logic.bubble-manager";
 import { network_countDownState, network_leaveGame, network_resetGame, network_setupGame, network_sendInputs } from "./network/game.network.game";
 import eventBus from "../page/page.event-bus";
 import { getNextSeed } from "./logic/game.logic.random";
 import { GAME_INPUT } from "./network/i/game.network.i.game-input";
-import { InputFrame } from "./i/game.i.game-state-history";
+import { InputFrame } from "./logic/i/game.i.game-state-history";
 import { GameVisuals } from "./visuals/i/game.visuals.i.game-visuals";
 import { ref } from "vue";
 import { createStatGraphData } from "./logic/game.logic.stat-tracker";
-import { GAME_STATE } from "./i/game.e.game-state";
+import { GAME_STATE } from "./match/game.e.game-state";
 import { getSprintSettings } from "./settings/game.settings.sprint";
 import { getHandlingSettings } from "./settings/game.settings.handling";
 import { setupGrid } from "./logic/game.logic.grid-manager";
@@ -163,18 +163,6 @@ export function rankedGameStart(): void {
 }
 
 
-function showCountDownAndStart(): void {
-    fillAsciiStrings(playerGameInstance, playerGameVisuals.asciiBoard);
-    resetStatDisplays(playerGameVisuals.statNumbers);
-    startCountdownAnimation(playerGameInstance.gameSettings.countDownDuration, afterCountdown)
-    function afterCountdown(): void {
-        startASCIIAnimation();
-        startStatDisplay();
-        enableGameInputs();
-        enableResetInput();
-        playerGameInstance.stats.gameStartTime = performance.now();
-    }
-}
 export function setGameStateAndNotify(gameState: GAME_STATE): void {
     if (playerGameInstance.gameState != gameState) {
         playerGameInstance.gameState = gameState;

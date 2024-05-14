@@ -1,5 +1,5 @@
 import { GAME_MODE } from "../../settings/i/game.settings.e.game-modes";
-import { GAME_STATE } from "../../i/game.e.game-state";
+import { GAME_STATE } from "../../match/game.e.game-state";
 
 export interface dto_CountDown {
     matchID: string,

@@ -1,10 +1,10 @@
 import { getVelocity } from "./game.logic.angle";
 import { dissolveBubbles, getNearbyFields } from "./game.logic.grid-manager";
 import { trackBubbleShot } from "./game.logic.stat-tracker";
-import { Field } from "../i/game.i.field";
-import { GameInstance } from "../i/game.i.game-instance";
-import { Grid } from "../i/game.i.grid";
-import { Coordinates } from "../i/game.i.grid-coordinates";
+import { Field } from "./i/game.i.field";
+import { GameInstance } from "./i/game.i.game-instance";
+import { Grid } from "./i/game.i.grid";
+import { Coordinates } from "./i/game.i.grid-coordinates";
 import { getGarbageAmount, receiveGarbageAndCheckDead } from "./game.logic.garbage";
 import { updateBubbleQueueAndCurrent } from "./game.logic.bubble-manager";
 
@@ -61,7 +61,7 @@ export function shootBubble(game: GameInstance): number {
         game.queuedGarbage -= attack;
         if (game.queuedGarbage < 0) {
             const garbageToSend = Math.abs(game.queuedGarbage);
-            game.sendGarbage(garbageToSend);
+            game.onGarbageSend(garbageToSend);
             defense = attack - garbageToSend;
             game.queuedGarbage = 0;
         }

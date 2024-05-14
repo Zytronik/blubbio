@@ -1,5 +1,5 @@
-import { GameInstance } from "../i/game.i.game-instance";
-import { GameStats } from "../i/game.i.game-stats";
+import { GameInstance } from "./i/game.i.game-instance";
+import { GameStats } from "./i/game.i.game-stats";
 import { GAME_MODE } from "../settings/i/game.settings.e.game-modes";
 
 const SPIKE_COUNTER_TIMEFRAME = 1500;

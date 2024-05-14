@@ -1,10 +1,11 @@
 import { Bubble } from "./game.i.bubble";
 import { GameStateHistory } from "./game.i.game-state-history";
-import { GameTransitions } from "./game.i.game-transitions";
 import { Grid } from "./game.i.grid";
 import { GameStats } from "./game.i.game-stats";
+import { GameSettings } from "../../settings/i/game.settings.i.game-settings";
 
 export interface GameInstance {
+    settings: GameSettings,
     initialSeed: number,
     bubbleSeed: number,
     garbageSeed: number,
@@ -20,6 +21,10 @@ export interface GameInstance {
     gameStateHistory: GameStateHistory,
     processedInputsIndex: number,
 
-    gameTransitions: GameTransitions,
-    sendGarbage: (amount: number) => void,
+    onGameStart: () => void,
+    onGameQuit: () => void,
+    onGameReset: () => void,
+    onGameDefeat: () => void,
+    onGameVictory: () => void,
+    onGarbageSend: (amount: number) => void,
 }

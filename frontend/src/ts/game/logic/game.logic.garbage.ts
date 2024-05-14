@@ -1,5 +1,5 @@
-import { Bubble } from "../i/game.i.bubble";
-import { GameInstance } from "../i/game.i.game-instance";
+import { Bubble } from "./i/game.i.bubble";
+import { GameInstance } from "./i/game.i.game-instance";
 import { allBubbles } from "./game.logic.bubble-manager";
 import { addGarbageToGrid } from "./game.logic.grid-manager";
 import { convertSeedToRandomNumber, getNextSeed } from "./game.logic.random";

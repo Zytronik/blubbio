@@ -1,7 +1,8 @@
-export interface GameTransitions {
+export interface GameEvents {
     onGameStart: () => void,
-    onGameLeave: () => void,
+    onGameQuit: () => void,
     onGameReset: () => void,
     onGameDefeat: () => void,
     onGameVictory: () => void,
+    onGarbageSend: (amount: number) => void,
 }

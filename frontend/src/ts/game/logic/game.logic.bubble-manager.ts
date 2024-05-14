@@ -1,6 +1,6 @@
 import { convertSeedToRandomNumber, getNextSeed } from "./game.logic.random";
-import { Bubble } from "../i/game.i.bubble";
-import { GameInstance } from "../i/game.i.game-instance";
+import { Bubble } from "./i/game.i.bubble";
+import { GameInstance } from "./i/game.i.game-instance";
 import { CYAN_BUBBLE_IDLE, GREEN_BUBBLE_IDLE, ORANGE_BUBBLE_IDLE, PURPLE_BUBBLE_IDLE, RED_BUBBLE_IDLE, WHITE_BUBBLE_IDLE, YELLOW_BUBBLE_IDLE } from "../visuals/sprite/game.visuals.sprite.bubble";
 
 export function holdBubble(gameInstance: GameInstance): void {
@@ -44,37 +44,37 @@ function getBubbleBag(gameInstance: GameInstance): Bubble[] {
 const red: Bubble = {
     ascii: `<span style="color: rgb(255, 0, 0);">R</span>`,
     type: 0,
-    spriteSheetName: RED_BUBBLE_IDLE,
+    spriteIdle: RED_BUBBLE_IDLE,
 }
 const orange: Bubble = {
     ascii: `<span style="color: rgb(255, 174, 0);">O</span>`,
     type: 1,
-    spriteSheetName: ORANGE_BUBBLE_IDLE,
+    spriteIdle: ORANGE_BUBBLE_IDLE,
 }
 const yellow: Bubble = {
     ascii: `<span style="color: rgb(255, 255, 0);">Y</span>`,
     type: 2,
-    spriteSheetName: YELLOW_BUBBLE_IDLE,
+    spriteIdle: YELLOW_BUBBLE_IDLE,
 }
 const green: Bubble = {
     ascii: `<span style="color: rgb(123, 255, 0);">G</span>`,
     type: 3,
-    spriteSheetName: GREEN_BUBBLE_IDLE,
+    spriteIdle: GREEN_BUBBLE_IDLE,
 }
 const cyan: Bubble = {
     ascii: `<span style="color: rgb(0, 255, 255);">B</span>`,
     type: 4,
-    spriteSheetName: CYAN_BUBBLE_IDLE,
+    spriteIdle: CYAN_BUBBLE_IDLE,
 }
 const purple: Bubble = {
     ascii: `<span style="color: rgb(255, 0, 255);">P</span>`,
     type: 5,
-    spriteSheetName: PURPLE_BUBBLE_IDLE,
+    spriteIdle: PURPLE_BUBBLE_IDLE,
 }
 const white: Bubble = {
     ascii: `<span style="color: rgb(255, 255, 255);">W</span>`,
     type: 6,
-    spriteSheetName: WHITE_BUBBLE_IDLE,
+    spriteIdle: WHITE_BUBBLE_IDLE,
 }
 export const allBubbles: Bubble[] = [
     red,

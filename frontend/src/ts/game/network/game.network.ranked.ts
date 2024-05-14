@@ -2,13 +2,13 @@ import eventBus from "@/ts/page/page.event-bus";
 import state from "../../networking/networking.client-websocket";
 import { dto_VersusScreen } from "./dto/game.network.dto.vs-screen";
 import { dto_GameSetup } from "./dto/game.network.dto.game-setup";
-import { disableGameplay, playerGameInstance, playerGameVisuals, preparePlayerGameInstance, rankedGameStart, startGame } from "../game.master";
+import { disableGameplay, playerGameInstance, playerGameVisuals, preparePlayerGameInstance, rankedGameStart, startGame } from "../game.input-commands";
 import { createGameInstance, getEmptyStats } from "../logic/game.logic.instance-creator";
-import { GameTransitions } from "../i/game.i.game-transitions";
+import { GameTransitions } from "../match/game.i.game-transitions";
 import { getHandlingSettings } from "../settings/game.settings.handling";
 import { disableBackInputs, disableChannelInput, disableResetInput } from "@/ts/input/input.input-manager";
 import { fillAsciiStrings } from "../visuals/game.visuals.ascii";
-import { GAME_STATE } from "../i/game.e.game-state";
+import { GAME_STATE } from "../match/game.e.game-state";
 import { network_listenToQueuedInputsIndex, network_sendInputs, network_stopListenToQueuedInputsIndex } from "./game.network.game";
 import { dto_GameInstance } from "./dto/game.network.dto.game-instance";
 import { GameVisuals, getEmptyGameVisuals } from "../visuals/i/game.visuals.i.game-visuals";
@@ -16,8 +16,8 @@ import { fillStatStrings, resetStatDisplays } from "../visuals/game.visuals.stat
 import { dto_EndScreen } from "./dto/game.network.dto.end-screen";
 import { dto_ScoreScreen } from "./dto/game.network.dto.score-screen";
 import { GAME_INPUT } from "./i/game.network.i.game-input";
-import { InputFrame } from "../i/game.i.game-state-history";
-import { GameInstance } from "../i/game.i.game-instance";
+import { InputFrame } from "../logic/i/game.i.game-state-history";
+import { GameInstance } from "../logic/i/game.i.game-instance";
 
 const O_RANKED_MATCH_FOUND = "output_rankedMatchFound";
 const O_RANKED_SETUP_GAME_INSTANCE = "output_rankedSetupGameInstance";

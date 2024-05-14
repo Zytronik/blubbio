@@ -247,4 +247,4 @@ p {
 .user-info:hover p {
   opacity: 0.7;
 }
-</style>
+</style>@/ts/game/logic/i/game.i.game-stats

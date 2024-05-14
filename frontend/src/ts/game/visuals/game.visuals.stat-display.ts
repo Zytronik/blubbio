@@ -1,5 +1,5 @@
-import { playerGameInstance, playerGameVisuals } from "../game.master";
-import { GameInstance } from "../i/game.i.game-instance";
+import { playerGameInstance, playerGameVisuals } from "../game.input-commands";
+import { GameInstance } from "../logic/i/game.i.game-instance";
 import { calculateTimeStats } from "../logic/game.logic.stat-tracker";
 import { enemyGameInstance, enemyVisuals } from "../network/game.network.ranked";
 import { StatNumberRefs } from "./i/game.visuals.i.stat-numbers";

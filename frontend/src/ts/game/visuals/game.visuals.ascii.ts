@@ -1,11 +1,11 @@
-import { Coordinates } from "../i/game.i.grid-coordinates";
-import { Field } from "../i/game.i.field";
+import { Coordinates } from "../logic/i/game.i.grid-coordinates";
+import { Field } from "../logic/i/game.i.field";
 import { AsciiBoardRefs } from "./i/game.visuals.i.ascii-board";
-import { GameInstance } from "../i/game.i.game-instance";
-import { playerGameInstance, playerGameVisuals, setGameStateAndNotify } from "../game.master";
+import { GameInstance } from "../logic/i/game.i.game-instance";
+import { playerGameInstance, playerGameVisuals, setGameStateAndNotify } from "../game.input-commands";
 import { calculatePreview } from "../logic/game.logic.shoot";
-import { Bubble } from "../i/game.i.bubble";
-import { GAME_STATE } from "../i/game.e.game-state";
+import { Bubble } from "../logic/i/game.i.bubble";
+import { GAME_STATE } from "../match/game.e.game-state";
 
 let asciiAnimationRunning = false;
 let asciiAnimationFrameId: number | null = null;

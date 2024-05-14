@@ -1,44 +1,27 @@
-import eventBus from "../page/page.event-bus";
-import { MATCH_STATE } from "./i/game.e.match-state";
-import { GameInstance } from "./i/game.i.game-instance";
-import { GameStats } from "./i/game.i.game-stats";
-import { Match } from "./i/game.i.match";
-import { PlayerData } from "./i/game.i.player-data";
-import { GameSettings } from "./settings/i/game.settings.i.game-settings";
+import { MATCH_STATE } from "./match/game.e.match-state";
+import { GameInstance } from "./logic/i/game.i.game-instance";
+import { GameStats } from "./logic/i/game.i.game-stats";
+import { Match } from "./match/game.i.match";
+import { MatchSetupData } from "./match/game.i.match-setup-data";
+import { createGameInstance } from "./logic/game.logic.instance-creator";
+import { PlayerData } from "../networking/networking.player-data";
 
 export let match: Match
-export function createNewMatch(gameSettings: GameSettings): void {
+export function createNewMatch(setup: MatchSetupData): void {
     const newmatch: Match = {
         matchID: "",
         playerData: new Map<string, PlayerData>(),
         gameInstances: new Map<string, GameInstance>(),
-        gameSettings: gameSettings,
+        gameSettings: setup.gameSettings,
         currentStateStartTime: 0,
         matchState: MATCH_STATE.SETUP,
-        roundHistory: new Map<string, GameStats[]>()
+        countDownDuration: 0,
+        roundHistory: new Map<string, GameStats[]>(),
     }
-    const userData = getUserData();
-    const playerName = eventBus.getUserData()?.username || "PLAYER";
-    newmatch.playerData.set(playerName, userData)
+    setup.playerData.forEach(player => {
+        newmatch.playerData.set(player.playerName, player)
+        const instance = createGameInstance(setup.gameSettings, setup.gameEvents, setup.initialSeed)
+        newmatch.gameInstances.set(player.playerName, instance)
+    });
     match = newmatch
-}
-
-function getUserData(): PlayerData {
-    const userData = eventBus.getUserData();
-    let userPlayerData: PlayerData = {
-        playerID: 0,
-        playerName: "",
-        playerRank: "",
-        playerGlobalRank: 0,
-        playerNationalRank: 0,
-        playerGlicko: 0,
-        playerRD: 0,
-        playerProfilePicture: "",
-        playerCountry: "",
-    };
-    if (userData && userData.id) {
-        userPlayerData.playerID = userData.id;
-        userPlayerData.playerName = userData.username;
-    }
-    return userPlayerData;
 }

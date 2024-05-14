@@ -1,9 +1,4 @@
-import { GAME_MODE } from "./game.settings.e.game-modes";
-
 export interface GameSettings {
-    gameMode: GAME_MODE,
-    firstTo: number,
-
     //baord settings
     gridWidth: number,
     gridHeight: number,
@@ -31,6 +26,4 @@ export interface GameSettings {
     garbageCleanAmount: number,
     garbageColorAmount: number,
     garbageToKill: number,
-
-    countDownDuration: number,
 }

@@ -1264,4 +1264,4 @@ p {
   justify-content: center;
 }
 
-</style>
+</style>@/ts/game/game.input-manager

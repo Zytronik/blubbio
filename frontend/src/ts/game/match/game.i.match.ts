@@ -1,7 +1,7 @@
 import { GameSettings } from "../settings/i/game.settings.i.game-settings";
 import { MATCH_STATE } from "./game.e.match-state";
-import { GameInstance } from "./game.i.game-instance";
-import { GameStats } from "./game.i.game-stats";
+import { GameInstance } from "../logic/i/game.i.game-instance";
+import { GameStats } from "../logic/i/game.i.game-stats";
 import { PlayerData } from "./game.i.player-data";
 
 export interface Match {
@@ -11,5 +11,6 @@ export interface Match {
     gameSettings: GameSettings,
     matchState: MATCH_STATE,
     currentStateStartTime: number,
+    countDownDuration: number,
     roundHistory: Map<string, GameStats[]>
 }

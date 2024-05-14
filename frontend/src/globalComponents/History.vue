@@ -167,3 +167,4 @@ td p {
 }
 
 </style>
+@/ts/game/logic/i/game.i.game-stats

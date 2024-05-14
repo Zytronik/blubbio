@@ -1,44 +1,28 @@
-import { GameInstance } from "../i/game.i.game-instance";
+import { GameInstance } from "./i/game.i.game-instance";
 import { resetGrid, setupGrid } from "./game.logic.grid-manager";
-import { GameStats } from "../i/game.i.game-stats";
-import { GameTransitions } from "../i/game.i.game-transitions";
+import { GameStats } from "./i/game.i.game-stats";
 import { updateBubbleQueueAndCurrent } from "./game.logic.bubble-manager";
 import { GameSettings } from "../settings/i/game.settings.i.game-settings";
-import { GAME_MODE } from "../settings/i/game.settings.e.game-modes";
-import { HandlingSettings } from "../settings/i/game.settings.i.handling-settings";
 import { prefillBoard } from "./game.logic.garbage";
-import { GAME_STATE } from "../i/game.e.game-state";
+import { GameEvents } from "./i/game.i.game-events";
+import { getHandlingSettings } from "../settings/game.settings.handling";
 
-export function createGameInstance(
-    gameMode: GAME_MODE,
-    gameSettings: GameSettings,
-    handlingSettings: HandlingSettings,
-    gameTransitions: GameTransitions,
-    startSeed: number,
-    givenMatchID: string,
-    onGarbageSend: (amount: number) => void): GameInstance {
-
+export function createGameInstance(settings: GameSettings, events: GameEvents, startSeed: number): GameInstance {
     const gameInstance: GameInstance = {
-        gameMode: gameMode,
-        gameSettings: gameSettings,
-        handlingSettings: handlingSettings,
-        initialSeed: startSeed,
-
-        gameState: GAME_STATE.READY,
+        settings: settings,
         bubbleSeed: startSeed,
         garbageSeed: startSeed,
         angle: 90,
-        currentAPS: handlingSettings.defaultAPS,
+        currentAPS: getHandlingSettings().defaultAPS,
         currentBubble: {
             ascii: "",
             type: 0,
-            spriteSheetName: ""
+            spriteIdle: ""
         },
         bubbleQueue: [],
-        playGrid: setupGrid(gameSettings),
+        playGrid: setupGrid(settings),
         queuedGarbage: 0,
-        stats: getEmptyStats(gameSettings),
-
+        stats: getEmptyStats(settings),
         gameStateHistory: {
             inputHistory: [],
             boardHistory: [],
@@ -48,11 +32,15 @@ export function createGameInstance(
             receivedgarbagehistory: []
         },
         processedInputsIndex: 0,
-        matchID: givenMatchID,
-        gameTransitions: gameTransitions,
-        sendGarbage: onGarbageSend,
+        initialSeed: 0,
+        onGameStart: events.onGameStart,
+        onGameQuit: events.onGameQuit,
+        onGameReset: events.onGameReset,
+        onGameDefeat: events.onGameDefeat,
+        onGameVictory: events.onGameVictory,
+        onGarbageSend: events.onGarbageSend,
     }
-    if (gameInstance.gameSettings.prefillBoard) {
+    if (settings.prefillBoard) {
         prefillBoard(gameInstance);
     }
     updateBubbleQueueAndCurrent(gameInstance);
@@ -61,22 +49,21 @@ export function createGameInstance(
 
 export function resetGameInstance(gameInstance: GameInstance, seed: number): void {
     gameInstance.initialSeed = seed;
-    gameInstance.gameState = GAME_STATE.READY;
     gameInstance.bubbleSeed = seed;
     gameInstance.garbageSeed = seed;
     gameInstance.angle = 90;
-    gameInstance.currentAPS = gameInstance.handlingSettings.defaultAPS;
+    gameInstance.currentAPS = getHandlingSettings().defaultAPS;
     gameInstance.currentBubble = {
         ascii: "",
         type: 0,
-        spriteSheetName: ""
+        spriteIdle: ""
     };
     gameInstance.holdBubble = undefined;
     gameInstance.playGrid.previewBubble = undefined;
     gameInstance.bubbleQueue = [];
     resetGrid(gameInstance.playGrid);
     gameInstance.queuedGarbage = 0;
-    gameInstance.stats = getEmptyStats(gameInstance.gameSettings);
+    gameInstance.stats = getEmptyStats(gameInstance.settings);
     gameInstance.gameStateHistory.inputHistory = [];
     gameInstance.gameStateHistory.boardHistory = [];
     gameInstance.gameStateHistory.bubbleQueueHistory = [];
@@ -84,7 +71,7 @@ export function resetGameInstance(gameInstance: GameInstance, seed: number): voi
     gameInstance.gameStateHistory.sentgarbagehistory = [];
     gameInstance.gameStateHistory.receivedgarbagehistory = [];
     gameInstance.processedInputsIndex = 0;
-    if (gameInstance.gameSettings.prefillBoard) {
+    if (gameInstance.settings.prefillBoard) {
         prefillBoard(gameInstance);
     }
     updateBubbleQueueAndCurrent(gameInstance);
