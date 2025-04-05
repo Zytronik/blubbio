@@ -1,11 +1,11 @@
-import { usePixiStore } from "@/stores/pixiStore";
-import { Container, Graphics, RenderTexture } from "pixi.js";
-import { useGameStore } from "@/stores/gameStore";
-import { GameInstance } from "../_interface/game/gameInstance";
-import { getRandomHexColor } from "./color";
-import { GameContainers } from "../_interface/game/gameContainers";
-import { GameSprites } from "../_interface/game/gameSprites";
-import { circleGraphicsAsSprite } from "./spriteBuilder";
+import { usePixiStore } from '@/stores/pixiStore';
+import { Container, Graphics, RenderTexture } from 'pixi.js';
+import { useGameStore } from '@/stores/gameStore';
+import { GameInstance } from '../_interface/game/gameInstance';
+import { getRandomHexColor } from './color';
+import { GameContainers } from '../_interface/game/gameContainers';
+import { GameSprites } from '../_interface/game/gameSprites';
+import { circleGraphicsAsSprite } from './spriteBuilder';
 
 export const mainContainer = new Container();
 export const gameContainer = new Container({ visible: false });
@@ -36,8 +36,8 @@ export function createGameInstanceContainer(sprites: GameSprites): GameContainer
 
     const gridWidth = 0.6;
     const gridHeight = 0.9;
-    const gridXPos = 0.5
-    const gridYPos = 0.45
+    const gridXPos = 0.5;
+    const gridYPos = 0.45;
     const gridSquare = new Graphics();
     gridSquare.rect(0, 0, mainSquare.width * gridWidth, mainSquare.height * gridHeight);
     gridSquare.fill(getRandomHexColor());
@@ -74,8 +74,8 @@ export function createGameInstanceContainer(sprites: GameSprites): GameContainer
     // gridContainer.addChild(sprites.bubble);
 
     const cursorWidth = 0.1;
-    const cursorXPos = 0.5
-    const cursorYPos = 1
+    const cursorXPos = 0.5;
+    const cursorYPos = 1;
     const cursorSquare = new Graphics();
     cursorSquare.rect(0, 0, mainSquare.width * cursorWidth, mainSquare.width * cursorWidth);
     cursorSquare.fill(getRandomHexColor());
@@ -100,7 +100,8 @@ export function createGameInstanceContainer(sprites: GameSprites): GameContainer
         instanceRootContainer: instanceRootContainer,
         gridContainer: gridContainer,
         cursorContainer: cursorContainer,
-    }
+        gridBackground: gridSquare,
+    };
     return containers;
 }
 
@@ -139,12 +140,12 @@ function gameLayout1vs1(containers: Container[], canvasWidth: number, canvasHeig
     player1.pivot.y = player1.height / 2;
 
     player2.visible = true;
-    player2.scale = 1
+    player2.scale = 1;
     player2.x = canvasWidth * 0.7;
     player2.y = canvasHeight * 0.5;
     player2.pivot.x = player1.width / 2;
     player2.pivot.y = player1.height / 2;
-    player2.scale = 1
+    player2.scale = 1;
 }
 
 function gameLayout1vsX(containers: Container[], canvasWidth: number, canvasHeight: number): void {
@@ -159,14 +160,14 @@ function gameLayout1vsX(containers: Container[], canvasWidth: number, canvasHeig
     //not sure about using pivot. its very funky with scale: cant imagine scaling and moving a container as an animation with pivot centering
     const RIGHT_SIDE = 0.52;
     const RIGHT_SIDE_WIDTH = 0.45;
-    const gridSize = Math.ceil(Math.sqrt(containers.length - 1));     //gridSize = 3 -> 3x3 grid
+    const gridSize = Math.ceil(Math.sqrt(containers.length - 1)); //gridSize = 3 -> 3x3 grid
     for (let gridY = 0; gridY < gridSize; gridY++) {
         for (let gridX = 0; gridX < gridSize; gridX++) {
-            const i = (gridY * gridSize) + gridX + 1;
+            const i = gridY * gridSize + gridX + 1;
             if (i < containers.length) {
                 const otherPlayer = containers[i];
                 otherPlayer.visible = true;
-                otherPlayer.scale = 1
+                otherPlayer.scale = 1;
                 otherPlayer.x = canvasWidth * (RIGHT_SIDE + (gridX + 0.5) * (RIGHT_SIDE_WIDTH / gridSize));
                 otherPlayer.y = canvasHeight * (gridY + 0.5) * (1 / gridSize);
                 otherPlayer.pivot.x = otherPlayer.width / 2;
