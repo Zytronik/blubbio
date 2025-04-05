@@ -17,10 +17,11 @@ import { GameSprites } from '../_interface/game/gameSprites';
 import { arrowTexture, bgPurpleTexture, bgRedTexture, bubbleOverlayTexture, bubbleTexture } from '../pixi/allTextures';
 import { addAngleUpdateAnimation } from '../animationPixi/angleAnimation';
 import { createGameInstanceContainer } from '../pixi/container';
-import { allBubbles } from './bubbleGenerator';
 import { addBoardBubblesAnimation } from '../animationPixi/boardBubblesAnimation';
+import { allBubbles } from './bubbleGenerator';
 
 export function getEmptyGame(): Game {
+    // addUpdateContainerSizeAnimation();
     return {
         gameMode: GAME_MODE.NONE,
         inputContext: INPUT_CONTEXT.DISABLED,
@@ -80,8 +81,9 @@ function getEmptyGrid(settings: GameSettings): Grid {
         gridWidth: settings.gridWidth,
         gridHeight: settings.gridHeight,
         extraGridHeight: settings.gridExtraHeight,
-        bubbleFullRadius: bubbleRadius,
         bubbleHitboxRadius: bubbleRadius * settings.collisionRangeFactor,
+        bubbleFullRadius: bubbleRadius,
+        bubbleFullDiameter: bubbleDiameter,
         precisionWidth,
         precisionRowHeight,
         precisionHeight,
@@ -106,7 +108,7 @@ function getEmptyGrid(settings: GameSettings): Grid {
                     x: w * bubbleDiameter + (isSmallRow ? bubbleRadius : 0),
                     y: precisionRowHeight * h,
                 },
-                bubble: h < 5 ? allBubbles[w % allBubbles.length] : undefined,
+                bubble: h < 8 ? allBubbles[w % allBubbles.length] : undefined,
                 bubbleSprite: new Sprite(bubbleTexture.texture),
                 bubbleSpriteOverlay: new Sprite(bubbleOverlayTexture.texture),
             };

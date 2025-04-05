@@ -14,6 +14,13 @@ export function angleUpdate(deltaTimeMS: number): void {
     });
 }
 
+export function changeAPS(instance: GameInstance): void {
+    const currentAPS = instance.aps;
+    const defaultAPS = instance.handlingSettings.defaultAPS;
+    const toggleASP = instance.handlingSettings.toggleAPS;
+    instance.aps = (currentAPS === defaultAPS) ? toggleASP : defaultAPS;
+}
+
 export function centerAngle(instance: GameInstance): void {
     instance.angle = 90;
 }

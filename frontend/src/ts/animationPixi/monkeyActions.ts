@@ -4,7 +4,7 @@ import { PixiAnimation } from "../_interface/pixiAnimation";
 
 export function addMonkeyActions(instance: GameInstance, monkeyName: string): void {
     const gameStore = useGameStore();
-    const pressFrequency = 400;         //press something every 400ms
+    const pressFrequency = 5000;         //press something every 400ms
     let lastPressedAt = 0;
 
     function doNothing(): void { 123; }
@@ -17,7 +17,8 @@ export function addMonkeyActions(instance: GameInstance, monkeyName: string): vo
     function shoot(): void { gameStore.pressedShoot(monkeyName); }
     function hold(): void { gameStore.pressedHold(monkeyName); }
 
-    const actions: CallableFunction[] = [doNothing, left, releasedLeft, right, releasedRight, center, mirror, shoot, hold];
+    const actions: CallableFunction[] = [shoot];
+    // const actions: CallableFunction[] = [doNothing, left, releasedLeft, right, releasedRight, center, mirror, shoot, hold];
 
     const monkeyActions: PixiAnimation = {
         startMS: 0,
