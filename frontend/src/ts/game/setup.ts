@@ -14,7 +14,7 @@ import { SPRINT_SETTINGS } from './settings/sprintSettings';
 import { INPUT_CONTEXT } from '../_enum/inputContext';
 import { HANDLING_SETTINGS } from './settings/handlingSettings';
 import { GameSprites } from '../_interface/game/gameSprites';
-import { arrowTexture, bgPurpleTexture, bgRedTexture, bubbleTexture } from '../pixi/allTextures';
+import { arrowTexture, bgPurpleTexture, bgRedTexture, bubbleOverlayTexture, bubbleTexture } from '../pixi/allTextures';
 import { addAngleUpdateAnimation } from '../animationPixi/angleAnimation';
 import { createGameInstanceContainer } from '../pixi/container';
 import { allBubbles } from './bubbleGenerator';
@@ -107,7 +107,8 @@ function getEmptyGrid(settings: GameSettings): Grid {
                     y: precisionRowHeight * h,
                 },
                 bubble: h < 5 ? allBubbles[w % allBubbles.length] : undefined,
-                sprite: new Sprite(bubbleTexture.texture),
+                bubbleSprite: new Sprite(bubbleTexture.texture),
+                bubbleSpriteOverlay: new Sprite(bubbleOverlayTexture.texture),
             };
             row.fields.push(field);
         }
