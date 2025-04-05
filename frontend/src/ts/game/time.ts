@@ -1,3 +1,0 @@
-export function timeUpdate(): void {
-    
-}

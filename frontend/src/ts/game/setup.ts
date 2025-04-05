@@ -78,8 +78,9 @@ function getEmptyGrid(settings: GameSettings): Grid {
         gridWidth: settings.gridWidth,
         gridHeight: settings.gridHeight,
         extraGridHeight: settings.gridExtraHeight,
-        bubbleFullRadius: bubbleRadius,
         bubbleHitboxRadius: bubbleRadius * settings.collisionRangeFactor,
+        bubbleFullRadius: bubbleRadius,
+        bubbleFullDiameter: bubbleDiameter,
         precisionWidth,
         precisionRowHeight,
         precisionHeight,
@@ -101,7 +102,7 @@ function getEmptyGrid(settings: GameSettings): Grid {
                     x: w * bubbleDiameter + (isSmallRow ? bubbleDiameter : bubbleRadius),
                     y: precisionRowHeight * h + bubbleRadius,
                 },
-                bubble: (h < 5) ? allBubbles[w % allBubbles.length] : undefined,
+                bubble: (h < 8) ? allBubbles[w % allBubbles.length] : undefined,
             };
             row.fields.push(field)
         }

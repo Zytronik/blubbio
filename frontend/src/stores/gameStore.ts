@@ -5,10 +5,10 @@ import { useUserStore } from "./userStore";
 import { useInputStore } from "./inputStore";
 import { INPUT_CONTEXT } from "@/ts/_enum/inputContext";
 import { GameInstance } from "@/ts/_interface/game/gameInstance";
-import { startGameLogicLoop } from "@/ts/game/gameLoop";
+import { startGameLogicLoop } from "@/ts/game/gameLogicLoop";
 import { gameContainer } from "@/ts/pixi/container";
 import { addMonkeyActions } from "@/ts/animationPixi/monkeyActions";
-import { centerAngle, mirrorAngle } from "@/ts/game/actions/aiming";
+import { centerAngle, changeAPS, mirrorAngle } from "@/ts/game/actions/aiming";
 import { shootBubble } from "@/ts/game/actions/shoot";
 
 export const useGameStore = defineStore('game', () => {
@@ -52,10 +52,7 @@ export const useGameStore = defineStore('game', () => {
     function toggleAPS(userName: string): void {
         const instance = game.instancesMap.get(userName);
         if (instance) {
-            const currentAPS = instance.aps;
-            const defaultAPS = instance.handlingSettings.defaultAPS;
-            const toggleASP = instance.handlingSettings.toggleAPS;
-            instance.aps = (currentAPS === defaultAPS) ? toggleASP : defaultAPS;
+            changeAPS(instance);
         }
     }
     function pressedCenter(userName: string): void {
@@ -73,7 +70,9 @@ export const useGameStore = defineStore('game', () => {
     function pressedShoot(userName: string): void {
         const instance = game.instancesMap.get(userName);
         if (instance) {
-            shootBubble(instance);
+            const shootResult = shootBubble(instance);
+            shootResult.gridDestination.bubble = instance.currentBubble;
+            console.log(shootResult);
         }
     }
     function pressedHold(userName: string): void {
