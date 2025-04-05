@@ -1,8 +1,8 @@
-import { Field } from "./field";
+import { Field } from './field';
 
 export interface Row {
-    fields: Field[],
-    size: number,
-    isSmallerRow: boolean,
-    isInDeathZone: boolean,
+    fields: Field[];
+    size: number;
+    isSmallerRow: boolean;
+    isInDeathZone: boolean;
 }

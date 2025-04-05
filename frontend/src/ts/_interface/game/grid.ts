@@ -5,11 +5,11 @@ export interface Grid {
     gridWidth: number,
     gridHeight: number,
     extraGridHeight: number,
-    bubblePrecisionRadius: number,
+    bubbleFullRadius: number,
+    bubbleHitboxRadius: number,
     precisionWidth: number,
     precisionRowHeight: number,
     precisionHeight: number,
     rows: Row[],
     launcherPrecisionPosition: Coordinates,
-    collisionRangeSquared: number,
 }

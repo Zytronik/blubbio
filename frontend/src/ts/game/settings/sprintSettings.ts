@@ -8,7 +8,7 @@ export const SPRINT_SETTINGS: GameSettings = {
     maxAngle: 168,
     queuePreviewSize: 5,
     widthPrecisionUnits: 10000000,
-    collisionDetectionFactor: 0.3,
+    collisionRangeFactor: 0.55,
     sprintVictoryCondition: 100,
     prefillBoard: true,
     prefillBoardAmount: 7,

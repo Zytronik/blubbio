@@ -1,8 +1,9 @@
 import { useGameStore } from "@/stores/gameStore";
 import { INPUT_CONTEXT } from "../_enum/inputContext";
 import { Input } from "../_interface/input";
-import { centerCursor, leftDown, leftUp, mirrorAngle, rightDown, rightUp, toggleAPS } from "../game/actions/aim";
+import { centerCursor, hold, leftDown, leftUp, mirrorAngle, quit, reset, rightDown, rightUp, shoot, toggleAPS } from "../game/actions/thisShouldBeInAllInputs";
 import { updateContainerLayout } from "../pixi/container";
+import { usePageStore } from "@/stores/pageStore";
 import { playCountdown } from "../animationPixi/countdownAnimation";
 
 export const angleLeftInput: Input = {
@@ -79,7 +80,7 @@ export const shootInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        console.error("no fire event attached to keyCode: " + shootInput.name);
+        shoot();
     },
     inputContext: [INPUT_CONTEXT.GAME_NO_RESET, INPUT_CONTEXT.GAME_WITH_RESET]
 };
@@ -92,7 +93,7 @@ export const holdInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        console.error("no fire event attached to keyCode: " + holdInput.name);
+        hold();
     },
     inputContext: [INPUT_CONTEXT.GAME_NO_RESET, INPUT_CONTEXT.GAME_WITH_RESET]
 };
@@ -105,7 +106,7 @@ export const resetInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        console.error("no fire event attached to keyCode: " + resetInput.name);
+        reset();
     },
     inputContext: [INPUT_CONTEXT.GAME_WITH_RESET]
 };
@@ -118,7 +119,7 @@ export const backInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        console.error("no fire event attached to keyCode: " + backInput.name);
+        quit();
     },
     inputContext: [INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.MENU]
 };
@@ -131,7 +132,7 @@ export const channelInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        console.error("no fire event attached to keyCode: " + channelInput.name);
+        usePageStore().toggleCommunityOverlayAnimation();
     },
     inputContext: [INPUT_CONTEXT.MENU]
 };

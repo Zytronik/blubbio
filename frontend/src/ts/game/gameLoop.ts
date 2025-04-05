@@ -1,4 +1,4 @@
-import { angleUpdate } from "./angle";
+import { angleUpdate } from "./actions/aiming";
 
 let gameLoopRunning = false;
 export function startGameLogicLoop(): void {

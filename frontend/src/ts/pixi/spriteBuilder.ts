@@ -1,5 +1,5 @@
 import { usePixiStore } from "@/stores/pixiStore";
-import { Graphics, Matrix, RenderTexture, Sprite } from "pixi.js"
+import { Graphics, RenderTexture, Sprite } from "pixi.js"
 
 export function circleGraphicsAsSprite(graphic: Graphics): Sprite {
     const w = graphic.width;

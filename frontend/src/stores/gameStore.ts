@@ -8,6 +8,8 @@ import { GameInstance } from "@/ts/_interface/game/gameInstance";
 import { startGameLogicLoop } from "@/ts/game/gameLoop";
 import { gameContainer } from "@/ts/pixi/container";
 import { addMonkeyActions } from "@/ts/animationPixi/monkeyActions";
+import { centerAngle, mirrorAngle } from "@/ts/game/actions/aiming";
+import { shootBubble } from "@/ts/game/actions/shoot";
 
 export const useGameStore = defineStore('game', () => {
     const game = getEmptyGame();
@@ -59,17 +61,20 @@ export const useGameStore = defineStore('game', () => {
     function pressedCenter(userName: string): void {
         const instance = game.instancesMap.get(userName);
         if (instance) {
-            instance.angle = 90;
+            centerAngle(instance);
         }
     }
     function pressedMirror(userName: string): void {
         const instance = game.instancesMap.get(userName);
         if (instance) {
-            instance.angle = Math.abs(instance.angle - 180);
+            mirrorAngle(instance);
         }
     }
     function pressedShoot(userName: string): void {
-        // console.log("you are not empty eslint :^)")
+        const instance = game.instancesMap.get(userName);
+        if (instance) {
+            shootBubble(instance);
+        }
     }
     function pressedHold(userName: string): void {
         // console.log("you are not empty eslint :^)")

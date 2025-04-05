@@ -6,7 +6,7 @@ export interface GameSettings {
     maxAngle: number,
     queuePreviewSize: number,
     widthPrecisionUnits: number,
-    collisionDetectionFactor: number,
+    collisionRangeFactor: number,
 
     sprintVictoryCondition: number,
 

@@ -35,3 +35,23 @@ export function mirrorAngle(): void {
     const localPlayer = useUserStore().getUserName();
     useGameStore().pressedMirror(localPlayer);
 }
+
+export function shoot(): void {
+    const localPlayer = useUserStore().getUserName();
+    useGameStore().pressedShoot(localPlayer);
+}
+
+export function hold(): void {
+    const localPlayer = useUserStore().getUserName();
+    useGameStore().pressedHold(localPlayer);
+}
+
+export function reset(): void {
+    // const localPlayer = useUserStore().getUserName();
+    // useGameStore().(localPlayer);
+}
+
+export function quit(): void {
+    // const localPlayer = useUserStore().getUserName();
+    // useGameStore().pressedShoot(localPlayer);
+}

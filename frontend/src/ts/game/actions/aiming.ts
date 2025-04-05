@@ -1,6 +1,6 @@
 import { useGameStore } from "@/stores/gameStore";
-import { Coordinates } from "../_interface/game/coordinates";
-
+import { Coordinates } from "../../_interface/game/coordinates";
+import { GameInstance } from "../../_interface/game/gameInstance";
 
 export function angleUpdate(deltaTimeMS: number): void {
     useGameStore().getAllInstances().forEach(gameInstance => {
@@ -12,6 +12,14 @@ export function angleUpdate(deltaTimeMS: number): void {
             gameInstance.angle = cleanUpAngle(previousAngle + angleChange);
         }
     });
+}
+
+export function centerAngle(instance: GameInstance): void {
+    instance.angle = 90;
+}
+
+export function mirrorAngle(instance: GameInstance): void {
+    instance.angle = Math.abs(instance.angle - 180);
 }
 
 export function getVector(angle: number): Coordinates {

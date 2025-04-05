@@ -1,14 +1,14 @@
-import { Sprite } from "pixi.js";
 import { Field } from "../_interface/game/field";
 import { GameInstance } from "../_interface/game/gameInstance";
 import { Row } from "../_interface/game/row";
 import { PixiAnimation } from "../_interface/pixiAnimation";
-import { bubbleTexture } from "../pixi/allTextures";
 
-export function addGridBubbleAnimation(instance: GameInstance): void {
+export function bubbleShotAnimation(instance: GameInstance): void {
+    const now = performance.now()
+    const travelTime = instance.handlingSettings.bubbleTravelDurationMS;
     const animation: PixiAnimation = {
-        startMS: 0,
-        endMS: Infinity,
+        startMS: now,
+        endMS: now + travelTime,
         onStart: function (): void {
             console.log("start");
         },
@@ -18,11 +18,8 @@ export function addGridBubbleAnimation(instance: GameInstance): void {
                 const fields: Field[] = row.fields;
                 fields.forEach(field => {
                     if (field.bubble) {
-                        const bubble = new Sprite(bubbleTexture.texture)
-                        bubble.tint = field.bubble.tint;
-                        bubble.width = instance.
-                    }
 
+                    }
                 });
             });
         },
