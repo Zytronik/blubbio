@@ -3,6 +3,7 @@ import { INPUT_CONTEXT } from "../_enum/inputContext";
 import { Input } from "../_interface/input";
 import { centerCursor, leftDown, leftUp, mirrorAngle, rightDown, rightUp, toggleAPS } from "../game/actions/aim";
 import { updateContainerLayout } from "../pixi/container";
+import { playCountdown } from "../animationPixi/countdownAnimation";
 
 export const angleLeftInput: Input = {
     name: "Angle Left",
@@ -145,7 +146,7 @@ export const pixiDebug1: Input = {
     pressed: false,
     fire: () => {
         console.log("pressed debug 1");
-        useGameStore().createMonkeyTesting(10);
+        useGameStore().createMonkeyTesting(1);
     },
     inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET]
 };
@@ -176,6 +177,19 @@ export const pixiDebug3: Input = {
     },
     inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET]
 };
+export const pixiDebug4: Input = {
+    name: "ShowCountdown",
+    description: "asdf",
+    customKeyMap: ["Numpad4", "", ""],
+    defaultKeyCode: "Numpad4",
+    isSingleTriggerAction: true,
+    pressed: false,
+    fire: () => {
+        console.log("pressed debug 4");
+        playCountdown();
+    },
+    inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET]
+};
 
 export const allInputs: Input[] = [
     angleLeftInput,
@@ -191,6 +205,7 @@ export const allInputs: Input[] = [
     pixiDebug1,
     pixiDebug2,
     pixiDebug3,
+    pixiDebug4,
 ]
 
 const allKeyCodes = [

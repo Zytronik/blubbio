@@ -11,6 +11,8 @@ export const mainContainer = new Container();
 export const gameContainer = new Container({ visible: false });
 export const countDownContainer = new Container({ visible: false });
 
+window.addEventListener("resize", updateContainerLayout);
+
 export function setupPixiContainers(): void {
     const stage = usePixiStore().getPixiApp().stage;
     stage.addChild(mainContainer);
@@ -21,40 +23,67 @@ export function setupPixiContainers(): void {
 export function createGameInstanceContainer(sprites: GameSprites): GameContainers {
     const height = usePixiStore().getCanvasHeight();
     const width = usePixiStore().getCanvasWidth();
+    // console.log("height = " + height + "||| width = " + width);
     const instanceRootContainer = new Container({ visible: true });
     const gridContainer = new Container({ visible: true });
     const cursorContainer = new Container({ visible: true });
-
+    
     gameContainer.addChild(instanceRootContainer);
+    
+    
+    const ratioHeight = 1;
+    const ratioWidth = 0.6;
 
-    const maxWidth = 0.35;
-    const maxHeight = 0.95;
+    // Scales relative to outer box
+    const xInnerInset = 0.6;
+    const yInnerInset = 0.9;
+    const cursorWidth = 0.1;
+    
+    // Normalized size?
+
+    // ===================================================================================================
+    // outer box
+    const maxHeight = 1000;
+    const maxWidth = maxHeight / ratioHeight * ratioWidth;
     const mainSquare = new Graphics();
-    mainSquare.rect(0, 0, width * maxWidth, height * maxHeight);
-    mainSquare.fill(getRandomHexColor());
+    mainSquare.rect(0, 0, maxWidth, maxHeight);
+    mainSquare.fill("555555");
     instanceRootContainer.addChild(mainSquare);
+    // ===================================================================================================
 
-    const gridWidth = 0.6;
-    const gridHeight = 0.9;
-    const gridXPos = 0.5
-    const gridYPos = 0.45
+    
+
+
+
+    // ===================================================================================================
+    // inner box
     const gridSquare = new Graphics();
-    gridSquare.rect(0, 0, mainSquare.width * gridWidth, mainSquare.height * gridHeight);
-    gridSquare.fill(getRandomHexColor());
-    gridContainer.x = mainSquare.width * gridXPos;
-    gridContainer.y = mainSquare.height * gridYPos;
-    gridContainer.pivot.x = gridSquare.width / 2;
-    gridContainer.pivot.y = gridSquare.height / 2;
+    gridSquare.rect(0, 0, mainSquare.width * xInnerInset, mainSquare.height * yInnerInset);
+    gridSquare.fill("999999");
+    gridContainer.x = (mainSquare.width - gridSquare.width) / 2;
+    gridContainer.y = 0;
     gridContainer.addChild(gridSquare);
+    // ===================================================================================================
+
+
+
 
     // const bubbleGraphic = new Graphics();
+    
     // bubbleGraphic.circle(0,0,500);
     // bubbleGraphic.fill(0xffffff);
     // bubbleGraphic.pivot.x = 0;
     // const blubbsprite = circleGraphicsAsSprite(bubbleGraphic);
     // const blubbsprite2 = circleGraphicsAsSprite(bubbleGraphic);
+    // const alphasprite = circleGraphicsAsSprite(bubbleGraphic);
     // blubbsprite.width = 100;
     // blubbsprite.height = 100;
+
+    // alphasprite.width = 100;
+    // alphasprite.height = 100;
+    // alphasprite.tint = "#000099";
+    // alphasprite.alpha = 0.5
+
     // blubbsprite2.width = 100;
     // blubbsprite2.height = 100;
     // blubbsprite2.x = 200;
@@ -67,28 +96,35 @@ export function createGameInstanceContainer(sprites: GameSprites): GameContainer
     // sprites.bgRed.height = gridContainer.height;
     // sprites.bgRed.mask = blubbsprite2;
 
+    // sprites.bgRed.tint = "#00FF00";
+
     // gridContainer.addChild(sprites.bgPurple);
     // gridContainer.addChild(sprites.bgRed);
     // gridContainer.addChild(blubbsprite);
     // gridContainer.addChild(blubbsprite2);
+    // gridContainer.addChild(alphasprite);
     // gridContainer.addChild(sprites.bubble);
 
-    const cursorWidth = 0.1;
-    const cursorXPos = 0.5
-    const cursorYPos = 1
+
+
+    // ===================================================================================================
+    // Arrow
     const cursorSquare = new Graphics();
     cursorSquare.rect(0, 0, mainSquare.width * cursorWidth, mainSquare.width * cursorWidth);
-    cursorSquare.fill(getRandomHexColor());
-    cursorSquare.pivot.x = cursorSquare.width / 2;
-    cursorSquare.pivot.y = cursorSquare.height / 2;
-    cursorContainer.x = gridContainer.width * cursorXPos;
-    cursorContainer.y = gridContainer.height * cursorYPos;
+    cursorSquare.fill("000000");
+    cursorContainer.x = gridContainer.width * 0.5 - cursorSquare.width / 2;
+    cursorContainer.y = gridContainer.height - cursorSquare.height / 2;
     cursorContainer.addChild(cursorSquare);
+    // ===================================================================================================
+
+
 
     const arrow = sprites.arrow;
     arrow.width = cursorSquare.width;
     arrow.height = cursorSquare.height;
     arrow.anchor.set(0.5);
+    arrow.x = cursorSquare.width / 2;
+    arrow.y = cursorSquare.height / 2;
     cursorContainer.addChild(arrow);
 
     instanceRootContainer.addChild(gridContainer);
@@ -121,12 +157,15 @@ export function updateContainerLayout(): void {
 function gameLayoutSolo(containers: Container[], canvasWidth: number, canvasHeight: number): void {
     const player1Root = containers[0];
     player1Root.visible = true;
+    const edgeScaler = 0.95;
+    if (canvasWidth / canvasHeight >= player1Root.width / player1Root.height) {
+        player1Root.scale = canvasHeight / player1Root.height * player1Root.scale.x * edgeScaler;
+    } else {
+        player1Root.scale = canvasWidth / player1Root.width * player1Root.scale.x * edgeScaler;
+    }
     //topleft corner of container to middle
-    player1Root.x = canvasWidth * 0.5;
-    player1Root.y = canvasHeight * 0.5;
-    //shift content 50% up and left to center children
-    player1Root.pivot.x = player1Root.width / 2;
-    player1Root.pivot.y = player1Root.height / 2;
+    player1Root.x = (canvasWidth - player1Root.width) / 2;
+    player1Root.y = (canvasHeight - player1Root.height) / 2;
 }
 
 function gameLayout1vs1(containers: Container[], canvasWidth: number, canvasHeight: number): void {
@@ -144,7 +183,7 @@ function gameLayout1vs1(containers: Container[], canvasWidth: number, canvasHeig
     player2.y = canvasHeight * 0.5;
     player2.pivot.x = player1.width / 2;
     player2.pivot.y = player1.height / 2;
-    player2.scale = 1
+    player2.scale = 1;
 }
 
 function gameLayout1vsX(containers: Container[], canvasWidth: number, canvasHeight: number): void {

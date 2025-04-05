@@ -18,8 +18,10 @@ import { arrowTexture, bgPurpleTexture, bgRedTexture, bubbleTexture } from "../p
 import { addAngleUpdateAnimation } from "../animationPixi/angleAnimation";
 import { createGameInstanceContainer } from "../pixi/container";
 import { allBubbles } from "./allBubbles";
+import { updateContainerSizeLoop as addUpdateContainerSizeAnimation } from "../animationPixi/containerLayoutUpdate";
 
 export function getEmptyGame(): Game {
+    // addUpdateContainerSizeAnimation();
     return {
         gameMode: GAME_MODE.NONE,
         inputContext: INPUT_CONTEXT.DISABLED,
