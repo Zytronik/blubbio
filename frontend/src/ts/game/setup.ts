@@ -17,7 +17,8 @@ import { GameSprites } from "../_interface/game/gameSprites";
 import { arrowTexture, bgPurpleTexture, bgRedTexture, bubbleTexture } from "../pixi/allTextures";
 import { addAngleUpdateAnimation } from "../animationPixi/angleAnimation";
 import { createGameInstanceContainer } from "../pixi/container";
-import { allBubbles } from "./allBubbles";
+import { addBoardBubblesAnimation } from "../animationPixi/boardBubblesAnimation";
+import { allBubbles } from "./bubbleGenerator";
 
 export function getEmptyGame(): Game {
     // addUpdateContainerSizeAnimation();
