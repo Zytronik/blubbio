@@ -17,23 +17,24 @@ import { GameSprites } from "../_interface/game/gameSprites";
 import { arrowTexture, bgPurpleTexture, bgRedTexture, bubbleTexture } from "../pixi/allTextures";
 import { addAngleUpdateAnimation } from "../animationPixi/angleAnimation";
 import { createGameInstanceContainer } from "../pixi/container";
-import { allBubbles } from "./bubbleGenerator";
+import { allBubbles } from "./allBubbles";
 
 export function getEmptyGame(): Game {
+    // addUpdateContainerSizeAnimation();
     return {
         gameMode: GAME_MODE.NONE,
         inputContext: INPUT_CONTEXT.DISABLED,
         spectating: false,
         rounds: [],
-        instancesMap: new Map<string, GameInstance>()
-    }
+        instancesMap: new Map<string, GameInstance>(),
+    };
 }
 
 export function getEmptyRoundData(): RoundData {
     return {
         initialSeed: getNextSeed(Date.now()),
         gameStartTime: 0,
-    }
+    };
 }
 
 export function newSprintInstance(): GameInstance {
@@ -55,8 +56,9 @@ export function newSprintInstance(): GameInstance {
         gameSprites: sprites,
         gameContainers: createGameInstanceContainer(sprites),
         instanceAnimations: [],
-    }
+    };
     addAngleUpdateAnimation(instance);
+    addBoardBubblesAnimation(instance);
     return instance;
 }
 
@@ -64,8 +66,8 @@ function getDefaultBubble(): Bubble {
     return {
         type: 0,
         wallbounce: false,
-        tint: ""
-    }
+        tint: '',
+    };
 }
 
 function getEmptyGrid(settings: GameSettings): Grid {
@@ -73,7 +75,7 @@ function getEmptyGrid(settings: GameSettings): Grid {
     const bubbleRadius = precisionWidth / (2 * settings.gridWidth);
     const bubbleDiameter = bubbleRadius * 2;
     const precisionRowHeight = Math.floor(bubbleRadius * Math.sqrt(3));
-    const precisionHeight = precisionRowHeight * (settings.gridHeight + settings.gridExtraHeight)
+    const precisionHeight = precisionRowHeight * (settings.gridHeight + settings.gridExtraHeight);
     const playGrid: Grid = {
         gridWidth: settings.gridWidth,
         gridHeight: settings.gridHeight,
@@ -85,26 +87,30 @@ function getEmptyGrid(settings: GameSettings): Grid {
         precisionRowHeight,
         precisionHeight,
         rows: [],
-        launcherPrecisionPosition: { x: precisionWidth / 2, y: precisionHeight - bubbleRadius },
-    }
+        launcherPrecisionPosition: {
+            x: precisionWidth / 2,
+            y: precisionHeight - bubbleRadius,
+        },
+    };
     for (let h = 0; h < playGrid.gridHeight + playGrid.extraGridHeight; h++) {
-        const isSmallRow = (h % 2 === 1);
+        const isSmallRow = h % 2 === 1;
         const row: Row = {
             fields: [],
             size: playGrid.gridWidth - (isSmallRow ? 1 : 0),
             isSmallerRow: isSmallRow,
             isInDeathZone: h >= playGrid.gridHeight,
-        }
+        };
         for (let w = 0; w < row.size; w++) {
             const field: Field = {
-                coords: { x: w, y: h, },
+                coords: { x: w, y: h },
                 precisionCoords: {
-                    x: w * bubbleDiameter + (isSmallRow ? bubbleDiameter : bubbleRadius),
-                    y: precisionRowHeight * h + bubbleRadius,
+                    x: w * bubbleDiameter + (isSmallRow ? bubbleRadius : 0),
+                    y: precisionRowHeight * h,
                 },
-                bubble: (h < 8) ? allBubbles[w % allBubbles.length] : undefined,
+                bubble: h < 8 ? allBubbles[w % allBubbles.length] : undefined,
+                sprite: new Sprite(bubbleTexture.texture),
             };
-            row.fields.push(field)
+            row.fields.push(field);
         }
         playGrid.rows.push(row);
     }
@@ -119,8 +125,8 @@ export function getEmptyStats(): GameStats {
         clears: [[]],
         perfectClears: 0,
         currentCombo: 0,
-        highestCombo: 0
-    }
+        highestCombo: 0,
+    };
 }
 
 function getAllGameSprites(): GameSprites {
@@ -129,5 +135,5 @@ function getAllGameSprites(): GameSprites {
         bubble: new Sprite(bubbleTexture.texture),
         bgRed: new Sprite(bgRedTexture.texture),
         bgPurple: new Sprite(bgPurpleTexture.texture),
-    }
+    };
 }
