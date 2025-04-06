@@ -1,24 +1,24 @@
-import { Sprite } from "pixi.js";
-import { GAME_MODE } from "../../_enum/gameMode";
-import { Bubble } from "../../_interface/game/bubble";
-import { Field } from "../../_interface/game/field";
-import { Game } from "../../_interface/game/game";
-import { GameInstance } from "../../_interface/game/gameInstance";
-import { GameSettings } from "../../_interface/game/gameSettings";
-import { GameStats } from "../../_interface/game/gameStats";
-import { Grid } from "../../_interface/game/grid";
-import { RoundData } from "../../_interface/game/roundData";
-import { Row } from "../../_interface/game/row";
-import { getNextSeed } from "../rng";
-import { SPRINT_SETTINGS } from "../settings/sprintSettings";
-import { INPUT_CONTEXT } from "../../_enum/inputContext";
-import { HANDLING_SETTINGS } from "../settings/handlingSettings";
-import { GameSprites } from "../../_interface/game/gameSprites";
-import { arrowTexture, bgPurpleTexture, bgRedTexture, bubbleTexture } from "../../pixi/allTextures";
-import { addAngleUpdateAnimation } from "../../animationPixi/angleAnimation";
-import { createGameInstanceContainer } from "../../pixi/container";
-import { addBoardBubblesAnimation } from "../../animationPixi/boardBubblesAnimation";
-import { allBubbles } from "../bubble/bubbleGenerator";
+import { Sprite } from 'pixi.js';
+import { GAME_MODE } from '../../_enum/gameMode';
+import { Bubble } from '../../_interface/game/bubble';
+import { Field } from '../../_interface/game/field';
+import { Game } from '../../_interface/game/game';
+import { GameInstance } from '../../_interface/game/gameInstance';
+import { GameSettings } from '../../_interface/game/gameSettings';
+import { GameStats } from '../../_interface/game/gameStats';
+import { Grid } from '../../_interface/game/grid';
+import { RoundData } from '../../_interface/game/roundData';
+import { Row } from '../../_interface/game/row';
+import { getNextSeed } from '../rng';
+import { SPRINT_SETTINGS } from '../settings/sprintSettings';
+import { INPUT_CONTEXT } from '../../_enum/inputContext';
+import { HANDLING_SETTINGS } from '../settings/handlingSettings';
+import { GameSprites } from '../../_interface/game/gameSprites';
+import { arrowTexture, bgPurpleTexture, bgRedTexture, bubbleOverlayTexture, bubbleTexture } from '../../pixi/allTextures';
+import { addAngleUpdateAnimation } from '../../animationPixi/angleAnimation';
+import { createGameInstanceContainer } from '../../pixi/container';
+import { addBoardBubblesAnimation } from '../../animationPixi/boardBubblesAnimation';
+import { allBubbles } from '../bubble/bubbleGenerator';
 
 export function getEmptyGame(): Game {
     // addUpdateContainerSizeAnimation();
@@ -105,7 +105,8 @@ function getEmptyGrid(settings: GameSettings): Grid {
                     y: precisionRowHeight * h + bubbleFullRadius,
                 },
                 bubble: h < 0 ? allBubbles[w % allBubbles.length] : undefined,
-                sprite: new Sprite(bubbleTexture.texture),
+                bubbleSprite: new Sprite(bubbleTexture.texture),
+                bubbleSpriteOverlay: new Sprite(bubbleOverlayTexture.texture),
             };
             row.fields.push(field);
         }

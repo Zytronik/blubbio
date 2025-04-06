@@ -18,13 +18,18 @@ export function addBoardBubblesAnimation(instance: GameInstance): void {
                 row.fields.forEach(field => {
                     const x = (field.precisionCoords.x / precisionWidth) * gridBackground.width;
                     const y = (field.precisionCoords.y / precisionHeight) * gridBackground.height;
-                    gridContainer.addChild(field.sprite);
-                    field.sprite.x = x;
-                    field.sprite.y = y;
-                    field.sprite.width = spriteWidth;
-                    field.sprite.height = spriteHeight;
-                    field.sprite.anchor.x = 0.5
-                    field.sprite.anchor.y = 0.5
+                    gridContainer.addChild(field.bubbleSprite);
+                    gridContainer.addChild(field.bubbleSpriteOverlay);
+
+                    field.bubbleSprite.x = x;
+                    field.bubbleSprite.y = y;
+                    field.bubbleSprite.width = spriteWidth;
+                    field.bubbleSprite.height = spriteHeight;
+
+                    field.bubbleSpriteOverlay.x = x;
+                    field.bubbleSpriteOverlay.y = y;
+                    field.bubbleSpriteOverlay.width = spriteWidth;
+                    field.bubbleSpriteOverlay.height = spriteHeight;
                 });
             });
         },
@@ -32,10 +37,12 @@ export function addBoardBubblesAnimation(instance: GameInstance): void {
             instance.playGrid.rows.forEach(row => {
                 row.fields.forEach(field => {
                     if (field.bubble) {
-                        field.sprite.visible = true;
-                        field.sprite.tint = field.bubble.tint;
+                        field.bubbleSprite.visible = true;
+                        field.bubbleSpriteOverlay.visible = true;
+                        field.bubbleSprite.tint = field.bubble.tint;
                     } else {
-                        field.sprite.visible = false;
+                        field.bubbleSprite.visible = false;
+                        field.bubbleSpriteOverlay.visible = false;
                     }
                 });
             });

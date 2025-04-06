@@ -11,7 +11,7 @@ export const mainContainer = new Container();
 export const gameContainer = new Container({ visible: false });
 export const countDownContainer = new Container({ visible: false });
 
-window.addEventListener("resize", updateContainerLayout);
+window.addEventListener('resize', updateContainerLayout);
 
 export function setupPixiContainers(): void {
     const stage = usePixiStore().getPixiApp().stage;
@@ -27,10 +27,9 @@ export function createGameInstanceContainer(sprites: GameSprites): GameContainer
     const instanceRootContainer = new Container({ visible: true });
     const gridContainer = new Container({ visible: true });
     const cursorContainer = new Container({ visible: true });
-    
+
     gameContainer.addChild(instanceRootContainer);
-    
-    
+
     const ratioHeight = 1;
     const ratioWidth = 0.6;
 
@@ -38,38 +37,31 @@ export function createGameInstanceContainer(sprites: GameSprites): GameContainer
     const xInnerInset = 0.6;
     const yInnerInset = 0.9;
     const cursorWidth = 0.1;
-    
+
     // Normalized size?
 
     // ===================================================================================================
     // outer box
     const maxHeight = 1000;
-    const maxWidth = maxHeight / ratioHeight * ratioWidth;
+    const maxWidth = (maxHeight / ratioHeight) * ratioWidth;
     const mainSquare = new Graphics();
     mainSquare.rect(0, 0, maxWidth, maxHeight);
-    mainSquare.fill("555555");
+    mainSquare.fill('555555');
     instanceRootContainer.addChild(mainSquare);
     // ===================================================================================================
-
-    
-
-
 
     // ===================================================================================================
     // inner box
     const gridSquare = new Graphics();
     gridSquare.rect(0, 0, mainSquare.width * xInnerInset, mainSquare.height * yInnerInset);
-    gridSquare.fill("999999");
+    gridSquare.fill('999999');
     gridContainer.x = (mainSquare.width - gridSquare.width) / 2;
     gridContainer.y = 0;
     gridContainer.addChild(gridSquare);
     // ===================================================================================================
 
-
-
-
     // const bubbleGraphic = new Graphics();
-    
+
     // bubbleGraphic.circle(0,0,500);
     // bubbleGraphic.fill(0xffffff);
     // bubbleGraphic.pivot.x = 0;
@@ -105,17 +97,16 @@ export function createGameInstanceContainer(sprites: GameSprites): GameContainer
     // gridContainer.addChild(alphasprite);
     // gridContainer.addChild(sprites.bubble);
 
-    const cursorXPos = 0.5
-    const cursorYPos = 1
+    //const cursorWidth = 0.1;
+    const cursorXPos = 0.5;
+    const cursorYPos = 1;
     const cursorSquare = new Graphics();
     cursorSquare.rect(0, 0, mainSquare.width * cursorWidth, mainSquare.width * cursorWidth);
-    cursorSquare.fill("000000");
+    cursorSquare.fill('000000');
     cursorContainer.x = gridContainer.width * 0.5 - cursorSquare.width / 2;
     cursorContainer.y = gridContainer.height - cursorSquare.height / 2;
     cursorContainer.addChild(cursorSquare);
     // ===================================================================================================
-
-
 
     const arrow = sprites.arrow;
     arrow.width = cursorSquare.width;
@@ -158,9 +149,9 @@ function gameLayoutSolo(containers: Container[], canvasWidth: number, canvasHeig
     player1Root.visible = true;
     const edgeScaler = 0.95;
     if (canvasWidth / canvasHeight >= player1Root.width / player1Root.height) {
-        player1Root.scale = canvasHeight / player1Root.height * player1Root.scale.x * edgeScaler;
+        player1Root.scale = (canvasHeight / player1Root.height) * player1Root.scale.x * edgeScaler;
     } else {
-        player1Root.scale = canvasWidth / player1Root.width * player1Root.scale.x * edgeScaler;
+        player1Root.scale = (canvasWidth / player1Root.width) * player1Root.scale.x * edgeScaler;
     }
     //topleft corner of container to middle
     player1Root.x = (canvasWidth - player1Root.width) / 2;

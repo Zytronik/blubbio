@@ -6,5 +6,6 @@ export interface Field {
     coords: Coordinates;
     precisionCoords: Coordinates;
     bubble?: Bubble;
-    sprite: Sprite;
+    bubbleSprite: Sprite;
+    bubbleSpriteOverlay: Sprite;
 }
