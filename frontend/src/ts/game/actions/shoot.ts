@@ -3,9 +3,10 @@ import { GameInstance } from "@/ts/_interface/game/gameInstance";
 import { getVector } from "./aiming";
 import { Grid } from "@/ts/_interface/game/grid";
 import { Field } from "@/ts/_interface/game/field";
-import { ShootResult } from "@/ts/_interface/game/shootResult";
+import { ShotResult } from "@/ts/_interface/game/shootResult";
+import { getAdjacentFieldVectors, getDistance } from "../bubble/grid";
 
-export function shootBubble(instance: GameInstance): ShootResult {
+export function shootBubble(instance: GameInstance): ShotResult {
     const bubbleType = instance.currentBubble.type;
     const angle = instance.angle;
     const grid = instance.playGrid;
@@ -29,6 +30,7 @@ export function shootBubble(instance: GameInstance): ShootResult {
     const hasPerfectCleared = checkHasPerfectCleared();
 
     return {
+        bubbleShot: instance.currentBubble,
         travelLine: travelLineCoords,
         gridDestination,
         clearedBubbles: clearedBubbleFields,
@@ -55,12 +57,8 @@ export function shootBubble(instance: GameInstance): ShootResult {
         const sideWallImpactTime = getTravelTimeToHitSideWall();
         const ceilingImpactTime = getTravelTimeToHitCeiling();
         const bubbleImpactTime = getTravelTimeToHitGridBubble();
-        // console.log(leftWallX, rightWallX, ceilingY, startPoint, currentPos, currentFlightDirection)
-        // console.log("sideWallImpactTime", sideWallImpactTime, "ceilingImpactTime", ceilingImpactTime, "bubbleImpactTime", bubbleImpactTime)
-        // console.log("bubblesInGrid", bubblesInGrid, "initialFlightDirection", initialFlightDirection, "travelLineCoords", travelLineCoords)
 
         if (bubbleImpactTime <= sideWallImpactTime && bubbleImpactTime < ceilingImpactTime) {
-            // console.log("bubbleimpact", angle)
             travelLineCoords.push({
                 x: currentPos.x + currentFlightDirection.x * bubbleImpactTime,
                 y: currentPos.y + currentFlightDirection.y * bubbleImpactTime,
@@ -69,7 +67,6 @@ export function shootBubble(instance: GameInstance): ShootResult {
         }
 
         if (ceilingImpactTime <= sideWallImpactTime && ceilingImpactTime < bubbleImpactTime) {
-            // console.log("ceilingimpact", angle)
             travelLineCoords.push({
                 x: currentPos.x + currentFlightDirection.x * ceilingImpactTime,
                 y: currentPos.y + currentFlightDirection.y * ceilingImpactTime,
@@ -78,7 +75,6 @@ export function shootBubble(instance: GameInstance): ShootResult {
         }
 
         if (sideWallImpactTime < bubbleImpactTime && sideWallImpactTime < ceilingImpactTime) {
-            // console.log("wallimpact", angle)
             travelLineCoords.push({
                 x: currentPos.x + currentFlightDirection.x * sideWallImpactTime,
                 y: currentPos.y + currentFlightDirection.y * sideWallImpactTime,
@@ -104,6 +100,7 @@ export function shootBubble(instance: GameInstance): ShootResult {
 
         function getTravelTimeToHitGridBubble(): number {
             let closestT = Infinity;
+            let collidedWith: Coordinates = { x: -1, y: -1 }
 
             const speedX = currentFlightDirection.x;
             const speedY = currentFlightDirection.y;
@@ -125,6 +122,7 @@ export function shootBubble(instance: GameInstance): ShootResult {
 
                 const t = t1 > 0 ? t1 : t2 > 0 ? t2 : Infinity;
                 if (t < closestT) {
+                    collidedWith = { x: gridBubble.x, y: gridBubble.y }
                     closestT = t;
                 }
             }
@@ -136,15 +134,16 @@ export function shootBubble(instance: GameInstance): ShootResult {
 
     function findNearestEmptyField(): Field {
         const precisionImpactLocation = travelLineCoords[travelLineCoords.length - 1]
-        const y = Math.round(precisionImpactLocation.y / grid.precisionRowHeight);
+        const y = Math.round((precisionImpactLocation.y - bubbleFullRadius) / grid.precisionRowHeight);
         const isSmallerRow = grid.rows[y].isSmallerRow;
         const xOffSet = (isSmallerRow ? bubbleFullDiameter : bubbleFullRadius)
         const x = clamp(Math.round((precisionImpactLocation.x - xOffSet) / bubbleFullDiameter));
         const gridImpactLocation: Coordinates = { x, y };
         let nearestEmptyField: Field = grid.rows[y].fields[x];
         let closestDistance = Infinity;
-        // console.log(grid.precisionHeight, grid.precisionWidth, precisionImpactLocation, x, y, isSmallerRow);
-        getAdjacentFieldVectors(grid, gridImpactLocation).forEach(vector => {
+        const fieldsToCheck = getAdjacentFieldVectors(grid, gridImpactLocation)
+        fieldsToCheck.push({x: 0, y: 0});
+        fieldsToCheck.forEach(vector => {
             const vx = x + vector.x;
             const vy = y + vector.y;
             if (grid.rows[vy] && grid.rows[vy].fields[vx] && !grid.rows[vy].fields[vx].bubble) {
@@ -158,11 +157,6 @@ export function shootBubble(instance: GameInstance): ShootResult {
                 }
             }
         });
-        // if (nearestEmptyField.coords.x != x || nearestEmptyField.coords.y != y) {
-        //     console.log("GOTCHA!")
-        //     console.log(x, y, nearestEmptyField, closestDistance)
-        // }
-        // console.log(nearestEmptyField)
         return nearestEmptyField;
 
         function clamp(value: number): number {
@@ -205,19 +199,18 @@ export function shootBubble(instance: GameInstance): ShootResult {
         }
 
         function findAdjacentBubbles(x: number, y: number): void {
-            console.log(x, y, visitedPositions, sameColoredPositions)
             const isInBounds = grid.rows[y] != undefined && grid.rows[y].fields[x] != undefined;
             const alreadyVisited = visitedPositions.has(`${x}${komma}${y}`);
             if (alreadyVisited || !isInBounds) {
                 return;
             }
-            
+
             visitedPositions.add(`${x}${komma}${y}`);
             const field = grid.rows[y].fields[x];
             if (!field.bubble || field.bubble.type !== bubbleType) {
                 return;
             }
-            
+
             sameColoredPositions.add(`${x}${komma}${y}`);
             getAdjacentFieldVectors(grid, { x, y }).forEach(fieldVector => {
                 const nextX = x + fieldVector.x;
@@ -272,25 +265,4 @@ export function shootBubble(instance: GameInstance): ShootResult {
     function checkHasPerfectCleared(): boolean {
         return false;
     }
-}
-
-
-//TODO where to put this method?
-function getAdjacentFieldVectors(grid: Grid, gridPosition: Coordinates): Coordinates[] {
-    const hexagonalShift = grid.rows[gridPosition.y].isSmallerRow ? 1 : -1;
-    const adjacentFieldVectors: Coordinates[] = [
-        { x: -1, y: 0, },
-        { x: 1, y: 0, },
-        { x: hexagonalShift, y: -1, },
-        { x: hexagonalShift, y: 1, },
-        { x: 0, y: -1, },
-        { x: 0, y: +1, },
-    ]
-    return adjacentFieldVectors;
-}
-//TODO this one too, where should it go?
-function getDistance(p1: Coordinates, p2: Coordinates): number {
-    const a = (p1.x - p2.x) ** 2;
-    const b = (p1.y - p2.y) ** 2;
-    return Math.sqrt(a + b);
 }

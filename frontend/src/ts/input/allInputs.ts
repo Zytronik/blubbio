@@ -147,7 +147,7 @@ export const pixiDebug1: Input = {
     pressed: false,
     fire: () => {
         console.log("pressed debug 1");
-        useGameStore().createMonkeyTesting(1);
+        useGameStore().createMonkeyTesting(10);
     },
     inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET]
 };

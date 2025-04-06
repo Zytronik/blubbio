@@ -23,6 +23,8 @@ export function addBoardBubblesAnimation(instance: GameInstance): void {
                     field.sprite.y = y;
                     field.sprite.width = spriteWidth;
                     field.sprite.height = spriteHeight;
+                    field.sprite.anchor.x = 0.5
+                    field.sprite.anchor.y = 0.5
                 });
             });
         },

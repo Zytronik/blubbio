@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { getEmptyGame, newSprintInstance, } from "@/ts/game/setup";
+import { getEmptyGame, newSprintInstance, } from "@/ts/game/setup/setup";
 import { GAME_MODE } from "@/ts/_enum/gameMode";
 import { useUserStore } from "./userStore";
 import { useInputStore } from "./inputStore";
@@ -10,6 +10,7 @@ import { gameContainer } from "@/ts/pixi/container";
 import { addMonkeyActions } from "@/ts/animationPixi/monkeyActions";
 import { centerAngle, changeAPS, mirrorAngle } from "@/ts/game/actions/aiming";
 import { shootBubble } from "@/ts/game/actions/shoot";
+import { applyShotResultToGrid } from "@/ts/game/bubble/grid";
 
 export const useGameStore = defineStore('game', () => {
     const game = getEmptyGame();
@@ -70,9 +71,8 @@ export const useGameStore = defineStore('game', () => {
     function pressedShoot(userName: string): void {
         const instance = game.instancesMap.get(userName);
         if (instance) {
-            const shootResult = shootBubble(instance);
-            shootResult.gridDestination.bubble = instance.currentBubble;
-            console.log(shootResult);
+            const shotResult = shootBubble(instance);
+            applyShotResultToGrid(shotResult);
         }
     }
     function pressedHold(userName: string): void {

@@ -105,7 +105,6 @@ export function createGameInstanceContainer(sprites: GameSprites): GameContainer
     // gridContainer.addChild(alphasprite);
     // gridContainer.addChild(sprites.bubble);
 
-    const cursorWidth = 0.1;
     const cursorXPos = 0.5
     const cursorYPos = 1
     const cursorSquare = new Graphics();

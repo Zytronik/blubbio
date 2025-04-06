@@ -1,7 +1,9 @@
+import { Bubble } from "./bubble";
 import { Coordinates } from "./coordinates";
 import { Field } from "./field";
 
-export interface ShootResult {
+export interface ShotResult {
+    bubbleShot: Bubble,
     travelLine: Coordinates[],
     gridDestination: Field,
     clearedBubbles: Field[],
