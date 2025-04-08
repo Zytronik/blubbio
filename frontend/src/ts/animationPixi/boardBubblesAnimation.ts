@@ -25,11 +25,15 @@ export function addBoardBubblesAnimation(instance: GameInstance): void {
                     field.bubbleSprite.y = y;
                     field.bubbleSprite.width = spriteWidth;
                     field.bubbleSprite.height = spriteHeight;
+                    field.bubbleSprite.anchor = {x: 0.5, y: 0.5};
 
                     field.bubbleSpriteOverlay.x = x;
                     field.bubbleSpriteOverlay.y = y;
                     field.bubbleSpriteOverlay.width = spriteWidth;
                     field.bubbleSpriteOverlay.height = spriteHeight;
+                    field.bubbleSpriteOverlay.anchor = {x: 0.5, y: 0.5};
+
+
                 });
             });
         },

@@ -1,6 +1,6 @@
 import { Coordinates } from "@/ts/_interface/game/coordinates";
 import { Grid } from "@/ts/_interface/game/grid";
-import { ShotResult } from "@/ts/_interface/game/shootResult";
+import { ShotResult } from "@/ts/_interface/game/shotResult";
 
 export function applyShotResultToGrid(shotResult: ShotResult): void {
     console.log(shotResult)

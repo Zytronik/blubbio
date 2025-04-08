@@ -12,13 +12,11 @@ export const SPRINT_SETTINGS: GameSettings = {
     sprintVictoryCondition: 100,
     prefillBoard: true,
     prefillBoardAmount: 7,
-    refillBoard: true,
     refillBoardAtLine: 3,
     refillAmount: 3,
     bubbleBagSize: 10,
     clearFloatingBubbles: false,
     garbageMaxAtOnce: 3,
-    garbageCleanAmount: 3,
-    garbageColorAmount: 3,
-    countDownDuration: 1500
+    garbagePreview: 0,
+    countDownDuration: 1500,
 }

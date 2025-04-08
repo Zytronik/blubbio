@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import { getEmptyGame, newSprintInstance, } from "@/ts/game/setup/setup";
 import { GAME_MODE } from "@/ts/_enum/gameMode";
 import { useUserStore } from "./userStore";
 import { useInputStore } from "./inputStore";
@@ -11,6 +10,11 @@ import { addMonkeyActions } from "@/ts/animationPixi/monkeyActions";
 import { centerAngle, changeAPS, mirrorAngle } from "@/ts/game/actions/aiming";
 import { shootBubble } from "@/ts/game/actions/shoot";
 import { applyShotResultToGrid } from "@/ts/game/bubble/grid";
+import { swapHoldBubble } from "@/ts/game/actions/hold";
+import { getEmptyGame } from "@/ts/game/setup/gameSetup";
+import { newSprintInstance } from "@/ts/game/setup/instanceSetup";
+import { nextBubble } from "@/ts/game/bubble/queue";
+import { refillBoard } from "@/ts/game/bubble/garbage";
 
 export const useGameStore = defineStore('game', () => {
     const game = getEmptyGame();
@@ -73,10 +77,17 @@ export const useGameStore = defineStore('game', () => {
         if (instance) {
             const shotResult = shootBubble(instance);
             applyShotResultToGrid(shotResult);
+            if (shotResult.hasToRefillBoard) {
+                refillBoard(instance);
+            }
+            nextBubble(instance);
         }
     }
     function pressedHold(userName: string): void {
-        // console.log("you are not empty eslint :^)")
+        const instance = game.instancesMap.get(userName);
+        if (instance) {
+            swapHoldBubble(instance);
+        }
     }
     function getAllInstances(): GameInstance[] {
         return [...game.instancesMap.values()];

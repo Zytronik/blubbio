@@ -12,19 +12,17 @@ export interface GameSettings {
 
     prefillBoard: boolean,
     prefillBoardAmount: number,
-    refillBoard: boolean,
     refillBoardAtLine: number,
     refillAmount: number,
 
     bubbleBagSize: number,
     clearFloatingBubbles: boolean,
-    
+
     garbageMaxAtOnce: number,
-    garbageCleanAmount: number,
-    garbageColorAmount: number,
-    
+    garbagePreview: number,
+
     countDownDuration: number,
-    
+
     //passtrough
     //combotable
 }

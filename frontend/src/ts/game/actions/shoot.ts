@@ -3,7 +3,7 @@ import { GameInstance } from "@/ts/_interface/game/gameInstance";
 import { getVector } from "./aiming";
 import { Grid } from "@/ts/_interface/game/grid";
 import { Field } from "@/ts/_interface/game/field";
-import { ShotResult } from "@/ts/_interface/game/shootResult";
+import { ShotResult } from "@/ts/_interface/game/shotResult";
 import { getAdjacentFieldVectors, getDistance } from "../bubble/grid";
 
 export function shootBubble(instance: GameInstance): ShotResult {
@@ -28,6 +28,7 @@ export function shootBubble(instance: GameInstance): ShotResult {
     const freeFloatingBubbleFields = getFloatingBubbleFields();
     const hasDied: boolean = checkHasDied();
     const hasPerfectCleared = checkHasPerfectCleared();
+    const hasToRefillBoard = checkBoardNeedsRefill();
 
     return {
         bubbleShot: instance.currentBubble,
@@ -40,6 +41,7 @@ export function shootBubble(instance: GameInstance): ShotResult {
         hasWallBounced: travelLineCoords.length > 2,
         hasDied,
         hasPerfectCleared,
+        hasToRefillBoard: checkBoardNeedsRefill()
     }
 
     function getAllBubbleCoordinatesInGrid(grid: Grid): Coordinates[] {
@@ -142,7 +144,7 @@ export function shootBubble(instance: GameInstance): ShotResult {
         let nearestEmptyField: Field = grid.rows[y].fields[x];
         let closestDistance = Infinity;
         const fieldsToCheck = getAdjacentFieldVectors(grid, gridImpactLocation)
-        fieldsToCheck.push({x: 0, y: 0});
+        fieldsToCheck.push({ x: 0, y: 0 });
         fieldsToCheck.forEach(vector => {
             const vx = x + vector.x;
             const vy = y + vector.y;
@@ -263,6 +265,30 @@ export function shootBubble(instance: GameInstance): ShotResult {
     }
 
     function checkHasPerfectCleared(): boolean {
+        let hasCleared = true;
+        grid.rows.forEach(row => {
+            row.fields.forEach(field => {
+                if (field.bubble != undefined) {
+                    hasCleared = false;
+                }
+            });
+        });
+        return hasCleared;
+    }
+
+    function checkBoardNeedsRefill(): boolean {
+        const refillEnabled = instance.gameSettings.refillAmount > 0;
+        if (refillEnabled) {
+            const threshold = instance.gameSettings.refillBoardAtLine;
+            for (let y = 0; y < threshold && y < grid.rows.length; y++) {
+                const fields = grid.rows[y].fields
+                for (let x = 0; x < fields.length; x++) {
+                    if (fields[x].bubble == undefined) {
+                        return true;
+                    }
+                }
+            }
+        }
         return false;
     }
 }
