@@ -1,102 +1,103 @@
 html,
 body {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background-color: var(--app-bg-color);
-  color: var(--app-font-color);
-  overflow: hidden;
-  height: 100vh;
-  width: 100vw;
-  font-family: 'Roboto', sans-serif;
-  font-size: var(--font-size-0);
-  letter-spacing: var(--font-normal-letter-spacing);
-  line-height: var(--font-normal-line-height);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background-color: var(--app-bg-color);
+    color: var(--app-font-color);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    font-family: 'Roboto', sans-serif;
+    font-size: var(--font-size-0);
+    letter-spacing: var(--font-normal-letter-spacing);
+    line-height: var(--font-normal-line-height);
 }
 
 body {
-  background-image: url('../img/bg.png');
-  background-position: center;
-  background-size: cover;
+    background-image: url('../img/bg.png');
+    background-position: center;
+    background-size: cover;
 }
 
 * {
-  box-sizing: border-box;
-  text-transform: uppercase;
-  scrollbar-color: var(--config-color) transparent;
-  scrollbar-width: thin;
+    box-sizing: border-box;
+    text-transform: uppercase;
 }
 
 p {
-  margin: unset;
+    margin: unset;
 }
 
 strong {
-  font-weight: 700;
+    font-weight: 700;
 }
 
 h2 {
-  margin-top: unset;
-  margin-bottom: 10px;
-  font-size: var(--font-size-4);
+    margin-top: unset;
+    margin-bottom: 10px;
+    font-size: var(--font-size-4);
 }
 
 h3 {
-  margin-top: unset;
-  margin-bottom: 5px;
-  font-size: var(--font-size-1);
+    margin-top: unset;
+    margin-bottom: 5px;
+    font-size: var(--font-size-1);
 }
 
 #app {
-  height: 100vh;
-  width: 100vw;
-  position: relative;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
 }
 
 main {
-  padding: calc(var(--header-height) / 2) 0;
-  height: 100vh;
-  display: flex;
+    padding: calc(var(--header-height) / 2) 0;
+    height: 100vh;
+    display: flex;
 }
 
 .rank-img {
-  filter: invert(1);
+    filter: invert(1);
 }
 
 .text-noWhiteSpaces {
-  display: block;
-  height: 0.75em;
-  line-height: 0.75em;
+    display: block;
+    height: 0.75em;
+    line-height: 0.75em;
 }
 
 :root {
-  --menu-btn-height: 180px;
-  --menu-btn-border-width: 14px;
-  --multiplayer-color: rgb(218, 0, 99);
-  --singleplayer-color: rgb(12, 167, 137);
-  --config-color: rgb(250, 199, 16);
-  --sprint-color: rgb(29, 179, 157);
-  --highscore-color: rgb(17, 178, 135);
-  --pixi-color: rgb(14, 122, 88);
-  --ranked-color: rgb(160, 0, 24);
-  --roomListing-color: rgb(129, 33, 81);
-  --app-bg-color: #202020;
-  --light-bg-color: #353535;
-  --app-font-color: #fff;
-  --header-height: 100px;
-  --header-profile-width: 380px;
-  --font-normal-letter-spacing: 0.6px;
-  --font-normal-line-height: 1.3;
-  --font-size-0: 16px;
-  --font-size-1: 18px;
-  --font-size-2: 20px;
-  --font-size-3: 24px;
-  --font-size-4: 28px;
-  --font-size-5: 65px;
-  --font-size-6: 120px;
-  --font-size-7: 145px;
+    --menu-btn-height: 180px;
+    --menu-btn-border-width: 14px;
+    --multiplayer-color: rgb(218, 0, 99);
+    --singleplayer-color: rgb(12, 167, 137);
+    --config-color: rgb(250, 199, 16);
+    --sprint-color: rgb(29, 179, 157);
+    --highscore-color: rgb(17, 178, 135);
+    --pixi-color: rgb(14, 122, 88);
+    --ranked-color: rgb(160, 0, 24);
+    --roomListing-color: rgb(129, 33, 81);
+    --app-bg-color: #202020;
+    --light-bg-color: #353535;
+    --app-font-color: #fff;
+    --header-height: 100px;
+    --header-profile-width: 380px;
+    --font-normal-letter-spacing: 0.6px;
+    --font-normal-line-height: 1.3;
+    --font-big-letter-spacing: 5px;
+    --font-size-0: 16px;
+    --font-size-1: 18px;
+    --font-size-2: 20px;
+    --font-size-3: 24px;
+    --font-size-4: 28px;
+    --font-size-5: 65px;
+    --font-size-6: 80px;
+    --font-size-7: 120px;
+    --font-size-8: 145px;
+    --font-size-9: 220px;
 }
 
 .hide {
-  display: none;
+    display: none;
 }

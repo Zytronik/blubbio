@@ -6,7 +6,7 @@
         <h3>{{ userSession.username }}</h3>
         <div class="ratingDetails">
           <p v-if="userSession && userSession.isRanked" class="rating">{{ userSession.rating
-            }}<span>±{{
+          }}<span>±{{
               userSession.ratingDeviation }}</span>
           </p>
           <img v-if="userSession && userSession.isRanked" class="rank-img"

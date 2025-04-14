@@ -47,6 +47,11 @@ export default defineComponent({
 </script>
 
 <style>
+.settings {
+  scrollbar-color: var(--config-color) transparent;
+  scrollbar-width: thin;
+}
+
 .settings .resetBtn {
   width: 200px;
   margin-right: 30px;

@@ -1,5 +1,5 @@
 <template>
-    <div class="overlay community">
+    <div class="overlay community" @click.self="closeCommunityOverlay()">
         <div class="overlay-container">
             <button class="openChannelButton" @click="closeCommunityOverlay()">Community</button>
             <svg width="964" height="200" viewBox="0 0 964 200" fill="none" xmlns="http://www.w3.org/2000/svg">

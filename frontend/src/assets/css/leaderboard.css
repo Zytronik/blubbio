@@ -1,0 +1,24 @@
+.leaderboard .row {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+    padding: 0 10px;
+}
+
+.leaderboard .row:hover {
+    background-color: hsla(0, 0%, 58%, 0.2);
+}
+
+.leaderboard .cell {
+    height: 70px;
+    font-size: var(--font-size-3);
+    text-transform: uppercase;
+    font-weight: 700;
+    transform: skewX(-10deg);
+    flex: 1;
+    padding: 15px 10px;
+    display: flex;
+    align-items: center;
+}

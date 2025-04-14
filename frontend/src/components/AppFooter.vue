@@ -34,6 +34,7 @@ export default {
   justify-content: flex-end;
   cursor: pointer;
   transition: 150ms;
+  z-index: 1;
 }
 
 .bottomBar>* {

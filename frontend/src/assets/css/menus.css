@@ -1,170 +1,170 @@
 .menuWrapper {
-  padding: 5% 0;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: end;
+    padding: 5% 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: end;
 }
 
 .startMenu,
 .soloMenu,
 .multiMenu {
-  padding: unset;
+    padding: unset;
 }
 
 .disabledMenuBtn {
-  filter: grayscale(80%);
-  opacity: 0.3;
-  pointer-events: none;
+    filter: grayscale(80%);
+    opacity: 0.3;
+    pointer-events: none;
 }
 
 .menuBtn.shortMenuBtn {
-  margin-right: -10%;
+    margin-right: -10%;
 }
 
 .menuBtn {
-  cursor: pointer;
-  width: 65%;
-  height: var(--menu-btn-height);
-  margin-right: -5%;
-  border: var(--menu-btn-border-width) solid black;
-  color: white;
-  transform: translateX(0%) skew(10deg);
-  transition: 500ms;
-  position: relative;
-  z-index: 2;
-  padding-left: 2%;
+    cursor: pointer;
+    width: 65%;
+    height: var(--menu-btn-height);
+    margin-right: -5%;
+    border: var(--menu-btn-border-width) solid black;
+    color: white;
+    transform: translateX(0%) skew(10deg);
+    transition: 500ms;
+    position: relative;
+    z-index: 2;
+    padding-left: 2%;
 }
 
 .menuBtn:hover {
-  transform: scale(1.1) skew(10deg);
+    transform: scale(1.1) skew(10deg);
 }
 
 .menuBtn img {
-  max-width: 20%;
-  object-fit: contain;
-  padding-left: 3%;
+    max-width: 20%;
+    object-fit: contain;
+    padding-left: 3%;
 }
 
 .menuBtn::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #161616;
-  background-image: url('../img/stripes.png');
-  z-index: -1;
-  animation: scrollMenuButtonBackground 4s linear infinite;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #161616;
+    background-image: url('../img/stripes.png');
+    z-index: -1;
+    animation: scrollMenuButtonBackground 4s linear infinite;
 }
 
 .menuBtn:hover::after {
-  animation: scrollMenuButtonBackground 2s linear infinite;
-  background-color: #2a2a2a;
+    animation: scrollMenuButtonBackground 2s linear infinite;
+    background-color: #2a2a2a;
 }
 
 @keyframes scrollMenuButtonBackground {
-  100% {
-    background-position: 226px 0; /* 226px is the width of the image */
-  }
+    100% {
+        background-position: 226px 0; /* 226px is the width of the image */
+    }
 }
 
 .menuBtn > div {
-  transform: skew(-10deg);
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  position: relative;
+    transform: skew(-10deg);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
 }
 
 .menuBtn .text {
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
 }
 
 .menuBtn .text > p {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .menuBtn .text > p:last-of-type {
-  margin-bottom: 3%;
+    margin-bottom: 3%;
 }
 
 .menuBtn .text .firstLetter {
-  font-size: var(--font-size-7);
+    font-size: var(--font-size-8);
 }
 
 .menuBtn .text > p span:first-of-type {
-  font-size: var(--font-size-5);
-  letter-spacing: 6px;
+    font-size: var(--font-size-5);
+    letter-spacing: 6px;
 }
 
 .menuBtn .text > p span:last-of-type {
-  font-size: var(--font-size-0);
-  background-color: white;
-  color: black;
-  width: calc(100% + 3%);
-  margin-left: -3%;
-  padding: 3px 10px;
-  margin-top: 10px;
+    font-size: var(--font-size-0);
+    background-color: white;
+    color: black;
+    width: calc(100% + 3%);
+    margin-left: -3%;
+    padding: 3px 10px;
+    margin-top: 10px;
 }
 
 .menuBtn::before {
-  content: '';
-  position: absolute;
-  bottom: calc(var(--menu-btn-border-width) * -1);
-  left: calc(var(--menu-btn-border-width) * -1);
-  border-top: 12vh solid transparent;
-  height: 10%;
-  width: 20%;
-  border-right: 40vw solid transparent;
-  border-bottom: var(--menu-btn-border-width) solid black;
-  border-left: var(--menu-btn-border-width) solid black;
+    content: '';
+    position: absolute;
+    bottom: calc(var(--menu-btn-border-width) * -1);
+    left: calc(var(--menu-btn-border-width) * -1);
+    border-top: 12vh solid transparent;
+    height: 10%;
+    width: 20%;
+    border-right: 40vw solid transparent;
+    border-bottom: var(--menu-btn-border-width) solid black;
+    border-left: var(--menu-btn-border-width) solid black;
 }
 
 .menuBtn.multiplayer::before {
-  border-bottom: var(--menu-btn-border-width) solid var(--multiplayer-color);
-  border-left: var(--menu-btn-border-width) solid var(--multiplayer-color);
+    border-bottom: var(--menu-btn-border-width) solid var(--multiplayer-color);
+    border-left: var(--menu-btn-border-width) solid var(--multiplayer-color);
 }
 
 .menuBtn.singleplayer::before {
-  border-bottom: var(--menu-btn-border-width) solid var(--singleplayer-color);
-  border-left: var(--menu-btn-border-width) solid var(--singleplayer-color);
+    border-bottom: var(--menu-btn-border-width) solid var(--singleplayer-color);
+    border-left: var(--menu-btn-border-width) solid var(--singleplayer-color);
 }
 
 .menuBtn.configuration::before {
-  border-bottom: var(--menu-btn-border-width) solid var(--config-color);
-  border-left: var(--menu-btn-border-width) solid var(--config-color);
+    border-bottom: var(--menu-btn-border-width) solid var(--config-color);
+    border-left: var(--menu-btn-border-width) solid var(--config-color);
 }
 
 .menuBtn.sprint::before {
-  border-bottom: var(--menu-btn-border-width) solid var(--sprint-color);
-  border-left: var(--menu-btn-border-width) solid var(--sprint-color);
+    border-bottom: var(--menu-btn-border-width) solid var(--sprint-color);
+    border-left: var(--menu-btn-border-width) solid var(--sprint-color);
 }
 
 .menuBtn.highscore::before {
-  border-bottom: var(--menu-btn-border-width) solid var(--highscore-color);
-  border-left: var(--menu-btn-border-width) solid var(--highscore-color);
+    border-bottom: var(--menu-btn-border-width) solid var(--highscore-color);
+    border-left: var(--menu-btn-border-width) solid var(--highscore-color);
 }
 
 .menuBtn.pixitesting::before {
-  border-bottom: var(--menu-btn-border-width) solid var(--pixi-color);
-  border-left: var(--menu-btn-border-width) solid var(--pixi-color);
+    border-bottom: var(--menu-btn-border-width) solid var(--pixi-color);
+    border-left: var(--menu-btn-border-width) solid var(--pixi-color);
 }
 
 .menuBtn.play-ranked::before {
-  border-bottom: var(--menu-btn-border-width) solid var(--ranked-color);
-  border-left: var(--menu-btn-border-width) solid var(--ranked-color);
+    border-bottom: var(--menu-btn-border-width) solid var(--ranked-color);
+    border-left: var(--menu-btn-border-width) solid var(--ranked-color);
 }
 
 .menuBtn.room-listing::before {
-  border-bottom: var(--menu-btn-border-width) solid var(--roomListing-color);
-  border-left: var(--menu-btn-border-width) solid var(--roomListing-color);
+    border-bottom: var(--menu-btn-border-width) solid var(--roomListing-color);
+    border-left: var(--menu-btn-border-width) solid var(--roomListing-color);
 }

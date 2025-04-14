@@ -49,14 +49,6 @@ export default {
         page: PAGE.scorePage,
         bigButton: false,
         authIds: [1, 2, 3],
-      },
-      {
-        title: "Pixitesting",
-        desc: "Just for testing",
-        iconSrc: require(`@/assets/img/icons/pixi.png`),
-        page: PAGE.pixiTest,
-        bigButton: false,
-        authIds: [1, 2, 3],
       }
     ]);
 

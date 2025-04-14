@@ -1,6 +1,6 @@
 <template>
   <div class="sidebarWrapper" :style="{ backgroundColor: backgroundColor }" @click.self="goBack()">
-    <div v-if="backButtons" class="sidebar">
+    <div v-if="backButtons" class="sidebar" @click.self="goBack()">
       <div v-for="(button, index) in backButtons" :key="index" class="backButton" @mouseenter="handleButtonHover()"
         :class="button.disabled ? 'disabled' : ''" @click="handleButtonClick(button)">
         <div>
