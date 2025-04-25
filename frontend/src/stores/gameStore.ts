@@ -14,7 +14,6 @@ import { swapHoldBubble } from "@/ts/game/actions/hold";
 import { getEmptyGame } from "@/ts/game/setup/gameSetup";
 import { newSprintInstance } from "@/ts/game/setup/instanceSetup";
 import { nextBubble } from "@/ts/game/bubble/queue";
-import { refillBoard } from "@/ts/game/bubble/garbage";
 
 export const useGameStore = defineStore('game', () => {
     const game = getEmptyGame();
@@ -78,7 +77,7 @@ export const useGameStore = defineStore('game', () => {
             const shotResult = shootBubble(instance);
             applyShotResultToGrid(shotResult);
             if (shotResult.hasToRefillBoard) {
-                refillBoard(instance);
+                // refillBoard(instance);
             }
             nextBubble(instance);
         }
@@ -98,7 +97,7 @@ export const useGameStore = defineStore('game', () => {
         game.gameMode = GAME_MODE.SPRINT;
         game.inputContext = INPUT_CONTEXT.GAME_NO_RESET;
         game.spectating = true;
-        for (let i = 1; i <= monkeyAmount; i++) {
+        for (let i = 1; i <= 1; i++) {
             const name = "Monkey-" + i;
             console.log(name)
             const instance = newSprintInstance()

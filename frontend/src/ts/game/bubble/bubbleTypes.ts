@@ -1,6 +1,5 @@
 import { Bubble } from "@/ts/_interface/game/bubble"
 
-
 const red: Bubble = {
     type: 0,
     wallbounce: false,

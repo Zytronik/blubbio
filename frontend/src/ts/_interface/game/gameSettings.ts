@@ -1,3 +1,5 @@
+import { GARBAGE_MESSINESS } from "@/ts/_enum/garbageMessiness";
+
 export interface GameSettings {
     gridWidth: number,
     gridHeight: number,
@@ -12,8 +14,10 @@ export interface GameSettings {
 
     prefillBoard: boolean,
     prefillBoardAmount: number,
+    prefillMessiness: GARBAGE_MESSINESS,
     refillBoardAtLine: number,
     refillAmount: number,
+    refillMessiness: GARBAGE_MESSINESS,
 
     bubbleBagSize: number,
     clearFloatingBubbles: boolean,

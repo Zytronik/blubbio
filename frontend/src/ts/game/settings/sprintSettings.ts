@@ -1,3 +1,4 @@
+import { GARBAGE_MESSINESS } from "@/ts/_enum/garbageMessiness";
 import { GameSettings } from "@/ts/_interface/game/gameSettings";
 
 export const SPRINT_SETTINGS: GameSettings = {
@@ -12,11 +13,13 @@ export const SPRINT_SETTINGS: GameSettings = {
     sprintVictoryCondition: 100,
     prefillBoard: true,
     prefillBoardAmount: 7,
+    prefillMessiness: GARBAGE_MESSINESS.CLEAN,
     refillBoardAtLine: 3,
     refillAmount: 3,
+    refillMessiness: GARBAGE_MESSINESS.CLEAN,
     bubbleBagSize: 10,
     clearFloatingBubbles: false,
     garbageMaxAtOnce: 3,
-    garbagePreview: 0,
+    garbagePreview: 3,
     countDownDuration: 1500,
 }

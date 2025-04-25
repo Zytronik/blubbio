@@ -3,7 +3,6 @@ import { INPUT_CONTEXT } from "@/ts/_enum/inputContext";
 import { Game } from "@/ts/_interface/game/game";
 import { GameInstance } from "@/ts/_interface/game/gameInstance";
 import { RoundData } from "@/ts/_interface/game/roundData";
-import { getNextSeed } from "../rng";
 
 export function getEmptyGame(): Game {
     // addUpdateContainerSizeAnimation();
@@ -18,7 +17,7 @@ export function getEmptyGame(): Game {
 
 export function getEmptyRoundData(): RoundData {
     return {
-        initialSeed: getNextSeed(Date.now()),
+        initialSeed: Date.now(),
         gameStartTime: 0,
     };
 }

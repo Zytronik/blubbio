@@ -160,7 +160,6 @@ export const pixiDebug2: Input = {
     pressed: false,
     fire: () => {
         console.log("pressed debug 2");
-        console.log(useGameStore().getAllInstances());
         useGameStore().startGame();
     },
     inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET]

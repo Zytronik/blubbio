@@ -7,12 +7,13 @@ import { GameSettings } from "./gameSettings";
 import { HandlingSettings } from "./handlingSettings";
 import { GameSprites } from "./gameSprites";
 import { GameContainers } from "./gameContainers";
+import { rngReference } from "./rngReference";
 
 export interface GameInstance {
     gameSettings: GameSettings,
     handlingSettings: HandlingSettings,
-    bubbleSeed: number,
-    garbageSeed: number,
+    bubbleSeed: rngReference,
+    garbageSeed: rngReference,
     angle: number,
     currentBubble: Bubble,
     previewBubble?: Bubble,

@@ -1,6 +1,6 @@
 import { GameInstance } from "@/ts/_interface/game/gameInstance";
 import { Bubble } from "../../_interface/game/bubble";
-import { convertSeedToRandomNumber, getNextSeed } from "../rng";
+import { XORRandom } from "../rng";
 import { allBubbles } from "./bubbleTypes";
 
 export function nextBubble(gameInstance: GameInstance): void {
@@ -19,8 +19,7 @@ function getBubbleBag(instance: GameInstance): Bubble[] {
         if (leftOverBubbles.length === 0) {
             leftOverBubbles.push(...allBubbles);
         }
-        const randomIndex = convertSeedToRandomNumber(0, leftOverBubbles.length, instance.bubbleSeed);
-        instance.bubbleSeed = getNextSeed(instance.bubbleSeed);
+        const randomIndex = XORRandom(0, leftOverBubbles.length-1, instance.bubbleSeed);
         bag.push(leftOverBubbles.splice(randomIndex, 1)[0]);
     }
     return bag;

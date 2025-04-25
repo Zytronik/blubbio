@@ -5,6 +5,7 @@ import { Row } from "@/ts/_interface/game/row";
 import { Sprite } from "pixi.js";
 import { bubbleOverlayTexture, bubbleTexture } from "@/ts/pixi/allTextures";
 import { GarbagePreview } from "@/ts/_interface/game/garbagePreview";
+import { GARBAGE_MESSINESS } from "@/ts/_enum/garbageMessiness";
 
 export function getEmptyGrid(settings: GameSettings): Grid {
     const precisionWidth = settings.widthPrecisionUnits;
@@ -39,6 +40,8 @@ export function getEmptyGrid(settings: GameSettings): Grid {
             size: playGrid.gridWidth - (isSmallRow ? 1 : 0),
             isSmallerRow: isSmallRow,
             isInDeathZone: h >= playGrid.gridHeight,
+            garbageMessiness: GARBAGE_MESSINESS.REGULAR,
+            pairLocations: []
         };
         for (let w = 0; w < row.size; w++) {
             const field: Field = {
