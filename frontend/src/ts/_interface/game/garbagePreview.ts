@@ -1,6 +1,12 @@
+import { GarbageInformation } from "./garbage";
+import { PreviewRow } from "./previewRow";
 import { Row } from "./row";
 
 export interface GarbagePreview {
-    rows: Row[],
-    // timer: number, and stuff?
+    incomingAmount: number,
+    preview: PreviewRow,
+    isPreviewRunning: boolean,
+    previewBaseDuration: number,
+    durationSpeedMultiplier: number,
+    generatedGarbage: GarbageInformation[],
 }

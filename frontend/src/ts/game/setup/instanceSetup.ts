@@ -9,8 +9,9 @@ import { getAllGameSprites } from "./spriteSetup";
 import { createGameInstanceContainer } from "@/ts/pixi/container";
 import { allBubbles } from "../bubble/bubbleTypes";
 import { nextBubble } from "../bubble/queue";
-import { prefillBoard } from "../bubble/garbage";
 import { XORRandom } from "../rng";
+import { getEmptyGarbagePreview } from "./garbageSetup";
+import { prefillBoard } from "../bubble/garbage";
 
 export function newSprintInstance(): GameInstance {
     const startBubbleSeed = {value: Date.now()}
@@ -25,7 +26,7 @@ export function newSprintInstance(): GameInstance {
         currentBubble: allBubbles[0],
         bubbleQueue: [],
         playGrid: getEmptyGrid(SPRINT_SETTINGS),
-        queuedGarbage: {},
+        garbagePreview: getEmptyGarbagePreview(SPRINT_SETTINGS),
         stats: getEmptyStats(),
         left: false,
         right: false,

@@ -1,6 +1,5 @@
 import { Bubble } from "./bubble";
 import { GameStats } from "./gameStats";
-import { GarbageQueue } from "./garbageQueue";
 import { Grid } from "./grid";
 import { PixiAnimation } from "../pixiAnimation";
 import { GameSettings } from "./gameSettings";
@@ -8,6 +7,7 @@ import { HandlingSettings } from "./handlingSettings";
 import { GameSprites } from "./gameSprites";
 import { GameContainers } from "./gameContainers";
 import { rngReference } from "./rngReference";
+import { GarbagePreview } from "./garbagePreview";
 
 export interface GameInstance {
     gameSettings: GameSettings,
@@ -20,7 +20,7 @@ export interface GameInstance {
     holdBubble?: Bubble,
     bubbleQueue: Bubble[],
     playGrid: Grid,
-    queuedGarbage: GarbageQueue,
+    garbagePreview: GarbagePreview,
     stats: GameStats,
     //replaydata
 

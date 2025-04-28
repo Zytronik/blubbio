@@ -23,7 +23,8 @@ export interface GameSettings {
     clearFloatingBubbles: boolean,
 
     garbageMaxAtOnce: number,
-    garbagePreview: number,
+    previewBaseDuration: number,
+    durationSpeedMultiplier: number,
 
     countDownDuration: number,
 

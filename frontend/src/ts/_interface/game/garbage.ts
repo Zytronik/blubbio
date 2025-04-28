@@ -1,6 +1,6 @@
 import { GARBAGE_MESSINESS } from "@/ts/_enum/garbageMessiness";
 
-export interface GarbageResult {
+export interface GarbageInformation {
     garbage: number[];
     isSmallerRow: boolean;
     garbageMessiness: GARBAGE_MESSINESS;

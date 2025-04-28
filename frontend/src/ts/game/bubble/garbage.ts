@@ -3,43 +3,101 @@ import { XORRandom } from "../rng";
 import { Row } from "@/ts/_interface/game/row";
 import { GARBAGE_MESSINESS, GARBAGE_STATS } from "@/ts/_enum/garbageMessiness";
 import { rngReference } from "@/ts/_interface/game/rngReference";
-import { GarbageResult } from "@/ts/_interface/game/garbage";
+import { GarbageInformation } from "@/ts/_interface/game/garbage";
 import { allBubbles } from "./bubbleTypes";
+import { triggerGarbagePreviewAnimation } from "@/ts/animationPixi/garbagePreviewAnimation";
+import { Field } from "@/ts/_interface/game/field";
+import { Sprite } from "pixi.js";
+import { bubbleOverlayTexture, bubbleTexture } from "@/ts/pixi/allTextures";
 
 export function prefillBoard(instance: GameInstance): void {
     const amount = instance.gameSettings.prefillBoardAmount;
-    for (let h = amount-1; h >= 0; h--) {
+    for (let h = amount - 1; h >= 0; h--) {
         const row = instance.playGrid.rows[h];
-        const rowBelow = instance.playGrid.rows[h+1];
+        const rowBelow = convertToRowInformation(instance.playGrid.rows[h + 1]);
         const messiness = instance.gameSettings.prefillMessiness
         const garbageResult = newGarbage(rowBelow, messiness, instance.garbageSeed);
         row.garbageMessiness = garbageResult.garbageMessiness;
         row.pairLocations = garbageResult.pairLocations;
         for (let i = 0; i < garbageResult.garbage.length; i++) {
-            const colorID = garbageResult.garbage[i]
-            row.fields[i].bubble = allBubbles[colorID]
+            const colorID = garbageResult.garbage[i];
+            row.fields[i].bubble = allBubbles[colorID];
         }
     }
 }
 
-// export function refillBoard(instance: GameInstance): void {
-//     const refillAmount = instance.gameSettings.refillAmount;
-//     for (let h = 0; h < refillAmount; h++) {
-//         const row = instance.playGrid.rows[h];
-//         const rowLength = row.size;
-//         const colors = selectColors(instance)
-//         const garbage = generateGarbage(instance, colors, rowLength)
-//         for (let w = 0; w < rowLength; w++) {
-//             row.fields[w].bubble = garbage[w]
-//         }
-//     }
-// }
+export function prepareGarbage(instance: GameInstance, messiness: GARBAGE_MESSINESS, amount: number): void {
+    let rowBelow = convertToRowInformation(instance.playGrid.rows[0]);
+    for (let i = 0; i < amount; i++) {
+        const garbageResult = newGarbage(rowBelow, messiness, instance.garbageSeed);
+        instance.garbagePreview.generatedGarbage.push(garbageResult)
+        rowBelow = {
+            isSmallerRow: garbageResult.isSmallerRow,
+            colorIDs: garbageResult.garbage,
+            pairLocations: garbageResult.pairLocations,
+        }
+    }
+    triggerGarbagePreviewAnimation(instance);
+}
 
-function newGarbage(rowBelow: Row, messiness: GARBAGE_MESSINESS, seed: rngReference): GarbageResult {
+export function pushGarbage(instance: GameInstance): void {
+    const grid = instance.playGrid;
+    const garbage = instance.garbagePreview.generatedGarbage.shift()?.garbage;
+    for (let h = grid.rows.length - 1; h > 0; h--) {
+        for (let w = 0; w < grid.gridWidth - 1; w++) {
+            const field = grid.rows[h].fields[w];
+            field.bubble = grid.rows[h - 1].fields[field.coords.x].bubble;
+            field.precisionCoords.x = grid.rows[h - 1].fields[field.coords.x].precisionCoords.x;
+        }
+        if (grid.rows[h].isSmallerRow) {
+            const lastIndex = grid.gridWidth - 1;
+            const centerPointX = grid.rows[h - 1].fields[lastIndex].precisionCoords.x;
+            const centerPointY = grid.rows[h].fields[0].precisionCoords.y;
+            const field: Field = {
+                coords: { x: lastIndex, y: h, },
+                precisionCoords: { x: centerPointX, y: centerPointY, },
+                bubble: grid.rows[h - 1].fields[lastIndex].bubble,
+                bubbleSprite: new Sprite(bubbleTexture.texture),
+                bubbleSpriteOverlay: new Sprite(bubbleOverlayTexture.texture)
+            }
+            grid.rows[h].fields.push(field);
+        } else {
+            grid.rows[h].fields.pop();
+        }
+        grid.rows[h].isSmallerRow = grid.rows[h - 1].isSmallerRow;
+        grid.rows[h].size = grid.rows[h - 1].size;
+    }
+
+    for (let w = 0; w < grid.gridWidth - 1; w++) {
+        const field = grid.rows[0].fields[w];
+        if (garbage) field.bubble = allBubbles[garbage[w]];
+        field.precisionCoords.x = grid.rows[2].fields[w].precisionCoords.x;
+    }
+    if (grid.rows[0].isSmallerRow && garbage) {
+        const lastIndex = grid.gridWidth - 1;
+        const centerPointX = grid.rows[2].fields[lastIndex].precisionCoords.x;
+        const centerPointY = grid.rows[0].fields[0].precisionCoords.y;
+        const field: Field = {
+            coords: { x: lastIndex, y: 0, },
+            precisionCoords: { x: centerPointX, y: centerPointY, },
+            bubble: allBubbles[garbage[lastIndex]],
+            bubbleSprite: new Sprite(bubbleTexture.texture),
+            bubbleSpriteOverlay: new Sprite(bubbleOverlayTexture.texture)
+        }
+        grid.rows[0].fields.push(field);
+    } else {
+        grid.rows[0].fields.pop();
+    }
+    grid.rows[0].isSmallerRow = grid.rows[2].isSmallerRow;
+    grid.rows[0].size = grid.rows[2].size;
+
+}
+
+function newGarbage(rowBelow: RowInformation, messiness: GARBAGE_MESSINESS, seed: rngReference): GarbageInformation {
     const colorAmount = GARBAGE_STATS[messiness].colors;
     const pairAmount = GARBAGE_STATS[messiness].pairs;
     const pairLocationsBelow = rowBelow.pairLocations;
-    const rowBelowSize = rowBelow.fields.length;
+    const rowBelowSize = rowBelow.colorIDs.length;
     const rowSize = rowBelow.isSmallerRow ? rowBelowSize + 1 : rowBelowSize - 1;
 
     const allColorIDs = Array.from({ length: allBubbles.length }, (_, i) => i);
@@ -47,14 +105,13 @@ function newGarbage(rowBelow: Row, messiness: GARBAGE_MESSINESS, seed: rngRefere
     selectColors();
 
     //example: [5][0,2,5] - at position [5] these colors are locked [0, 2, 5] to avoid triplets/pairs
-    const tripletRestrictions: number[][] = Array.from({ length: rowSize+2 }, () => []);
-    const pairRestrictions: number[][] = Array.from({ length: rowSize+1 }, () => []);
+    const tripletRestrictions: number[][] = Array.from({ length: rowSize + 2 }, () => []);
+    const pairRestrictions: number[][] = Array.from({ length: rowSize + 1 }, () => []);
     //i dont want to worry about oob
     tripletRestrictions[-1] = [];
     tripletRestrictions[-2] = [];
     pairRestrictions[-1] = [];
     findRestrictionsFromBelow();
-    // console.log(pairRestrictions)
 
     const generatedGarbage: number[] = [];
     const pairLocations: number[] = [];
@@ -69,13 +126,17 @@ function newGarbage(rowBelow: Row, messiness: GARBAGE_MESSINESS, seed: rngRefere
 
     function selectColors(): void {
         if (messiness === GARBAGE_MESSINESS.COPY_CLEAN) {
-            rowBelow.fields.forEach(field => {
-                if (selectColors.length < colorAmount) {
-                    //NOT RANDOM YET, takes colors from left to right from row below
-                    const type = field.bubble?.type;
-                    if (type) selectedColors.add(type);
-                }
+            const colorsFromBelow = new Set<number>();
+            rowBelow.colorIDs.forEach(colorID => {
+                if (colorID) colorsFromBelow.add(colorID);
             });
+            const leftoverColors = [...colorsFromBelow];
+            for (let i = 0; i < colorAmount; i++) {
+                if (leftoverColors.length > 0) {
+                    const randomIndex = XORRandom(0, leftoverColors.length - 1, seed);
+                    selectedColors.add(leftoverColors.splice(randomIndex, 1)[0]);
+                }
+            }
         } else {
             const leftoverColors = [...allColorIDs];
             for (let i = 0; i < colorAmount; i++) {
@@ -87,15 +148,15 @@ function newGarbage(rowBelow: Row, messiness: GARBAGE_MESSINESS, seed: rngRefere
 
     function findRestrictionsFromBelow(): void {
         pairLocationsBelow.forEach(location => {
-            const colorID = rowBelow.fields[location].bubble?.type
+            const colorID = rowBelow.colorIDs[location];
             if (colorID != null) {
                 const hexagonalShift = (rowBelowSize < rowSize) ? 1 : -1;
                 tripletRestrictions[location].push(colorID)
                 tripletRestrictions[location + hexagonalShift].push(colorID)
             }
         });
-        for (let i = 0; i < rowBelow.fields.length; i++) {
-            const colorID = rowBelow.fields[i].bubble?.type;
+        for (let i = 0; i < rowBelow.colorIDs.length; i++) {
+            const colorID = rowBelow.colorIDs[i];
             if (colorID != null) {
                 const hexagonalShift = (rowBelowSize < rowSize) ? 1 : -1;
                 pairRestrictions[i].push(colorID)
@@ -130,7 +191,6 @@ function newGarbage(rowBelow: Row, messiness: GARBAGE_MESSINESS, seed: rngRefere
             const tripletFilter = tripletRestrictions[randomLocation];
             const pairFilter = pairRestrictions[randomLocation];
             const selectedColor = pickPairColor(tripletFilter, pairFilter);
-            console.log("pairColor: ",selectedColor, "location: ", randomLocation)
             currentPalette.delete(selectedColor);
             generatedGarbage[randomLocation] = selectedColor;
             pairRestrictions[randomLocation - 1].push(selectedColor);
@@ -169,10 +229,6 @@ function newGarbage(rowBelow: Row, messiness: GARBAGE_MESSINESS, seed: rngRefere
             //still found none? try to pick from all colors
             const allColorsFiltered = allColorIDs.filter(num => !restricted.has(num));
             if (allColorsFiltered.length > 0) {
-                console.log("currentPalette: ",currentPalette)
-                console.log("selectedColors: ",selectedColors)
-                console.log("restricted: ",restricted)
-                console.warn("found no colors from palette - taking from all colors");
                 const randomIndex = XORRandom(0, allColorsFiltered.length - 1, seed);
                 return allColorsFiltered[randomIndex];
             }
@@ -190,12 +246,10 @@ function newGarbage(rowBelow: Row, messiness: GARBAGE_MESSINESS, seed: rngRefere
 
         function pickPairColor(triplets: number[], pairs: number[]): number {
             const restricted = new Set(triplets);
-            console.log(...pairs)
 
             // duplicates in pairs = triplet
             pairs.forEach((num, i, arr) => {
                 if (arr.indexOf(num) !== i) {
-                    console.log("prevented triplet")
                     restricted.add(num);
                 }
             });
@@ -218,8 +272,26 @@ function newGarbage(rowBelow: Row, messiness: GARBAGE_MESSINESS, seed: rngRefere
                 return anyColor[randomIndex];
             }
 
-            console.error("THIS SHOULDNT BE THE CASE!?");
             return XORRandom(0, allBubbles.length - 1, seed);
         }
+    }
+}
+
+interface RowInformation {
+    isSmallerRow: boolean,
+    colorIDs: (number | undefined)[],
+    pairLocations: number[]
+}
+
+function convertToRowInformation(row: Row): RowInformation {
+    const ids = []
+    for (let i = 0; i < row.fields.length; i++) {
+        const bubbleID = row.fields[i].bubble?.type;
+        ids[i] = bubbleID;
+    }
+    return {
+        isSmallerRow: row.isSmallerRow,
+        colorIDs: ids,
+        pairLocations: row.pairLocations,
     }
 }

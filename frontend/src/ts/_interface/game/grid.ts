@@ -12,7 +12,6 @@ export interface Grid {
     precisionWidth: number,
     precisionRowHeight: number,
     precisionHeight: number,
-    garbagePreview: GarbagePreview,
     rows: Row[],
     launcherPrecisionPosition: Coordinates,
 }

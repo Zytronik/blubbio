@@ -7,13 +7,13 @@ export function addAngleUpdateAnimation(instance: GameInstance): void {
     startMS: 0,
     endMS: Infinity,
     onStart: function (): void {
-      console.log('start');
+      // console.log('start');
     },
     renderFrame: function (currentTime: number): void {
       arrow.angle = instance.angle;
     },
     onEnd: function (): void {
-      console.log('end');
+      // console.log('end');
     },
   };
   instance.instanceAnimations.push(animation);

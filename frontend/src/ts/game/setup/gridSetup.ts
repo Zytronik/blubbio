@@ -13,9 +13,6 @@ export function getEmptyGrid(settings: GameSettings): Grid {
     const bubbleDiameter = bubbleFullRadius * 2;
     const precisionRowHeight = Math.floor(bubbleFullRadius * Math.sqrt(3));
     const precisionHeight = precisionRowHeight * (settings.gridHeight + settings.gridExtraHeight - 1) + bubbleDiameter;
-    const garbagePreview: GarbagePreview = {
-        rows: []
-    }
     const playGrid: Grid = {
         gridWidth: settings.gridWidth,
         gridHeight: settings.gridHeight,
@@ -26,7 +23,6 @@ export function getEmptyGrid(settings: GameSettings): Grid {
         precisionWidth,
         precisionRowHeight,
         precisionHeight,
-        garbagePreview,
         rows: [],
         launcherPrecisionPosition: {
             x: precisionWidth / 2,

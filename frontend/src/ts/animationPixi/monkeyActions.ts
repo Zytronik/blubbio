@@ -4,7 +4,7 @@ import { PixiAnimation } from "../_interface/pixiAnimation";
 
 export function addMonkeyActions(instance: GameInstance, monkeyName: string): void {
     const gameStore = useGameStore();
-    const pressFrequency = 300000;         //press something every 400ms
+    const pressFrequency = 400;         //press something every 400ms
     let lastPressedAt = 0;
 
     function doNothing(): void { 123; }
