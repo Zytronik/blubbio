@@ -1,6 +1,6 @@
 import { useGameStore } from "@/stores/gameStore";
 import { GameInstance } from "../_interface/game/gameInstance";
-import { PixiAnimation } from "../_interface/pixiAnimation";
+import { PixiAnimation } from "../_interface/pixi/pixiAnimation";
 
 export function addMonkeyActions(instance: GameInstance, monkeyName: string): void {
     const gameStore = useGameStore();

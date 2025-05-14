@@ -1,5 +1,5 @@
 import { useGameStore } from '@/stores/gameStore';
-import { PixiAnimation } from '../_interface/pixiAnimation';
+import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
 
 const ongoingAnimations: PixiAnimation[] = [];
 let pixiAnimationRunning = false;

@@ -14,5 +14,5 @@ export interface ShotResult {
     hasWallBounced: boolean,
     hasDied: boolean,
     hasPerfectCleared: boolean,
-    hasToRefillBoard: boolean,
+    refillAmount: number,
 }

@@ -1,6 +1,6 @@
 import { Sprite } from "pixi.js";
 import { thisIsATexture } from "../pixi/allTextures";
-import { PixiAnimation } from "../_interface/pixiAnimation";
+import { PixiAnimation } from "../_interface/pixi/pixiAnimation";
 import { mainContainer, updateContainerLayout } from "../pixi/container";
 import { playPixiAnimation, getLerpT } from "../pixi/animation";
 

@@ -3,8 +3,7 @@ import { GameSettings } from "@/ts/_interface/game/gameSettings";
 import { Grid } from "@/ts/_interface/game/grid";
 import { Row } from "@/ts/_interface/game/row";
 import { Sprite } from "pixi.js";
-import { bubbleOverlayTexture, bubbleTexture } from "@/ts/pixi/allTextures";
-import { GarbagePreview } from "@/ts/_interface/game/garbagePreview";
+import { bubbleTexture } from "@/ts/pixi/allTextures";
 import { GARBAGE_MESSINESS } from "@/ts/_enum/garbageMessiness";
 
 export function getEmptyGrid(settings: GameSettings): Grid {
@@ -29,26 +28,25 @@ export function getEmptyGrid(settings: GameSettings): Grid {
             y: precisionHeight - bubbleFullRadius,
         },
     };
-    for (let h = 0; h < playGrid.gridHeight + playGrid.extraGridHeight; h++) {
-        const isSmallRow = h % 2 === 1;
+    for (let y = 0; y < playGrid.gridHeight + playGrid.extraGridHeight; y++) {
+        const isSmallRow = y % 2 === 1;
         const row: Row = {
             fields: [],
-            size: playGrid.gridWidth - (isSmallRow ? 1 : 0),
             isSmallerRow: isSmallRow,
-            isInDeathZone: h >= playGrid.gridHeight,
+            isInDeathZone: y >= playGrid.gridHeight,
             garbageMessiness: GARBAGE_MESSINESS.REGULAR,
             pairLocations: []
         };
-        for (let w = 0; w < row.size; w++) {
+        for (let x = 0; x < playGrid.gridWidth; x++) {
             const field: Field = {
-                coords: { x: w, y: h },
+                coords: { x: x, y: y },
                 precisionCoords: {
-                    x: w * bubbleDiameter + (isSmallRow ? bubbleDiameter : bubbleFullRadius),
-                    y: precisionRowHeight * h + bubbleFullRadius,
+                    x: x * bubbleDiameter + (isSmallRow ? bubbleDiameter : bubbleFullRadius),
+                    y: precisionRowHeight * y + bubbleFullRadius,
                 },
                 bubble: undefined,
-                bubbleSprite: new Sprite(bubbleTexture.texture),
-                bubbleSpriteOverlay: new Sprite(bubbleOverlayTexture.texture),
+                bubbleSpriteContainer: new Sprite(bubbleTexture.texture),
+                disabled: (isSmallRow && x === playGrid.gridWidth - 1),
             };
             row.fields.push(field);
         }

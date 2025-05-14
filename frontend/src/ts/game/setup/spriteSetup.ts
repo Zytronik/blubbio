@@ -1,4 +1,4 @@
-import { GameSprites } from "@/ts/_interface/game/gameSprites";
+import { GameSprites } from "@/ts/_interface/pixi/gameSprites";
 import { arrowTexture, bgPurpleTexture, bgRedTexture, bubbleTexture } from "@/ts/pixi/allTextures";
 import { Sprite } from "pixi.js";
 

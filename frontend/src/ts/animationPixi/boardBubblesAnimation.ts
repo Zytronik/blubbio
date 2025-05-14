@@ -1,4 +1,4 @@
-import { PixiAnimation } from '../_interface/pixiAnimation';
+import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
 import { GameInstance } from '../_interface/game/gameInstance';
 
 export function addBoardBubblesAnimation(instance: GameInstance): void {
@@ -18,22 +18,12 @@ export function addBoardBubblesAnimation(instance: GameInstance): void {
                 row.fields.forEach(field => {
                     const x = (field.precisionCoords.x / precisionWidth) * gridBackground.width;
                     const y = (field.precisionCoords.y / precisionHeight) * gridBackground.height;
-                    gridContainer.addChild(field.bubbleSprite);
-                    gridContainer.addChild(field.bubbleSpriteOverlay);
+                    gridContainer.addChild(field.bubbleSpriteContainer);
 
-                    field.bubbleSprite.x = x;
-                    field.bubbleSprite.y = y;
-                    field.bubbleSprite.width = spriteWidth;
-                    field.bubbleSprite.height = spriteHeight;
-                    field.bubbleSprite.anchor = {x: 0.5, y: 0.5};
-
-                    field.bubbleSpriteOverlay.x = x;
-                    field.bubbleSpriteOverlay.y = y;
-                    field.bubbleSpriteOverlay.width = spriteWidth;
-                    field.bubbleSpriteOverlay.height = spriteHeight;
-                    field.bubbleSpriteOverlay.anchor = {x: 0.5, y: 0.5};
-
-
+                    field.bubbleSpriteContainer.x = x;
+                    field.bubbleSpriteContainer.y = y;
+                    field.bubbleSpriteContainer.width = spriteWidth;
+                    field.bubbleSpriteContainer.height = spriteHeight;
                 });
             });
         },
@@ -41,12 +31,22 @@ export function addBoardBubblesAnimation(instance: GameInstance): void {
             instance.playGrid.rows.forEach(row => {
                 row.fields.forEach(field => {
                     if (field.bubble) {
-                        field.bubbleSprite.visible = true;
-                        field.bubbleSpriteOverlay.visible = true;
-                        field.bubbleSprite.tint = field.bubble.tint;
+                        // const x = (field.precisionCoords.x / precisionWidth) * gridBackground.width;
+                        // const y = (field.precisionCoords.y / precisionHeight) * gridBackground.height;
+    
+                        // field.bubbleSprite.x = x;
+                        // field.bubbleSprite.y = y;
+                        // field.bubbleSprite.width = spriteWidth;
+                        // field.bubbleSprite.height = spriteHeight;
+                        // field.bubbleSprite.anchor = {x: 0.5, y: 0.5};
+
+                        // field.bubbleSpriteOverlay.x = x;
+                        // field.bubbleSpriteOverlay.y = y;
+
+                        field.bubbleSpriteContainer.visible = true;
+                        field.bubbleSpriteContainer.tint = field.bubble.tint;
                     } else {
-                        field.bubbleSprite.visible = false;
-                        field.bubbleSpriteOverlay.visible = false;
+                        field.bubbleSpriteContainer.visible = false;
                     }
                 });
             });

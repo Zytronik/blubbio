@@ -1,4 +1,4 @@
-import { TextureReference } from '../_interface/textureReference';
+import { TextureReference } from '../_interface/pixi/textureReference';
 
 export const thisIsATexture: TextureReference = {
     src: 'https://pixijs.com/assets/bunny.png',

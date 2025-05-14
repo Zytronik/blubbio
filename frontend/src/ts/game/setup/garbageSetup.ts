@@ -14,7 +14,7 @@ export function getEmptyGarbagePreview(settings: GameSettings): GarbagePreview {
         preview: previewRow,
         isPreviewRunning: false,
         previewBaseDuration: settings.previewBaseDuration,
-        durationSpeedMultiplier: settings.durationSpeedMultiplier,
+        durationSpeedMultiplier: 1,
         generatedGarbage: []
     }
 }

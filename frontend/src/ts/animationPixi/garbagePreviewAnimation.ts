@@ -1,5 +1,5 @@
 import { GameInstance } from "../_interface/game/gameInstance";
-import { PixiAnimation } from "../_interface/pixiAnimation";
+import { PixiAnimation } from "../_interface/pixi/pixiAnimation";
 import { pushGarbage } from "../game/bubble/garbage";
 
 export function triggerGarbagePreviewAnimation(instance: GameInstance): void {

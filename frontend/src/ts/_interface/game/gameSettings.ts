@@ -15,8 +15,8 @@ export interface GameSettings {
     prefillBoard: boolean,
     prefillBoardAmount: number,
     prefillMessiness: GARBAGE_MESSINESS,
+    refillBoard: boolean,
     refillBoardAtLine: number,
-    refillAmount: number,
     refillMessiness: GARBAGE_MESSINESS,
 
     bubbleBagSize: number,
@@ -24,7 +24,6 @@ export interface GameSettings {
 
     garbageMaxAtOnce: number,
     previewBaseDuration: number,
-    durationSpeedMultiplier: number,
 
     countDownDuration: number,
 

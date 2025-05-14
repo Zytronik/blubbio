@@ -4,7 +4,7 @@ import { useGameStore } from '@/stores/gameStore';
 import { GameInstance } from '../_interface/game/gameInstance';
 import { getRandomHexColor } from './color';
 import { GameContainers } from '../_interface/game/gameContainers';
-import { GameSprites } from '../_interface/game/gameSprites';
+import { GameSprites } from '../_interface/pixi/gameSprites';
 import { circleGraphicsAsSprite } from './spriteBuilder';
 
 export const mainContainer = new Container();

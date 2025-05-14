@@ -1,5 +1,5 @@
 import { Sprite } from "pixi.js";
-import { PixiAnimation } from "../pixiAnimation";
+import { PixiAnimation } from "../pixi/pixiAnimation";
 
 export interface Bubble {
     type: number,

@@ -1,7 +1,7 @@
 import { Field } from "../_interface/game/field";
 import { GameInstance } from "../_interface/game/gameInstance";
 import { Row } from "../_interface/game/row";
-import { PixiAnimation } from "../_interface/pixiAnimation";
+import { PixiAnimation } from "../_interface/pixi/pixiAnimation";
 
 export function bubbleShotAnimation(instance: GameInstance): void {
     const now = performance.now()

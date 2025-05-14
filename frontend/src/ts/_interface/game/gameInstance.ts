@@ -1,10 +1,10 @@
 import { Bubble } from "./bubble";
 import { GameStats } from "./gameStats";
 import { Grid } from "./grid";
-import { PixiAnimation } from "../pixiAnimation";
+import { PixiAnimation } from "../pixi/pixiAnimation";
 import { GameSettings } from "./gameSettings";
 import { HandlingSettings } from "./handlingSettings";
-import { GameSprites } from "./gameSprites";
+import { GameSprites } from "../pixi/gameSprites";
 import { GameContainers } from "./gameContainers";
 import { rngReference } from "./rngReference";
 import { GarbagePreview } from "./garbagePreview";

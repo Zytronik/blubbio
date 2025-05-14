@@ -77,9 +77,9 @@ export const useGameStore = defineStore('game', () => {
         if (instance) {
             const shotResult = shootBubble(instance);
             applyShotResultToGrid(shotResult);
-            if (shotResult.hasToRefillBoard) {
+            if (shotResult.refillAmount) {
                 const messiness = instance.gameSettings.refillMessiness;
-                const amount = instance.gameSettings.refillAmount;
+                const amount = shotResult.refillAmount;
                 prepareGarbage(instance, messiness, amount);
             }
             nextBubble(instance);
@@ -100,14 +100,12 @@ export const useGameStore = defineStore('game', () => {
         game.gameMode = GAME_MODE.SPRINT;
         game.inputContext = INPUT_CONTEXT.GAME_NO_RESET;
         game.spectating = true;
-        for (let i = 1; i <= monkeyAmount; i++) {
+        for (let i = 1; i <= 1; i++) {
             const name = "Monkey-" + i;
-            console.log(name)
             const instance = newSprintInstance()
             addMonkeyActions(instance, name);
             game.instancesMap.set(name, instance);
         }
-        console.log(game)
     }
 
     return {

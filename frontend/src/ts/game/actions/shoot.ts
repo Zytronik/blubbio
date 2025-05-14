@@ -28,7 +28,7 @@ export function shootBubble(instance: GameInstance): ShotResult {
     const freeFloatingBubbleFields = getFloatingBubbleFields();
     const hasDied: boolean = checkHasDied();
     const hasPerfectCleared = checkHasPerfectCleared();
-    const hasToRefillBoard = checkBoardNeedsRefill();
+    const refillAmount = checkRefillAmount();
 
     return {
         bubbleShot: instance.currentBubble,
@@ -41,7 +41,7 @@ export function shootBubble(instance: GameInstance): ShotResult {
         hasWallBounced: travelLineCoords.length > 2,
         hasDied,
         hasPerfectCleared,
-        hasToRefillBoard: checkBoardNeedsRefill()
+        refillAmount: refillAmount,
     }
 
     function getAllBubbleCoordinatesInGrid(grid: Grid): Coordinates[] {
@@ -276,19 +276,20 @@ export function shootBubble(instance: GameInstance): ShotResult {
         return hasCleared;
     }
 
-    function checkBoardNeedsRefill(): boolean {
-        const refillEnabled = instance.gameSettings.refillAmount > 0;
-        if (refillEnabled) {
+    function checkRefillAmount(): number {
+        if (instance.gameSettings.refillBoard) {
             const threshold = instance.gameSettings.refillBoardAtLine;
             for (let y = 0; y < threshold && y < grid.rows.length; y++) {
                 const fields = grid.rows[y].fields
                 for (let x = 0; x < fields.length; x++) {
                     if (fields[x].bubble == undefined) {
-                        return true;
+                        const queuedGarbageAmount = instance.garbagePreview.generatedGarbage.length;
+                        const refillAmount = (threshold - y) - queuedGarbageAmount;
+                        return refillAmount > 0 ? refillAmount : 0;
                     }
                 }
             }
         }
-        return false;
+        return 0;
     }
 }

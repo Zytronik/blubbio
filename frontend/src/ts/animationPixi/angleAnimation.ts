@@ -1,4 +1,4 @@
-import { PixiAnimation } from '../_interface/pixiAnimation';
+import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
 import { GameInstance } from '../_interface/game/gameInstance';
 
 export function addAngleUpdateAnimation(instance: GameInstance): void {
