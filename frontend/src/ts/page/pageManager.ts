@@ -74,4 +74,7 @@ export function setFullScreenGameView() {
   hideTopAndBottomBars();
   const main = document.querySelector('main') as HTMLElement;
   if (main) main.style.padding = '0px';
+  const pixiCanvas = document.getElementById('pixiCanvas') as HTMLElement;
+  if (pixiCanvas) pixiCanvas.style.display = 'block';
+  pixiCanvas.style.zIndex = '1';
 }
