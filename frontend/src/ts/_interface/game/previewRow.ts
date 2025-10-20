@@ -4,5 +4,4 @@ export interface PreviewRow {
     bubbles: Bubble[],
     extraBubble?: Bubble,
     isSmallerRow: boolean,
-    
 }

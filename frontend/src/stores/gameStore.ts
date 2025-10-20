@@ -16,6 +16,7 @@ import { nextBubble } from '@/ts/game/bubble/queue';
 import { prepareGarbage } from '@/ts/game/bubble/garbage';
 import { gameVisuals, drawGame, setupGameVisuals } from '@/ts/pixi/container';
 
+
 export const useGameStore = defineStore('game', () => {
     const game = getEmptyGame();
     function setupSprint(): void {
@@ -109,6 +110,37 @@ export const useGameStore = defineStore('game', () => {
             game.instancesMap.set(name, instance);
         }
         drawGame();
+
+        // game.gameMode = GAME_MODE.SPRINT;
+        // game.inputContext = INPUT_CONTEXT.GAME_NO_RESET;
+        // game.spectating = true;
+        // const instance = newSprintInstance();
+        // game.instancesMap.set('test', instance);
+    }
+
+    function addGarbageToAllInstances(amount: number): void {
+        game.instancesMap.forEach(instance => {
+            const messiness = instance.gameSettings.refillMessiness;
+            prepareGarbage(instance, messiness, 1);
+        });
+    }
+
+    function debugLogGameField(): void {
+        game.instancesMap.forEach((instance, userName) => {
+            console.log('Game Field for ', userName);
+            let fieldString = '';
+            instance.playGrid.rows.forEach(row => {
+                row.fields.forEach(field => {
+                    if (field.bubble) {
+                        fieldString += field.bubble.type;
+                    } else {
+                        fieldString += '-';
+                    }
+                });
+                fieldString += '\n';
+            });
+            console.log(fieldString);
+        });
     }
 
     return {
@@ -125,5 +157,7 @@ export const useGameStore = defineStore('game', () => {
         pressedHold,
         getAllInstances,
         createMonkeyTesting,
+        debugLogGameField,
+        addGarbageToAllInstances,
     };
 });

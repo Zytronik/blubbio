@@ -12,7 +12,7 @@ export const SPRINT_SETTINGS: GameSettings = {
     collisionRangeFactor: 0.55,
     sprintVictoryCondition: 100,
     prefillBoard: true,
-    prefillBoardAmount: 0,
+    prefillBoardAmount: 4,
     prefillMessiness: GARBAGE_MESSINESS.CLEAN,
     refillBoard: true,
     refillBoardAtLine: 6,

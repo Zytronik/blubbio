@@ -3,7 +3,7 @@ import { channelInput } from '@/ts/input/allInputs';
 import { attachInputReader } from '@/ts/input/inputReader';
 import { defineStore } from 'pinia';
 import { usePageStore } from './pageStore';
-import { playCountdown } from '@/ts/animationPixi/countdownAnimation';
+import { renderCountdown } from '@/ts/animationPixi/countdownAnimation';
 
 export const useInputStore = defineStore('input', {
   state: () => ({

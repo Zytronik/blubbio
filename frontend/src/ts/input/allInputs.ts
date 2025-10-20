@@ -1,10 +1,10 @@
-import { useGameStore } from '@/stores/gameStore';
-import { INPUT_CONTEXT } from '../_enum/inputContext';
-import { Input } from '../_interface/input';
-import { centerCursor, hold, leftDown, leftUp, mirrorAngle, quit, reset, rightDown, rightUp, shoot, toggleAPS } from '../game/actions/thisShouldBeInAllInputs';
-import { updateContainerLayout } from '../pixi/container';
-import { usePageStore } from '@/stores/pageStore';
-import { playCountdown } from '../animationPixi/countdownAnimation';
+import { useGameStore } from "@/stores/gameStore";
+import { INPUT_CONTEXT } from "../_enum/inputContext";
+import { Input } from "../_interface/input";
+import { centerCursor, hold, leftDown, leftUp, mirrorAngle, quit, reset, rightDown, rightUp, shoot, toggleAPS } from "../game/actions/thisShouldBeInAllInputs";
+import { updateContainerLayout } from "../pixi/container";
+import { usePageStore } from "@/stores/pageStore";
+import { renderCountdown } from "../animationPixi/countdownAnimation";
 
 export const angleLeftInput: Input = {
     name: 'Angle Left',
@@ -184,8 +184,34 @@ export const pixiDebug4: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        console.log('pressed debug 4');
-        playCountdown();
+        console.log("pressed debug 4");
+        renderCountdown();
+    },
+    inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET]
+};
+export const pixiDebug5: Input = {
+    name: "asdf",
+    description: "asdf",
+    customKeyMap: ["Numpad5", "", ""],
+    defaultKeyCode: "Numpad5",
+    isSingleTriggerAction: true,
+    pressed: false,
+    fire: () => {
+        console.log("pressed debug 5");
+        useGameStore().debugLogGameField()
+    },
+    inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET]
+};
+export const pixiDebug6: Input = {
+    name: "asdf",
+    description: "asdf",
+    customKeyMap: ["Numpad6", "", ""],
+    defaultKeyCode: "Numpad6",
+    isSingleTriggerAction: true,
+    pressed: false,
+    fire: () => {
+        console.log("pressed debug 6");
+        useGameStore().addGarbageToAllInstances(2)
     },
     inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET],
 };
@@ -205,6 +231,8 @@ export const allInputs: Input[] = [
     pixiDebug2,
     pixiDebug3,
     pixiDebug4,
+    pixiDebug5,
+    pixiDebug6,
 ];
 
 const allKeyCodes = [

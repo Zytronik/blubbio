@@ -1,9 +1,8 @@
-import { Sprite } from 'pixi.js';
-import { thisIsATexture } from '../pixi/allTextures';
-import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
-import { playPixiAnimation, getLerpT } from '../pixi/animation';
+import { PixiAnimation } from "../_interface/pixi/pixiAnimation";
+import { updateContainerLayout } from "../pixi/container";
+import { playPixiAnimation } from "../pixi/animation";
 
-export function updateContainerSizeLoop(): void {
+export function renderContainerSizes(): void {
     const exampleAnim: PixiAnimation = {
         startMS: 0,
         endMS: Infinity,

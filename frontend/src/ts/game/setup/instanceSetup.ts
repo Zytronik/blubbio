@@ -1,17 +1,17 @@
-import { GameInstance } from '@/ts/_interface/game/gameInstance';
-import { SPRINT_SETTINGS } from '../settings/sprintSettings';
-import { HANDLING_SETTINGS } from '../settings/handlingSettings';
-import { getEmptyStats } from './statsSetup';
-import { getEmptyGrid } from './gridSetup';
-import { addAngleUpdateAnimation } from '@/ts/animationPixi/angleAnimation';
-import { addBoardBubblesAnimation } from '@/ts/animationPixi/boardBubblesAnimation';
-import { getAllGameSprites } from './spriteSetup';
-import { allBubbles } from '../bubble/bubbleTypes';
-import { nextBubble } from '../bubble/queue';
-import { XORRandom } from '../rng';
-import { getEmptyGarbagePreview } from './garbageSetup';
-import { prefillBoard } from '../bubble/garbage';
-import { setupBoardVisuals } from '@/ts/pixi/container';
+import { GameInstance } from "@/ts/_interface/game/gameInstance";
+import { SPRINT_SETTINGS } from "../settings/sprintSettings";
+import { HANDLING_SETTINGS } from "../settings/handlingSettings";
+import { getEmptyStats } from "./statsSetup";
+import { getEmptyGrid } from "./gridSetup";
+import { renderAngleUpdate } from "@/ts/animationPixi/angleAnimation";
+import { renderBoardBubbles } from "@/ts/animationPixi/boardBubblesAnimation";
+import { getAllGameSprites } from "./spriteSetup";
+import { allBubbles } from "../bubble/bubbleTypes";
+import { nextBubble } from "../bubble/queue";
+import { XORRandom } from "../rng";
+import { getEmptyGarbagePreview } from "./garbageSetup";
+import { prefillBoard } from "../bubble/garbage";
+import { setupBoardVisuals } from "@/ts/pixi/container";
 
 export function newSprintInstance(): GameInstance {
     const startBubbleSeed = { value: Date.now() };
@@ -40,9 +40,9 @@ export function newSprintInstance(): GameInstance {
     nextBubble(instance);
     prefillBoard(instance);
 
-    addAngleUpdateAnimation(instance);
+    renderAngleUpdate(instance);
 
     //TODO REFACTOR
-    addBoardBubblesAnimation(instance);
+    renderBoardBubbles(instance);
     return instance;
 }
