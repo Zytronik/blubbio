@@ -38,10 +38,10 @@ import { useGameStore } from '@/stores/gameStore';
 import { useUserStore } from '@/stores/userStore';
 import { PAGE } from '@/ts/_enum/page';
 import { isLoggedIn } from '@/ts/network/auth';
-import { setPage } from '@/ts/page/pageManager';
 import { computed, ref } from 'vue';
 import LeaderboardList from '@/components/LeaderboardList.vue';
 import HistoryList from '@/components/HistoryList.vue';
+import { transitionIntoGame } from '@/ts/animationCSS/transitionIntoGame';
 
 export default {
   name: 'SprintPage',
@@ -54,11 +54,11 @@ export default {
     const userSession = computed(() => userStore.userSession);
 
     function startSprint(): void {
+      transitionIntoGame();
       gameStore.startGame();
     }
 
     return {
-      setPage,
       PAGE,
       startSprint,
       leaderboardTabs,

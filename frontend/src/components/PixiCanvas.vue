@@ -1,5 +1,6 @@
 <template>
-  <div id="pixiCanvas"></div>
+  <!-- <div id="pixiCanvas"></div> -->
+  <p></p>
 </template>
 
 <script lang="ts">
@@ -19,7 +20,7 @@ export default {
 #pixiCanvas {
   position: fixed;
   top: 0;
-  z-index: 10000;
+  z-index: -10000;
   left: 0;
   right: 0;
   bottom: 0;

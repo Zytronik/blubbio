@@ -7,8 +7,9 @@ import SprintPage from '../../pages/SprintPage.vue';
 import ScorePage from '../../pages/ScorePage.vue';
 import RankedPage from '../../pages/RankedPage.vue';
 import RoomListing from '../../pages/RoomListing.vue';
-import { PAGE } from '../_enum/page';
 import RoomPage from '@/pages/RoomPage.vue';
+import GamePage from '@/pages/GamePage.vue';
+import { PAGE } from '../_enum/page';
 
 export const allPages: Pages = {
     [PAGE.startMenu]: {
@@ -90,7 +91,7 @@ export const allPages: Pages = {
         title: 'Sprint',
         color: 'rgb(29, 179, 157)',
         component: SprintPage,
-        allowedTransitions: [PAGE.startMenu, PAGE.soloMenu, PAGE.scorePage, PAGE.roomPage],
+        allowedTransitions: [PAGE.startMenu, PAGE.soloMenu, PAGE.scorePage, PAGE.roomPage, PAGE.gamePage],
         backButtons: [
             {
                 page: PAGE.soloMenu,
@@ -171,4 +172,10 @@ export const allPages: Pages = {
             },
         ],
     },
+    [PAGE.gamePage]: {
+        title: 'Game Page',
+        color: 'rgb(0, 0, 0)',
+        component: GamePage,
+        allowedTransitions: [],
+    }
 };

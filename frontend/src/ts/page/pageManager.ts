@@ -62,3 +62,16 @@ export function checkIfCanJoinRoomByUrl() {
     lobbyStore.joinLobby(currentRoomId);
   }
 }
+
+function hideTopAndBottomBars() {
+  const topBar = document.querySelector('.topbar') as HTMLElement;
+  const bottomBar = document.querySelector('.bottomBar') as HTMLElement;
+  if (topBar) topBar.style.display = 'none';
+  if (bottomBar) bottomBar.style.display = 'none';
+}
+
+export function setFullScreenGameView() {
+  hideTopAndBottomBars();
+  const main = document.querySelector('main') as HTMLElement;
+  if (main) main.style.padding = '0px';
+}

@@ -8,4 +8,5 @@ export enum PAGE {
     rankedPage = 'rankedPage',
     roomListing = 'roomListing',
     roomPage = 'roomPage',
+    gamePage = 'gamePage',
 }
