@@ -32,18 +32,6 @@ export function renderBoardBubbles(instance: GameInstance): void {
             instance.playGrid.rows.forEach(row => {
                 row.fields.forEach(field => {
                     if (field.bubble) {
-                        // const x = (field.precisionCoords.x / precisionWidth) * gridBackground.width;
-                        // const y = (field.precisionCoords.y / precisionHeight) * gridBackground.height;
-
-                        // field.bubbleSprite.x = x;
-                        // field.bubbleSprite.y = y;
-                        // field.bubbleSprite.width = spriteWidth;
-                        // field.bubbleSprite.height = spriteHeight;
-                        // field.bubbleSprite.anchor = {x: 0.5, y: 0.5};
-
-                        // field.bubbleSpriteOverlay.x = x;
-                        // field.bubbleSpriteOverlay.y = y;
-
                         field.bubbleSpriteContainer.visible = true;
                         field.bubbleSpriteContainer.tint = field.bubble.tint;
                     } else {
@@ -53,7 +41,7 @@ export function renderBoardBubbles(instance: GameInstance): void {
             });
         },
         onEnd: function (): void {
-            console.log('end');
+            // console.log('end');
         },
     };
     animation.onStart();

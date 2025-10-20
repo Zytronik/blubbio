@@ -16,7 +16,7 @@ import { setupBoardVisuals } from "@/ts/pixi/container";
 export function newSprintInstance(): GameInstance {
     const startBubbleSeed = { value: Date.now() };
     const startGarbageSeed = { value: Date.now() + 123456789 };
-    const sprites = getAllGameSprites();
+    const sprites = getAllGameSprites(SPRINT_SETTINGS);
     const instance: GameInstance = {
         gameSettings: SPRINT_SETTINGS,
         handlingSettings: HANDLING_SETTINGS,
