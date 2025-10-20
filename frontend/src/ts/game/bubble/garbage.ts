@@ -8,15 +8,19 @@ import { allBubbles } from './bubbleTypes';
 import { renderGarbagePreview } from '@/ts/animationPixi/garbagePreviewAnimation';
 import { RowInformation } from '@/ts/_interface/game/rowInformation';
 import { Field } from '@/ts/_interface/game/field';
-import { Sprite } from 'pixi.js';
-import { bubbleTexture } from '@/ts/pixi/allTextures';
 import { useSpriteStore } from '@/stores/spriteStore';
 
 export function prefillBoard(instance: GameInstance): void {
+    const totalHeight = instance.gameSettings.gridHeight + instance.gameSettings.gridExtraHeight - 1;
     const amount = instance.gameSettings.prefillBoardAmount;
-    for (let h = amount - 1; h >= 0; h--) {
+    for (let h = Math.min(amount - 1, totalHeight); h >= 0; h--) {
         const row = instance.playGrid.rows[h];
-        const rowBelow = convertToRowInformation(instance.playGrid.rows[h + 1]);
+        let rowBelow: RowInformation;
+        if (h === totalHeight) {
+            rowBelow = convertToRowInformation(row);
+        } else {
+            rowBelow = convertToRowInformation(instance.playGrid.rows[h + 1]);
+        }
         const messiness = instance.gameSettings.prefillMessiness;
         const garbageResult = newGarbage(rowBelow, messiness, instance.garbageSeed);
         row.garbageMessiness = garbageResult.garbageMessiness;
@@ -56,9 +60,9 @@ export function pushOneGarbageRow(instance: GameInstance): void {
     const bigRowXCoordinates = grid.bigRowXCoordinates;
     const smallRowXCoordinates = grid.smallRowXCoordinates;
     const lastBigRowXCoordinate = bigRowXCoordinates[bigRowXCoordinates.length - 1];
-    
+
     const incomingAmount = instance.garbagePreview.generatedGarbage.length;
-    console.log("garbageMaxAtOnce:", garbageMaxAtOnce, "incomingAmount:", incomingAmount);
+    console.log('garbageMaxAtOnce:', garbageMaxAtOnce, 'incomingAmount:', incomingAmount);
     for (let i = 0; i < Math.min(garbageMaxAtOnce, incomingAmount); i++) {
         const row0 = grid.rows[0];
         const garbage = instance.garbagePreview.generatedGarbage.shift()!.garbage;
@@ -105,12 +109,11 @@ export function pushOneGarbageRow(instance: GameInstance): void {
                     coords: { x: lastIndex, y: y },
                     precisionCoords: { x: centerPointX, y: centerPointY },
                     bubble: rowAbove.fields[lastIndex].bubble,
-                    bubbleSpriteContainer: useSpriteStore().getBubbleSprite(),
+                    dirty: true,
                 };
                 currentRow.fields.push(field);
             } else {
-                const previouslyLastBubble = currentRow.fields.pop();
-                previouslyLastBubble?.bubbleSpriteContainer.destroy({ children: true });
+                currentRow.fields.pop();
             }
             currentRow.isSmallerRow = !currentRow.isSmallerRow;
         }
@@ -129,7 +132,7 @@ export function pushOneGarbageRow(instance: GameInstance): void {
             coords: { x: lastIndex, y },
             precisionCoords: { x: centerPointX, y: centerPointY },
             bubble: allBubbles[garbage[lastIndex]],
-            bubbleSpriteContainer: useSpriteStore().getBubbleSprite(),
+            dirty: true,
         };
         row0.fields.push(field);
         row0.isSmallerRow = !row0.isSmallerRow;
@@ -140,8 +143,7 @@ export function pushOneGarbageRow(instance: GameInstance): void {
             row0.fields[x].bubble = allBubbles[garbage[x]];
             row0.fields[x].precisionCoords.x = smallRowXCoordinates[x];
         }
-        const previouslyLastBubble = row0.fields.pop();
-        previouslyLastBubble?.bubbleSpriteContainer.destroy({ children: true });
+        row0.fields.pop();
         row0.isSmallerRow = !row0.isSmallerRow;
     }
 }

@@ -54,7 +54,7 @@ export function getEmptyGrid(settings: GameSettings): Grid {
                     y: precisionRowHeight * y + bubbleFullRadius,
                 },
                 bubble: undefined,
-                bubbleSpriteContainer: useSpriteStore().getBubbleSprite(),
+                dirty: true,
             };
             row.fields.push(field);
         }
