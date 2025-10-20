@@ -34,7 +34,6 @@
 </template>
 
 <script lang="ts">
-import { useGameStore } from '@/stores/gameStore';
 import { useUserStore } from '@/stores/userStore';
 import { PAGE } from '@/ts/_enum/page';
 import { isLoggedIn } from '@/ts/network/auth';
@@ -49,14 +48,11 @@ export default {
   setup() {
     const leaderboardTabs = ref<string[]>(['Global', 'National', 'Me']);
     const activeLeaderboard = ref<string>('Global');
-    const gameStore = useGameStore();
     const userStore = useUserStore();
     const userSession = computed(() => userStore.userSession);
 
     function startSprint(): void {
       transitionIntoGame();
-      gameStore.setupSprint();
-      gameStore.startGame();
     }
 
     return {
