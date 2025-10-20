@@ -16,7 +16,7 @@ import { nextBubble } from '@/ts/game/bubble/queue';
 import { prepareGarbage } from '@/ts/game/bubble/garbage';
 import { gameVisuals, drawGame, setupGameVisuals } from '@/ts/pixi/container';
 import { renderBoardBubbles } from '@/ts/animationPixi/boardBubblesAnimation';
-import { renderAngleUpdate } from '@/ts/animationPixi/angleAnimation';
+import { renderArrowUpdate } from '@/ts/animationPixi/arrowAnimation';
 import { renderQueueBubbles } from '@/ts/animationPixi/queueBubblesAnimation';
 
 
@@ -39,7 +39,7 @@ export const useGameStore = defineStore('game', () => {
         for (const instance of game.instancesMap.values()) {
             renderBoardBubbles(instance);
             renderQueueBubbles(instance);
-            renderAngleUpdate(instance);
+            renderArrowUpdate(instance);
         }
     }
     function pressedLeft(userName: string): void {

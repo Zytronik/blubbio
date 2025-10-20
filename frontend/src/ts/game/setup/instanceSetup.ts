@@ -3,7 +3,7 @@ import { SPRINT_SETTINGS } from "../settings/sprintSettings";
 import { HANDLING_SETTINGS } from "../settings/handlingSettings";
 import { getEmptyStats } from "./statsSetup";
 import { getEmptyGrid } from "./gridSetup";
-import { renderAngleUpdate } from "@/ts/animationPixi/angleAnimation";
+import { renderArrowUpdate } from "@/ts/animationPixi/arrowAnimation";
 import { renderBoardBubbles } from "@/ts/animationPixi/boardBubblesAnimation";
 import { getAllGameSprites } from "./spriteSetup";
 import { allBubbles } from "../bubble/bubbleTypes";

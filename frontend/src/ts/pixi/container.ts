@@ -26,16 +26,17 @@ export interface BoardVisuals {
     gridContainer: Container;
     gridBackground: Container;
     queueContainer: Container;
+    arrowContainer: Container;
 }
 
 export const gameVisuals: GameVisuals = {
-    gameContainer: new Container({ visible: false }),
+    gameContainer: new Container({ visible: false, label: "gameContainer" }),
     boardVisuals: [],
     countDownContainer: new Container({ visible: false, label: "countDownContainer" }),
 };
 
 export const pixiVisuals: PixiVisuals = {
-    mainContainer: new Container(),
+    mainContainer: new Container({ label: "mainContainer" }),
     gameVisuals: gameVisuals,
 };
 
@@ -53,22 +54,22 @@ export function setupPixiVisuals(): void {
 }
 
 export function setupGameVisuals(): void {
-    console.log("setupGameVisuals");
     drawGameContainer();
     drawCountDownContainer();
 }
 
 export function setupBoardVisuals(sprites: GameSprites, precisionAspectRatio: number): BoardVisuals {
-    console.log("setupBoardVisuals", precisionAspectRatio);
-    const boardContainer = new Container();
-    const gridContainer = new Container();
+    const boardContainer = new Container({ label: "boardContainer" });
+    const gridContainer = new Container({ label: "gridContainer" });
     const gridBackground = new Container({ label: "gridBackground" });
     const queueContainer = new Container({ label: "queueContainer" });
+    const arrowContainer = new Container({ label: "arrowContainer" });
 
     gameVisuals.gameContainer.addChild(boardContainer);
     boardContainer.addChild(gridContainer);
     boardContainer.addChild(gridBackground);
     boardContainer.addChild(queueContainer);
+    gridContainer.addChild(arrowContainer);
 
     const visuals: BoardVisuals = {
         precisionAspectRatio: precisionAspectRatio,
@@ -77,6 +78,8 @@ export function setupBoardVisuals(sprites: GameSprites, precisionAspectRatio: nu
         gridContainer: gridContainer,
         gridBackground: gridBackground,
         queueContainer: queueContainer,
+        arrowContainer: arrowContainer,
+
     };
 
     gameVisuals.boardVisuals.push(visuals);
@@ -91,7 +94,6 @@ export function updateContainerLayout(): void {
 function drawMainContainer(): void {
     const app = usePixiStore().getPixiApp();
     const mainContainer = pixiVisuals.mainContainer;
-    mainContainer.label = "mainContainer";
 
     const padding = 20;
     const backgroundColor = 'red';
@@ -110,7 +112,6 @@ function drawMainContainer(): void {
 
 function drawGameContainer(): void {
     const gameContainer = gameVisuals.gameContainer;
-    gameContainer.label = "gameContainer";
 
     const parent = gameContainer.parent;
     const paddingX = 200;
@@ -130,7 +131,6 @@ function drawGameContainer(): void {
 
 function drawCountDownContainer(): void {
     const countDownContainer = gameVisuals.countDownContainer
-    countDownContainer.label = "countDownContainer";
     countDownContainer.zIndex = 1;
 
     countDownContainer.x = 0;
@@ -147,7 +147,6 @@ function drawCountDownContainer(): void {
 
 function drawGridContainer(visuals: BoardVisuals): void {
     const gridContainer = visuals.gridContainer;
-    gridContainer.label = "gridContainer";
     gridContainer.zIndex = 1;
 
     const parent = gridContainer.parent;
@@ -167,9 +166,7 @@ function drawGridContainer(visuals: BoardVisuals): void {
 }
 
 function drawGridBackgroundContainer(visuals: BoardVisuals): void {
-    console.log("drawBackgroundContainer");
     const gridBackground = visuals.gridBackground;
-    gridBackground.label = "gridBackground";
 
     const parent = gridBackground.parent;
     const aspectRatio = visuals.precisionAspectRatio;
@@ -189,7 +186,6 @@ function drawGridBackgroundContainer(visuals: BoardVisuals): void {
 
 function drawQueueContainer(visuals: BoardVisuals): void {
     const queueContainer = visuals.queueContainer;
-    queueContainer.label = "queueContainer";
 
     const paddingBoardLeft = getBoardPaddingLeft(visuals);
 
@@ -198,25 +194,39 @@ function drawQueueContainer(visuals: BoardVisuals): void {
 
     const parent = queueContainer.parent;
     const width = paddingBoardLeft;
-    const height = parent.height / 2;
+    const height = parent.height / 12 * 5; // TODO adjust according to bubble queue size
 
     const background = new Graphics().rect(0, 0, width, height).fill({ color: "violet" });
     background.label = "queueContainerBackground";
     queueContainer.addChild(background);
 }
 
-function drawArrow(visuals: BoardVisuals): void {
+function drawArrowContainer(visuals: BoardVisuals): void {
     const { sprites } = visuals;
+    const arrowContainer = visuals.arrowContainer;
     const arrow = sprites.arrow;
-    const gridContainer = visuals.gridContainer;
+    const currentBubble = sprites.currentBubble;
+
+    const width = getBoardPaddingLeft(visuals);
+    const height = width;
+
+    arrowContainer.zIndex = 1;
+    arrowContainer.pivot.set(width / 2, height / 2);
 
     arrow.label = "arrow";
-    arrow.zIndex = 1;
-    arrow.width = gridContainer.height * 0.07;
-    arrow.height = gridContainer.height * 0.07;
-    arrow.anchor.set(0.5);
+    currentBubble.label = "currentBubble";
 
-    gridContainer.addChild(arrow);
+    arrowContainer.width = width;
+    arrowContainer.height = height;
+
+    arrow.height = height;
+    arrow.width = width;
+
+    currentBubble.width = width;
+    currentBubble.height = height;
+
+    arrowContainer.addChild(currentBubble);
+    arrowContainer.addChild(arrow);
 }
 
 export function drawGame(): void {
@@ -343,14 +353,13 @@ function drawMultiLayout(): void {
 
 function drawBoardContainer(visuals: BoardVisuals, width: number, height: number): void {
     const boardContainer = visuals.boardContainer;
-    boardContainer.label = "boardContainer";
     const background = new Graphics().rect(0, 0, width, height).fill({ color: "green" });
     background.label = "boardContainerBackground";
     boardContainer.addChildAt(background, 0);
     drawGridBackgroundContainer(visuals);
     drawGridContainer(visuals);
     drawQueueContainer(visuals);
-    drawArrow(visuals);
+    drawArrowContainer(visuals);
 }
 
 function getBoardPaddingLeft(visuals: BoardVisuals): number {
