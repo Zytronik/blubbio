@@ -20,8 +20,9 @@ export function renderBoardBubbles(instance: GameInstance): void {
                     const y = (field.precisionCoords.y / precisionHeight) * gridBackground.height;
                     gridContainer.addChild(field.bubbleSpriteContainer);
 
-                    field.bubbleSpriteContainer.x = x;
-                    field.bubbleSpriteContainer.y = y;
+                    field.bubbleSpriteContainer.x = x - spriteWidth / 2;
+                    field.bubbleSpriteContainer.y = y - spriteHeight / 2;
+
                     field.bubbleSpriteContainer.width = spriteWidth;
                     field.bubbleSpriteContainer.height = spriteHeight;
                 });

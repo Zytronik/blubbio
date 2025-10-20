@@ -49,11 +49,13 @@ export function setupPixiVisuals(): void {
 }
 
 export function setupGameVisuals(): void {
+    console.log("setupGameVisuals");
     drawGameContainer();
     drawCountDownContainer();
 }
 
 export function setupBoardVisuals(sprites: GameSprites): BoardVisuals {
+    console.log("setupBoardVisuals");
     const boardContainer = new Container();
     const gridContainer = new Container();
     const gridBackground = new Container({ label: "gridBackground" });
@@ -141,6 +143,7 @@ function drawCountDownContainer(): void {
 function drawGridContainer(visuals: BoardVisuals): void {
     const gridContainer = visuals.gridContainer;
     gridContainer.label = "gridContainer";
+    gridContainer.zIndex = 1;
 
     const parent = gridContainer.parent;
 
@@ -153,9 +156,30 @@ function drawGridContainer(visuals: BoardVisuals): void {
     const width = parent.width - paddingX * 2;
     const height = parent.height - paddingBottom;
 
-    const background = new Graphics().rect(0, 0, width, height).fill({ color: "yellow" });
+    const background = new Graphics().rect(0, 0, width, height).fill({ color: 0x000000, alpha: 0.8 });
     background.label = "gridContainerBackground";
     gridContainer.addChild(background);
+}
+
+function drawBackgroundContainer(visuals: BoardVisuals): void {
+    console.log("drawBackgroundContainer");
+    const gridBackground = visuals.gridBackground;
+    gridBackground.label = "gridBackground";
+
+    const parent = gridBackground.parent;
+
+    const paddingX = parent.width * 0.15;
+    const paddingBottom = parent.height * 0.1;
+
+    gridBackground.x = paddingX;
+    gridBackground.y = 0;
+
+    const width = parent.width - paddingX * 2;
+    const height = parent.height - paddingBottom;
+
+    const background = new Graphics().rect(0, 0, width, height).fill({ color: "yellow" });
+    background.label = "gridBackgroundBackground";
+    gridBackground.addChild(background);
 }
 
 function drawQueueContainer(visuals: BoardVisuals): void {
@@ -301,6 +325,7 @@ function drawBoardContainer(visuals: BoardVisuals, width: number, height: number
     const background = new Graphics().rect(0, 0, width, height).fill({ color: "green" });
     background.label = "boardContainerBackground";
     boardContainer.addChildAt(background, 0);
+    drawBackgroundContainer(visuals);
     drawGridContainer(visuals);
     drawQueueContainer(visuals);
     drawArrow(visuals);

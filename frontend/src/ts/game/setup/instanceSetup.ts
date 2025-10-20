@@ -42,7 +42,5 @@ export function newSprintInstance(): GameInstance {
 
     renderAngleUpdate(instance);
 
-    //TODO REFACTOR
-    renderBoardBubbles(instance);
     return instance;
 }

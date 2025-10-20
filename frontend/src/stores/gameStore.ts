@@ -15,6 +15,7 @@ import { newSprintInstance } from '@/ts/game/setup/instanceSetup';
 import { nextBubble } from '@/ts/game/bubble/queue';
 import { prepareGarbage } from '@/ts/game/bubble/garbage';
 import { gameVisuals, drawGame, setupGameVisuals } from '@/ts/pixi/container';
+import { renderBoardBubbles } from '@/ts/animationPixi/boardBubblesAnimation';
 
 
 export const useGameStore = defineStore('game', () => {
@@ -32,6 +33,10 @@ export const useGameStore = defineStore('game', () => {
         gameVisuals.gameContainer.visible = true; //this should become a store!
         startGameLogicLoop();
         drawGame();
+        //maybe container store?
+        for (const instance of game.instancesMap.values()) {
+            renderBoardBubbles(instance);
+        }
     }
     function pressedLeft(userName: string): void {
         const instance = game.instancesMap.get(userName);
