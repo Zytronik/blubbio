@@ -1,10 +1,10 @@
-import { useGameStore } from "@/stores/gameStore";
-import { INPUT_CONTEXT } from "../_enum/inputContext";
-import { Input } from "../_interface/input";
-import { centerCursor, hold, leftDown, leftUp, mirrorAngle, quit, reset, rightDown, rightUp, shoot, toggleAPS } from "../game/actions/thisShouldBeInAllInputs";
-import { updateContainerLayout } from "../pixi/container";
-import { usePageStore } from "@/stores/pageStore";
-import { renderCountdown } from "../animationPixi/countdownAnimation";
+import { useGameStore } from '@/stores/gameStore';
+import { INPUT_CONTEXT } from '../_enum/inputContext';
+import { Input } from '../_interface/input';
+import { updateContainerLayout } from '../pixi/container';
+import { usePageStore } from '@/stores/pageStore';
+import { useContainerStore } from '@/stores/containerStore';
+import { useUserStore } from '@/stores/userStore';
 
 export const angleLeftInput: Input = {
     name: 'Angle Left',
@@ -13,8 +13,14 @@ export const angleLeftInput: Input = {
     defaultKeyCode: 'ArrowLeft',
     isSingleTriggerAction: true,
     pressed: false,
-    fire: () => leftDown(),
-    release: () => leftUp(),
+    fire: () => {
+        const localPlayer = useUserStore().getUserName();
+        useGameStore().pressedLeft(localPlayer);
+    },
+    release: () => {
+        const localPlayer = useUserStore().getUserName();
+        useGameStore().releasedLeft(localPlayer);
+    },
     inputContext: [INPUT_CONTEXT.GAME_NO_RESET, INPUT_CONTEXT.GAME_WITH_RESET],
 };
 
@@ -25,8 +31,14 @@ export const angleRightInput: Input = {
     defaultKeyCode: 'ArrowRight',
     isSingleTriggerAction: true,
     pressed: false,
-    fire: () => rightDown(),
-    release: () => rightUp(),
+    fire: () => {
+        const localPlayer = useUserStore().getUserName();
+        useGameStore().pressedRight(localPlayer);
+    },
+    release: () => {
+        const localPlayer = useUserStore().getUserName();
+        useGameStore().releasedRight(localPlayer);
+    },
     inputContext: [INPUT_CONTEXT.GAME_NO_RESET, INPUT_CONTEXT.GAME_WITH_RESET],
 };
 
@@ -38,10 +50,12 @@ export const changeAPSInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        toggleAPS();
+        const localPlayer = useUserStore().getUserName();
+        useGameStore().toggleAPS(localPlayer);
     },
     release: () => {
-        toggleAPS();
+        const localPlayer = useUserStore().getUserName();
+        useGameStore().toggleAPS(localPlayer);
     },
     inputContext: [INPUT_CONTEXT.GAME_NO_RESET, INPUT_CONTEXT.GAME_WITH_RESET],
 };
@@ -54,7 +68,8 @@ export const centerCursorInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        centerCursor();
+        const localPlayer = useUserStore().getUserName();
+        useGameStore().pressedCenter(localPlayer);
     },
     inputContext: [INPUT_CONTEXT.GAME_NO_RESET, INPUT_CONTEXT.GAME_WITH_RESET],
 };
@@ -67,7 +82,8 @@ export const mirrorCursorInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        mirrorAngle();
+        const localPlayer = useUserStore().getUserName();
+        useGameStore().pressedMirror(localPlayer);
     },
     inputContext: [INPUT_CONTEXT.GAME_NO_RESET, INPUT_CONTEXT.GAME_WITH_RESET],
 };
@@ -80,7 +96,8 @@ export const shootInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        shoot();
+        const localPlayer = useUserStore().getUserName();
+        useGameStore().pressedShoot(localPlayer);
     },
     inputContext: [INPUT_CONTEXT.GAME_NO_RESET, INPUT_CONTEXT.GAME_WITH_RESET],
 };
@@ -93,7 +110,8 @@ export const holdInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        hold();
+        const localPlayer = useUserStore().getUserName();
+        useGameStore().pressedHold(localPlayer);
     },
     inputContext: [INPUT_CONTEXT.GAME_NO_RESET, INPUT_CONTEXT.GAME_WITH_RESET],
 };
@@ -106,7 +124,8 @@ export const resetInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        reset();
+        // const localPlayer = useUserStore().getUserName();
+        // useGameStore().(localPlayer);
     },
     inputContext: [INPUT_CONTEXT.GAME_WITH_RESET],
 };
@@ -119,7 +138,8 @@ export const backInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        quit();
+        // const localPlayer = useUserStore().getUserName();
+        // useGameStore().pressedShoot(localPlayer);
     },
     inputContext: [INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.MENU],
 };
@@ -146,7 +166,8 @@ export const pixiDebug1: Input = {
     pressed: false,
     fire: () => {
         console.log('pressed debug 1');
-        useGameStore().createMonkeyTesting(5);
+        useGameStore().setupSprint();
+        // useGameStore().createMonkeyTesting(3);
     },
     inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET],
 };
@@ -184,34 +205,35 @@ export const pixiDebug4: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        console.log("pressed debug 4");
-        renderCountdown();
+        console.log('pressed debug 4');
+        // renderCountdown();
+        useContainerStore().cleanUpGameContainer();
     },
-    inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET]
+    inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET],
 };
 export const pixiDebug5: Input = {
-    name: "asdf",
-    description: "asdf",
-    customKeyMap: ["Numpad5", "", ""],
-    defaultKeyCode: "Numpad5",
+    name: 'asdf',
+    description: 'asdf',
+    customKeyMap: ['Numpad5', '', ''],
+    defaultKeyCode: 'Numpad5',
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        console.log("pressed debug 5");
-        useGameStore().debugLogGameField()
+        console.log('pressed debug 5');
+        useGameStore().debugLogGameField();
     },
-    inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET]
+    inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET],
 };
 export const pixiDebug6: Input = {
-    name: "asdf",
-    description: "asdf",
-    customKeyMap: ["Numpad6", "", ""],
-    defaultKeyCode: "Numpad6",
+    name: 'asdf',
+    description: 'asdf',
+    customKeyMap: ['Numpad6', '', ''],
+    defaultKeyCode: 'Numpad6',
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        console.log("pressed debug 6");
-        useGameStore().addGarbageToAllInstances(2)
+        console.log('pressed debug 6');
+        useGameStore().addGarbageToAllInstances(2);
     },
     inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET],
 };

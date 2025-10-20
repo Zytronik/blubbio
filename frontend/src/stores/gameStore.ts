@@ -98,7 +98,6 @@ export const useGameStore = defineStore('game', () => {
     }
 
     function createMonkeyTesting(monkeyAmount: number): void {
-        // game = getEmptyGame();
         game.gameMode = GAME_MODE.SPRINT;
         game.inputContext = INPUT_CONTEXT.GAME_NO_RESET;
         game.spectating = true;
