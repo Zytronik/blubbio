@@ -31,6 +31,7 @@ export const useGameStore = defineStore('game', () => {
         useInputStore().setInputContext(game.inputContext);
         gameVisuals.gameContainer.visible = true; //this should become a store!
         startGameLogicLoop();
+        drawGame();
     }
     function pressedLeft(userName: string): void {
         const instance = game.instancesMap.get(userName);

@@ -5,6 +5,7 @@ import { updateContainerLayout } from '../pixi/container';
 import { usePageStore } from '@/stores/pageStore';
 import { useContainerStore } from '@/stores/containerStore';
 import { useUserStore } from '@/stores/userStore';
+import { renderCountdown } from '../animationPixi/countdownAnimation';
 
 export const angleLeftInput: Input = {
     name: 'Angle Left',
@@ -206,8 +207,8 @@ export const pixiDebug4: Input = {
     pressed: false,
     fire: () => {
         console.log('pressed debug 4');
-        // renderCountdown();
-        useContainerStore().cleanUpGameContainer();
+        renderCountdown();
+        //useContainerStore().cleanUpGameContainer();
     },
     inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET],
 };
