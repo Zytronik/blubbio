@@ -1,8 +1,8 @@
 import { GameInstance } from "../_interface/game/gameInstance";
 import { PixiAnimation } from "../_interface/pixi/pixiAnimation";
-import { pushGarbage } from "../game/bubble/garbage";
+import { pushOneGarbageRow } from "../game/bubble/garbage";
 
-export function triggerGarbagePreviewAnimation(instance: GameInstance): void {
+export function renderGarbagePreview(instance: GameInstance): void {
     const preview = instance.garbagePreview;
     if (!preview.isPreviewRunning) {
         preview.isPreviewRunning = true;
@@ -18,10 +18,10 @@ export function triggerGarbagePreviewAnimation(instance: GameInstance): void {
                 //if bar passes bubble, apply color from generatedGarbage[0] to previewrow
             },
             onEnd: function (): void {
-                pushGarbage(instance);
+                pushOneGarbageRow(instance);
                 preview.isPreviewRunning = false;
                 if (preview.generatedGarbage.length > 0) {
-                    triggerGarbagePreviewAnimation(instance);
+                    renderGarbagePreview(instance);
                 }
             }
         }

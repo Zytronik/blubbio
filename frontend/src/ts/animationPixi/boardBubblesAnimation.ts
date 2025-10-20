@@ -1,7 +1,7 @@
 import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
 import { GameInstance } from '../_interface/game/gameInstance';
 
-export function addBoardBubblesAnimation(instance: GameInstance): void {
+export function renderBoardBubbles(instance: GameInstance): void {
     const gridBackground = instance.gameContainers.gridBackground;
     const gridContainer = instance.gameContainers.gridContainer;
     const precisionWidth = instance.playGrid.precisionWidth;

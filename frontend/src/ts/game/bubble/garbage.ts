@@ -1,19 +1,22 @@
-import { GameInstance } from "@/ts/_interface/game/gameInstance";
-import { XORRandom } from "../rng";
-import { Row } from "@/ts/_interface/game/row";
-import { GARBAGE_MESSINESS, GARBAGE_STATS } from "@/ts/_enum/garbageMessiness";
-import { rngReference } from "@/ts/_interface/game/rngReference";
-import { GarbageInformation } from "@/ts/_interface/game/garbage";
-import { allBubbles } from "./bubbleTypes";
-import { triggerGarbagePreviewAnimation } from "@/ts/animationPixi/garbagePreviewAnimation";
-import { RowInformation } from "@/ts/_interface/game/rowInformation";
+import { GameInstance } from '@/ts/_interface/game/gameInstance';
+import { XORRandom } from '../rng';
+import { Row } from '@/ts/_interface/game/row';
+import { GARBAGE_MESSINESS, GARBAGE_STATS } from '@/ts/_enum/garbageMessiness';
+import { rngReference } from '@/ts/_interface/game/rngReference';
+import { GarbageInformation } from '@/ts/_interface/game/garbageInformation';
+import { allBubbles } from './bubbleTypes';
+import { renderGarbagePreview } from '@/ts/animationPixi/garbagePreviewAnimation';
+import { RowInformation } from '@/ts/_interface/game/rowInformation';
+import { Field } from '@/ts/_interface/game/field';
+import { Sprite } from 'pixi.js';
+import { bubbleTexture } from '@/ts/pixi/allTextures';
 
 export function prefillBoard(instance: GameInstance): void {
     const amount = instance.gameSettings.prefillBoardAmount;
     for (let h = amount - 1; h >= 0; h--) {
         const row = instance.playGrid.rows[h];
         const rowBelow = convertToRowInformation(instance.playGrid.rows[h + 1]);
-        const messiness = instance.gameSettings.prefillMessiness
+        const messiness = instance.gameSettings.prefillMessiness;
         const garbageResult = newGarbage(rowBelow, messiness, instance.garbageSeed);
         row.garbageMessiness = garbageResult.garbageMessiness;
         row.pairLocations = garbageResult.pairLocations;
@@ -25,104 +28,119 @@ export function prefillBoard(instance: GameInstance): void {
 }
 
 export function prepareGarbage(instance: GameInstance, messiness: GARBAGE_MESSINESS, amount: number): void {
-    let rowBelow = convertToRowInformation(instance.playGrid.rows[0]);
+    const generatedGarbage = instance.garbagePreview.generatedGarbage;
+    let rowBelow: RowInformation;
+    if (generatedGarbage.length > 0) {
+        rowBelow = convertGarbageToRowInformation(generatedGarbage[generatedGarbage.length - 1]);
+    } else {
+        rowBelow = convertToRowInformation(instance.playGrid.rows[0]);
+    }
     for (let i = 0; i < amount; i++) {
-        // console.log("rowBelow: ", rowBelow)
         const garbageResult = newGarbage(rowBelow, messiness, instance.garbageSeed);
-        instance.garbagePreview.generatedGarbage.push(garbageResult)
+        instance.garbagePreview.generatedGarbage.push(garbageResult);
         rowBelow = {
             isSmallerRow: garbageResult.isSmallerRow,
             colorIDs: garbageResult.garbage,
             pairLocations: garbageResult.pairLocations,
-        }
-        // console.log("garbageResult: ", garbageResult);
+        };
     }
-    triggerGarbagePreviewAnimation(instance);
+    renderGarbagePreview(instance);
 }
 
-export function pushGarbage(instance: GameInstance): void {
-
+export function pushOneGarbageRow(instance: GameInstance): void {
+    const garbageMaxAtOnce = instance.gameSettings.garbageMaxAtOnce;
     const grid = instance.playGrid;
-    const garbage = instance.garbagePreview.generatedGarbage.shift()!.garbage;
-    console.log("garbage: ", ...garbage)
-
-    allRowsDown();
-
-    const row0 = grid.rows[0];
-    const row2 = grid.rows[2];
-    if (row0.isSmallerRow) {
-        fullRowGarbagePush();
-    } else {
-        smallRowGarbagePush();
+    const indexSmallRowWidth = grid.gridWidth - 2;
+    const indexTotalGridHeight = grid.gridHeight + grid.extraGridHeight - 1;
+    const bigRowXCoordinates = grid.bigRowXCoordinates;
+    const smallRowXCoordinates = grid.smallRowXCoordinates;
+    const lastBigRowXCoordinate = bigRowXCoordinates[bigRowXCoordinates.length - 1];
+    
+    const incomingAmount = instance.garbagePreview.generatedGarbage.length;
+    console.log("garbageMaxAtOnce:", garbageMaxAtOnce, "incomingAmount:", incomingAmount);
+    for (let i = 0; i < Math.min(garbageMaxAtOnce, incomingAmount); i++) {
+        const row0 = grid.rows[0];
+        const garbage = instance.garbagePreview.generatedGarbage.shift()!.garbage;
+        allRowsDown();
+        if (grid.rows[0].isSmallerRow) {
+            fullRowGarbagePush(row0, garbage);
+        } else {
+            smallRowGarbagePush(row0, garbage);
+        }
     }
 
-    let logstring = ""
+    let fieldString = '';
     instance.playGrid.rows.forEach(row => {
         row.fields.forEach(field => {
-            if(field.bubble) {
-                logstring += field.bubble.type;
+            if (field.bubble) {
+                fieldString += field.bubble.type;
             } else {
-                logstring += "-";
+                fieldString += '-';
             }
         });
-        logstring += "\n"
+        fieldString += '\n';
     });
-    console.log(logstring);
+    console.log(fieldString);
 
     function allRowsDown() {
-        for (let y = grid.rows.length - 1; y > 0; y--) {
+        for (let y = indexTotalGridHeight; y > 0; y--) {
             const row = grid.rows[y];
             const rowAbove = grid.rows[y - 1];
-            copyRowAbove(row, rowAbove)
+            copyRowAbove(row, rowAbove);
         }
 
+        //all rows from index 1 and below copy the row above them, the top row (0) copies garbage
         function copyRowAbove(currentRow: Row, rowAbove: Row) {
-            for (let x = 0; x < rowAbove.fields.length - 1; x++) {
+            for (let x = 0; x <= indexSmallRowWidth; x++) {
                 currentRow.fields[x].bubble = rowAbove.fields[x].bubble;
                 currentRow.fields[x].precisionCoords.x = rowAbove.fields[x].precisionCoords.x;
             }
             if (currentRow.isSmallerRow) {
                 const lastIndex = rowAbove.fields.length - 1;
                 const y = currentRow.fields[0].coords.y;
-                const centerPointX = rowAbove.fields[lastIndex].precisionCoords.x;
+                const centerPointX = lastBigRowXCoordinate;
                 const centerPointY = currentRow.fields[0].precisionCoords.y;
-                // const field: Field = {
-                //     coords: { x: lastIndex, y: y, },
-                //     precisionCoords: { x: centerPointX, y: centerPointY, },
-                //     bubble: rowAbove.fields[lastIndex].bubble,
-                //     bubbleSpriteContainer: new Sprite(bubbleTexture.texture),
-                // }
+                const field: Field = {
+                    coords: { x: lastIndex, y: y },
+                    precisionCoords: { x: centerPointX, y: centerPointY },
+                    bubble: rowAbove.fields[lastIndex].bubble,
+                    bubbleSpriteContainer: new Sprite(bubbleTexture.texture),
+                };
+                currentRow.fields.push(field);
             } else {
-                currentRow.fields.pop();
+                const previouslyLastBubble = currentRow.fields.pop();
+                previouslyLastBubble?.bubbleSpriteContainer.destroy({ children: true });
             }
             currentRow.isSmallerRow = !currentRow.isSmallerRow;
         }
     }
 
-    function fullRowGarbagePush() {
-        for (let x = 0; x < row0.fields.length - 1; x++) {
+    function fullRowGarbagePush(row0: Row, garbage: number[]) {
+        for (let x = 0; x <= indexSmallRowWidth; x++) {
             row0.fields[x].bubble = allBubbles[garbage[x]];
-            row0.fields[x].precisionCoords.x = row2.fields[x].precisionCoords.x;
+            row0.fields[x].precisionCoords.x = bigRowXCoordinates[x];
         }
         const lastIndex = garbage.length - 1;
         const y = row0.fields[0].coords.y;
-        const centerPointX = row2.fields[lastIndex].precisionCoords.x;
+        const centerPointX = lastBigRowXCoordinate;
         const centerPointY = row0.fields[0].precisionCoords.y;
-        // const field: Field = {
-        //     coords: { x: lastIndex, y, },
-        //     precisionCoords: { x: centerPointX, y: centerPointY, },
-        //     bubble: allBubbles[garbage[lastIndex]],
-        //     bubbleSpriteContainer: new Sprite(bubbleTexture.texture),
-        // }
+        const field: Field = {
+            coords: { x: lastIndex, y },
+            precisionCoords: { x: centerPointX, y: centerPointY },
+            bubble: allBubbles[garbage[lastIndex]],
+            bubbleSpriteContainer: new Sprite(bubbleTexture.texture),
+        };
+        row0.fields.push(field);
         row0.isSmallerRow = !row0.isSmallerRow;
     }
 
-    function smallRowGarbagePush() {
-        for (let x = 0; x < row0.fields.length - 1; x++) {
+    function smallRowGarbagePush(row0: Row, garbage: number[]) {
+        for (let x = 0; x <= indexSmallRowWidth; x++) {
             row0.fields[x].bubble = allBubbles[garbage[x]];
-            row0.fields[x].precisionCoords.x = row2.fields[x].precisionCoords.x;
+            row0.fields[x].precisionCoords.x = smallRowXCoordinates[x];
         }
-        row0.fields.pop();
+        const previouslyLastBubble = row0.fields.pop();
+        previouslyLastBubble?.bubbleSpriteContainer.destroy({ children: true });
         row0.isSmallerRow = !row0.isSmallerRow;
     }
 }
@@ -156,7 +174,7 @@ function newGarbage(rowBelow: RowInformation, messiness: GARBAGE_MESSINESS, seed
         isSmallerRow: !rowBelow.isSmallerRow,
         garbageMessiness: messiness,
         pairLocations: pairLocations,
-    }
+    };
 
     function selectColors(): void {
         if (messiness === GARBAGE_MESSINESS.COPY_CLEAN) {
@@ -184,17 +202,17 @@ function newGarbage(rowBelow: RowInformation, messiness: GARBAGE_MESSINESS, seed
         pairLocationsBelow.forEach(location => {
             const colorID = rowBelow.colorIDs[location];
             if (colorID != null) {
-                const hexagonalShift = (rowBelowSize < rowSize) ? 1 : -1;
-                tripletRestrictions[location].push(colorID)
-                tripletRestrictions[location + hexagonalShift].push(colorID)
+                const hexagonalShift = rowBelowSize < rowSize ? 1 : -1;
+                tripletRestrictions[location].push(colorID);
+                tripletRestrictions[location + hexagonalShift].push(colorID);
             }
         });
         for (let i = 0; i < rowBelow.colorIDs.length; i++) {
             const colorID = rowBelow.colorIDs[i];
             if (colorID != null) {
-                const hexagonalShift = (rowBelowSize < rowSize) ? 1 : -1;
-                pairRestrictions[i].push(colorID)
-                pairRestrictions[i + hexagonalShift].push(colorID)
+                const hexagonalShift = rowBelowSize < rowSize ? 1 : -1;
+                pairRestrictions[i].push(colorID);
+                pairRestrictions[i + hexagonalShift].push(colorID);
             }
         }
     }
@@ -267,14 +285,9 @@ function newGarbage(rowBelow: RowInformation, messiness: GARBAGE_MESSINESS, seed
                 return allColorsFiltered[randomIndex];
             }
 
-            console.error("be carefull, something went wrong with colorpicking!");
-            console.log(
-                "nonrepeating palette", currentPalette,
-                "repeating palette", selectedColors,
-                "tripletRestriction: ", triplets,
-                "pairRestriction: ", pairs
-            );
-            console.error("picked red as default");
+            console.error('be carefull, something went wrong with colorpicking!');
+            console.log('nonrepeating palette', currentPalette, 'repeating palette', selectedColors, 'tripletRestriction: ', triplets, 'pairRestriction: ', pairs);
+            console.error('picked red as default');
             return 0;
         }
 
@@ -311,8 +324,16 @@ function newGarbage(rowBelow: RowInformation, messiness: GARBAGE_MESSINESS, seed
     }
 }
 
+function convertGarbageToRowInformation(row: GarbageInformation): RowInformation {
+    return {
+        isSmallerRow: row.isSmallerRow,
+        colorIDs: row.garbage,
+        pairLocations: row.pairLocations,
+    };
+}
+
 function convertToRowInformation(row: Row): RowInformation {
-    const ids: (number | undefined)[] = []
+    const ids: (number | undefined)[] = [];
     row.fields.forEach(field => {
         ids.push(field.bubble?.type);
     });
@@ -322,5 +343,5 @@ function convertToRowInformation(row: Row): RowInformation {
         isSmallerRow: row.isSmallerRow,
         colorIDs: ids,
         pairLocations: row.pairLocations,
-    }
+    };
 }

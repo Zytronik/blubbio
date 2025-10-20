@@ -3,8 +3,8 @@ import { SPRINT_SETTINGS } from "../settings/sprintSettings";
 import { HANDLING_SETTINGS } from "../settings/handlingSettings";
 import { getEmptyStats } from "./statsSetup";
 import { getEmptyGrid } from "./gridSetup";
-import { addAngleUpdateAnimation } from "@/ts/animationPixi/angleAnimation";
-import { addBoardBubblesAnimation } from "@/ts/animationPixi/boardBubblesAnimation";
+import { renderAngleUpdate } from "@/ts/animationPixi/angleAnimation";
+import { renderBoardBubbles } from "@/ts/animationPixi/boardBubblesAnimation";
 import { getAllGameSprites } from "./spriteSetup";
 import { createGameInstanceContainer } from "@/ts/pixi/container";
 import { allBubbles } from "../bubble/bubbleTypes";
@@ -40,9 +40,9 @@ export function newSprintInstance(): GameInstance {
     nextBubble(instance);
     prefillBoard(instance);
 
-    addAngleUpdateAnimation(instance);
+    renderAngleUpdate(instance);
 
     //TODO REFACTOR
-    addBoardBubblesAnimation(instance);
+    renderBoardBubbles(instance);
     return instance;
 }

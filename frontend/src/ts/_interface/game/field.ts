@@ -7,5 +7,4 @@ export interface Field {
     precisionCoords: Coordinates;
     bubble?: Bubble;
     bubbleSpriteContainer: Container;
-    disabled: boolean;
 }

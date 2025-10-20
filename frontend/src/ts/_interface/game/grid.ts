@@ -1,5 +1,4 @@
 import { Coordinates } from "./coordinates";
-import { GarbagePreview } from "./garbagePreview";
 import { Row } from "./row";
 
 export interface Grid {
@@ -14,4 +13,6 @@ export interface Grid {
     precisionHeight: number,
     rows: Row[],
     launcherPrecisionPosition: Coordinates,
+    bigRowXCoordinates: number[],
+    smallRowXCoordinates: number[],
 }

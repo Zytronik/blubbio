@@ -5,7 +5,7 @@ import { PixiAnimation } from "../_interface/pixi/pixiAnimation";
 import { playPixiAnimation, getLerpT } from "../pixi/animation";
 import { usePixiStore } from "@/stores/pixiStore";
 
-export function playCountdown() {
+export function renderCountdown() {
     const duration = 2000;
     const segmentPercentages = [0.2, 0.4, 0.6, 0.8]
     const now = performance.now();

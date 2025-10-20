@@ -3,7 +3,7 @@ import { GameInstance } from "../_interface/game/gameInstance";
 import { Row } from "../_interface/game/row";
 import { PixiAnimation } from "../_interface/pixi/pixiAnimation";
 
-export function bubbleShotAnimation(instance: GameInstance): void {
+export function renderBubbleShot(instance: GameInstance): void {
     const now = performance.now()
     const travelTime = instance.handlingSettings.bubbleTravelDurationMS;
     const animation: PixiAnimation = {
