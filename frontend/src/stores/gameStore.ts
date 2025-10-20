@@ -1,20 +1,20 @@
-import { defineStore } from "pinia";
-import { GAME_MODE } from "@/ts/_enum/gameMode";
-import { useUserStore } from "./userStore";
-import { useInputStore } from "./inputStore";
-import { INPUT_CONTEXT } from "@/ts/_enum/inputContext";
-import { GameInstance } from "@/ts/_interface/game/gameInstance";
-import { startGameLogicLoop } from "@/ts/game/gameLogicLoop";
-import { gameContainer } from "@/ts/pixi/container";
-import { addMonkeyActions } from "@/ts/animationPixi/monkeyActions";
-import { centerAngle, changeAPS, mirrorAngle } from "@/ts/game/actions/aiming";
-import { shootBubble } from "@/ts/game/actions/shoot";
-import { applyShotResultToGrid } from "@/ts/game/bubble/grid";
-import { swapHoldBubble } from "@/ts/game/actions/hold";
-import { getEmptyGame } from "@/ts/game/setup/gameSetup";
-import { newSprintInstance } from "@/ts/game/setup/instanceSetup";
-import { nextBubble } from "@/ts/game/bubble/queue";
-import { prepareGarbage } from "@/ts/game/bubble/garbage";
+import { defineStore } from 'pinia';
+import { GAME_MODE } from '@/ts/_enum/gameMode';
+import { useUserStore } from './userStore';
+import { useInputStore } from './inputStore';
+import { INPUT_CONTEXT } from '@/ts/_enum/inputContext';
+import { GameInstance } from '@/ts/_interface/game/gameInstance';
+import { startGameLogicLoop } from '@/ts/game/gameLogicLoop';
+import { addMonkeyActions } from '@/ts/animationPixi/monkeyActions';
+import { centerAngle, changeAPS, mirrorAngle } from '@/ts/game/actions/aiming';
+import { shootBubble } from '@/ts/game/actions/shoot';
+import { applyShotResultToGrid } from '@/ts/game/bubble/grid';
+import { swapHoldBubble } from '@/ts/game/actions/hold';
+import { getEmptyGame } from '@/ts/game/setup/gameSetup';
+import { newSprintInstance } from '@/ts/game/setup/instanceSetup';
+import { nextBubble } from '@/ts/game/bubble/queue';
+import { prepareGarbage } from '@/ts/game/bubble/garbage';
+import { gameVisuals, drawGame, setupGameVisuals } from '@/ts/pixi/container';
 
 export const useGameStore = defineStore('game', () => {
     const game = getEmptyGame();
@@ -24,10 +24,11 @@ export const useGameStore = defineStore('game', () => {
         game.inputContext = INPUT_CONTEXT.GAME_WITH_RESET;
         game.spectating = false;
         game.instancesMap.set(userName, newSprintInstance());
+        setupGameVisuals();
     }
     function startGame(): void {
         useInputStore().setInputContext(game.inputContext);
-        gameContainer.visible = true;    //this should become a store!
+        gameVisuals.gameContainer.visible = true; //this should become a store!
         startGameLogicLoop();
     }
     function pressedLeft(userName: string): void {
@@ -100,21 +101,29 @@ export const useGameStore = defineStore('game', () => {
         game.gameMode = GAME_MODE.SPRINT;
         game.inputContext = INPUT_CONTEXT.GAME_NO_RESET;
         game.spectating = true;
-        for (let i = 1; i <= 1; i++) {
-            const name = "Monkey-" + i;
-            const instance = newSprintInstance()
+        setupGameVisuals();
+        for (let i = 1; i <= monkeyAmount; i++) {
+            const name = 'Monkey-' + i;
+            const instance = newSprintInstance();
             addMonkeyActions(instance, name);
             game.instancesMap.set(name, instance);
         }
+        drawGame();
     }
 
     return {
-        setupSprint, startGame,
-        pressedLeft, pressedRight,
-        releasedLeft, releasedRight,
+        setupSprint,
+        startGame,
+        pressedLeft,
+        pressedRight,
+        releasedLeft,
+        releasedRight,
         toggleAPS,
-        pressedCenter, pressedMirror, pressedShoot, pressedHold,
+        pressedCenter,
+        pressedMirror,
+        pressedShoot,
+        pressedHold,
         getAllInstances,
         createMonkeyTesting,
-    }
-})
+    };
+});

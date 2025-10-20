@@ -33,7 +33,7 @@ export function addBoardBubblesAnimation(instance: GameInstance): void {
                     if (field.bubble) {
                         // const x = (field.precisionCoords.x / precisionWidth) * gridBackground.width;
                         // const y = (field.precisionCoords.y / precisionHeight) * gridBackground.height;
-    
+
                         // field.bubbleSprite.x = x;
                         // field.bubbleSprite.y = y;
                         // field.bubbleSprite.width = spriteWidth;

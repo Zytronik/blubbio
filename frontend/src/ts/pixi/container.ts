@@ -7,6 +7,306 @@ import { GameContainers } from '../_interface/game/gameContainers';
 import { GameSprites } from '../_interface/pixi/gameSprites';
 import { circleGraphicsAsSprite } from './spriteBuilder';
 
+interface PixiVisuals {
+    mainContainer: Container;
+    gameVisuals: GameVisuals;
+    //TODO filters etc.
+}
+
+export interface GameVisuals {
+    gameContainer: Container;
+    boardVisuals: BoardVisuals[];
+    countDownContainer: Container;
+}
+
+export interface BoardVisuals {
+    sprites: GameSprites;
+    boardContainer: Container;
+    gridContainer: Container;
+    gridBackground: Container;
+    queueContainer: Container;
+}
+
+export const gameVisuals: GameVisuals = {
+    gameContainer: new Container({ visible: false }),
+    boardVisuals: [],
+    countDownContainer: new Container({ visible: false, label: "countDownContainer" }),
+};
+
+export const pixiVisuals: PixiVisuals = {
+    mainContainer: new Container(),
+    gameVisuals: gameVisuals,
+};
+
+export function setupPixiVisuals(): void {
+    const stage = usePixiStore().getPixiApp().stage;
+    stage.addChild(pixiVisuals.mainContainer);
+
+    pixiVisuals.mainContainer.addChild(gameVisuals.gameContainer);
+    gameVisuals.gameContainer.addChild(gameVisuals.countDownContainer);
+
+    drawMainContainer();
+}
+
+export function setupGameVisuals(): void {
+    drawGameContainer();
+    drawCountDownContainer();
+}
+
+export function setupBoardVisuals(sprites: GameSprites): BoardVisuals {
+    const boardContainer = new Container();
+    const gridContainer = new Container();
+    const gridBackground = new Container({ label: "gridBackground" });
+    const queueContainer = new Container({ label: "queueContainer" });
+
+    gameVisuals.gameContainer.addChild(boardContainer);
+    boardContainer.addChild(gridContainer);
+    boardContainer.addChild(gridBackground);
+    boardContainer.addChild(queueContainer);
+
+    const visuals: BoardVisuals = {
+        sprites: sprites,
+        boardContainer: boardContainer,
+        gridContainer: gridContainer,
+        gridBackground: gridBackground,
+        queueContainer: queueContainer,
+    };
+
+    gameVisuals.boardVisuals.push(visuals);
+
+    return visuals;
+}
+
+export function updateContainerLayout(): void {
+    //TODO
+}
+
+function drawMainContainer(): void {
+    const app = usePixiStore().getPixiApp();
+    const mainContainer = pixiVisuals.mainContainer;
+    mainContainer.label = "mainContainer";
+
+    const padding = 20;
+    const backgroundColor = 'red';
+
+    mainContainer.x = padding;
+    mainContainer.y = padding;
+
+    const width = app.renderer.width - padding * 2;
+    const height = app.renderer.height - padding * 2;
+
+    const background = new Graphics().rect(0, 0, width, height).fill({ color: backgroundColor });
+    background.label = "mainContainerBackground";
+
+    mainContainer.addChildAt(background, 0);
+}
+
+function drawGameContainer(): void {
+    const gameContainer = gameVisuals.gameContainer;
+    gameContainer.label = "gameContainer";
+
+    const parent = gameContainer.parent;
+    const paddingX = 200;
+    const paddingY = 20;
+
+    gameContainer.x = paddingX;
+    gameContainer.y = paddingY;
+
+    const width = parent.width - paddingX * 2;
+    const height = parent.height - paddingY * 2;
+
+    const background = new Graphics().rect(0, 0, width, height).fill({ color: "blue" });
+    background.label = "gameContainerBackground";
+
+    gameContainer.addChildAt(background, 0);
+}
+
+function drawCountDownContainer(): void {
+    const countDownContainer = gameVisuals.countDownContainer
+    countDownContainer.label = "countDownContainer";
+    countDownContainer.zIndex = 1;
+
+    countDownContainer.x = 0;
+    countDownContainer.y = 0;
+
+    const parent = countDownContainer.parent;
+
+    const width = parent.width;
+    const height = parent.height;
+    const background = new Graphics().rect(0, 0, width, height).fill({ color: 0x000000, alpha: 0 });
+    background.label = "countDownContainerBackground";
+    countDownContainer.addChild(background);
+}
+
+function drawGridContainer(visuals: BoardVisuals): void {
+    const gridContainer = visuals.gridContainer;
+    gridContainer.label = "gridContainer";
+
+    const parent = gridContainer.parent;
+
+    const paddingX = parent.width * 0.15;
+    const paddingBottom = parent.height * 0.1;
+
+    gridContainer.x = paddingX;
+    gridContainer.y = 0;
+
+    const width = parent.width - paddingX * 2;
+    const height = parent.height - paddingBottom;
+
+    const background = new Graphics().rect(0, 0, width, height).fill({ color: "yellow" });
+    background.label = "gridContainerBackground";
+    gridContainer.addChild(background);
+}
+
+function drawQueueContainer(visuals: BoardVisuals): void {
+    const queueContainer = visuals.queueContainer;
+    queueContainer.label = "queueContainer";
+
+    queueContainer.x = 0;
+    queueContainer.y = 0;
+
+    const parent = queueContainer.parent;
+    const width = parent.width * 0.15;
+    const height = parent.height / 2;
+
+    const background = new Graphics().rect(0, 0, width, height).fill({ color: "violet" });
+    background.label = "queueContainerBackground";
+    queueContainer.addChild(background);
+}
+
+function drawArrow(visuals: BoardVisuals): void {
+    const { sprites } = visuals;
+    const arrow = sprites.arrow;
+    const boardContainer = visuals.boardContainer;
+
+    arrow.width = boardContainer.height * 0.1;
+    arrow.height = boardContainer.height * 0.1;
+    arrow.anchor.set(0.5);
+    arrow.x = boardContainer.width / 2;
+    arrow.y = boardContainer.height * 0.95;
+
+    boardContainer.addChild(arrow);
+}
+
+export function drawGame(): void {
+    const boardAmount = gameVisuals.boardVisuals.length;
+    if (boardAmount === 1) {
+        drawSoloLayout();
+    } else if (boardAmount === 2) {
+        draw1VS1Layout();
+    } else if (boardAmount > 2) {
+        drawMultiLayout();
+    } else {
+        return;
+    }
+}
+
+function drawSoloLayout(): void {
+    const gameContainer = gameVisuals.gameContainer;
+    const visuals = gameVisuals.boardVisuals[0];
+    const board = visuals.boardContainer;
+
+    const aspectRatio = 0.6; //todo get from somewhere
+    const maxHeightPercent = 0.8;
+
+    const boardHeight = gameContainer.height * maxHeightPercent;
+    const boardWidth = boardHeight * aspectRatio;
+
+    const relativeX = (gameContainer.width - boardWidth) / 2;
+    const relativeY = (gameContainer.height - boardHeight) / 2;
+
+    board.x = relativeX;
+    board.y = relativeY;
+
+    drawBoardContainer(visuals, boardWidth, boardHeight);
+}
+
+function draw1VS1Layout(): void {
+    const gameContainer = gameVisuals.gameContainer;
+
+    const visualsLeft = gameVisuals.boardVisuals[0];
+    const visualsRight = gameVisuals.boardVisuals[1];
+
+    const aspectRatio = 0.6;
+    const maxHeightPercent = 0.8;
+
+    const boardHeight = gameContainer.height * maxHeightPercent;
+    const boardWidth = boardHeight * aspectRatio;
+
+    const relativeY = (gameContainer.height - boardHeight) / 2;
+
+    const relativeXLeft = gameContainer.width * 0.25 - boardWidth / 2;
+    visualsLeft.boardContainer.x = relativeXLeft;
+    visualsLeft.boardContainer.y = relativeY;
+    drawBoardContainer(visualsLeft, boardWidth, boardHeight);
+
+    const relativeXRight = gameContainer.width * 0.75 - boardWidth / 2;
+    visualsRight.boardContainer.x = relativeXRight;
+    visualsRight.boardContainer.y = relativeY;
+    drawBoardContainer(visualsRight, boardWidth, boardHeight);
+}
+
+function drawMultiLayout(): void {
+    const gameContainer = gameVisuals.gameContainer;
+    const boards = gameVisuals.boardVisuals;
+    if (boards.length < 3) return;
+
+    const padding = 20;
+    const aspectRatio = 0.6;
+
+    // Left board
+    const mainBoardHeight = gameContainer.height * 0.8;
+    const mainBoardWidth = mainBoardHeight * aspectRatio;
+    const mainBoard = boards[0];
+    const mainX = gameContainer.width / 2 / 2 - mainBoardWidth / 2;
+    const mainY = (gameContainer.height - mainBoardHeight) / 2;
+
+    mainBoard.boardContainer.x = mainX;
+    mainBoard.boardContainer.y = mainY;
+
+    drawBoardContainer(mainBoard, mainBoardWidth, mainBoardHeight);
+
+    // Right side grid
+    const remainingBoards = boards.slice(1);
+    const gridSize = Math.ceil(Math.sqrt(remainingBoards.length));
+
+    const gridBoardHeight = (mainBoardHeight - padding * (gridSize - 1)) / gridSize;
+    const gridBoardWidth = gridBoardHeight * aspectRatio;
+
+    const rightAvailableWidth = gameContainer.width / 2;
+    const totalGridWidth = gridSize * gridBoardWidth + (gridSize - 1) * padding;
+    const horizontalOffset = (rightAvailableWidth - totalGridWidth) / 2;
+
+    const startX = gameContainer.width / 2 + horizontalOffset;
+    const startY = mainY;
+
+    for (let i = 0; i < remainingBoards.length; i++) {
+        const board = remainingBoards[i];
+        const gridX = i % gridSize;
+        const gridY = Math.floor(i / gridSize);
+
+        const posX = startX + gridX * (gridBoardWidth + padding);
+        const posY = startY + gridY * (gridBoardHeight + padding);
+
+        board.boardContainer.x = posX;
+        board.boardContainer.y = posY;
+
+        drawBoardContainer(board, gridBoardWidth, gridBoardHeight);
+    }
+}
+
+function drawBoardContainer(visuals: BoardVisuals, width: number, height: number): void {
+    const boardContainer = visuals.boardContainer;
+    boardContainer.label = "boardContainer";
+    const background = new Graphics().rect(0, 0, width, height).fill({ color: "green" });
+    background.label = "boardContainerBackground";
+    boardContainer.addChildAt(background, 0);
+    drawGridContainer(visuals);
+    drawQueueContainer(visuals);
+    drawArrow(visuals);
+}
+
+/* 
 export const mainContainer = new Container();
 export const gameContainer = new Container({ visible: false });
 export const countDownContainer = new Container({ visible: false });
@@ -205,3 +505,4 @@ function gameLayout1vsX(containers: Container[], canvasWidth: number, canvasHeig
         }
     }
 }
+ */

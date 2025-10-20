@@ -1,22 +1,25 @@
-import { setupPixiContainers } from "@/ts/pixi/container";
-import { allTextures } from "@/ts/pixi/allTextures";
-import { startAnimationLoop } from "@/ts/pixi/animation";
-import { defineStore } from "pinia";
-import { Application, Assets } from "pixi.js";
-import { allFonts } from "@/ts/pixi/allFonts";
+import { setupPixiVisuals } from '@/ts/pixi/container';
+import { allTextures } from '@/ts/pixi/allTextures';
+import { startAnimationLoop } from '@/ts/pixi/animation';
+import { defineStore } from 'pinia';
+import { Application, Assets } from 'pixi.js';
+import { allFonts } from '@/ts/pixi/allFonts';
 
 export const usePixiStore = defineStore('pixi', () => {
     const pixiApp = new Application();
     function initPixiApp() {
-        const CANVAS_ID = "#pixiCanvas";
-        pixiApp.init({
-            background: '#252525',
-            resizeTo: window,
-        }).then(async () => {
-            document.querySelector(CANVAS_ID)?.appendChild(pixiApp.canvas);
-            setupPixiContainers();
-            startAnimationLoop();
-        });
+        if (pixiApp.renderer) return;
+        const CANVAS_ID = '#pixiCanvas';
+        pixiApp
+            .init({
+                background: '#252525',
+                resizeTo: window,
+            })
+            .then(async () => {
+                document.querySelector(CANVAS_ID)?.appendChild(pixiApp.canvas);
+                setupPixiVisuals();
+                startAnimationLoop();
+            });
         allTextures.forEach(async asset => {
             asset.texture = await Assets.load(asset.src);
         });
@@ -33,5 +36,5 @@ export const usePixiStore = defineStore('pixi', () => {
     function getCanvasWidth(): number {
         return pixiApp.canvas.width;
     }
-    return { pixiApp, initPixiApp, getPixiApp, getCanvasHeight, getCanvasWidth }
-})
+    return { pixiApp, initPixiApp, getPixiApp, getCanvasHeight, getCanvasWidth };
+});
