@@ -2,9 +2,8 @@ import { Field } from '@/ts/_interface/game/field';
 import { GameSettings } from '@/ts/_interface/game/gameSettings';
 import { Grid } from '@/ts/_interface/game/grid';
 import { Row } from '@/ts/_interface/game/row';
-import { Sprite } from 'pixi.js';
-import { bubbleTexture } from '@/ts/pixi/allTextures';
 import { GARBAGE_MESSINESS } from '@/ts/_enum/garbageMessiness';
+import { useSpriteStore } from '@/stores/spriteStore';
 
 export function getEmptyGrid(settings: GameSettings): Grid {
     const precisionWidth = settings.widthPrecisionUnits;
@@ -55,7 +54,7 @@ export function getEmptyGrid(settings: GameSettings): Grid {
                     y: precisionRowHeight * y + bubbleFullRadius,
                 },
                 bubble: undefined,
-                bubbleSpriteContainer: new Sprite(bubbleTexture.texture),
+                bubbleSpriteContainer: useSpriteStore().getBubbleSprite(),
             };
             row.fields.push(field);
         }

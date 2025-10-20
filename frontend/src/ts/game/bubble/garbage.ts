@@ -10,6 +10,7 @@ import { RowInformation } from '@/ts/_interface/game/rowInformation';
 import { Field } from '@/ts/_interface/game/field';
 import { Sprite } from 'pixi.js';
 import { bubbleTexture } from '@/ts/pixi/allTextures';
+import { useSpriteStore } from '@/stores/spriteStore';
 
 export function prefillBoard(instance: GameInstance): void {
     const amount = instance.gameSettings.prefillBoardAmount;
@@ -104,7 +105,7 @@ export function pushOneGarbageRow(instance: GameInstance): void {
                     coords: { x: lastIndex, y: y },
                     precisionCoords: { x: centerPointX, y: centerPointY },
                     bubble: rowAbove.fields[lastIndex].bubble,
-                    bubbleSpriteContainer: new Sprite(bubbleTexture.texture),
+                    bubbleSpriteContainer: useSpriteStore().getBubbleSprite(),
                 };
                 currentRow.fields.push(field);
             } else {
@@ -128,7 +129,7 @@ export function pushOneGarbageRow(instance: GameInstance): void {
             coords: { x: lastIndex, y },
             precisionCoords: { x: centerPointX, y: centerPointY },
             bubble: allBubbles[garbage[lastIndex]],
-            bubbleSpriteContainer: new Sprite(bubbleTexture.texture),
+            bubbleSpriteContainer: useSpriteStore().getBubbleSprite(),
         };
         row0.fields.push(field);
         row0.isSmallerRow = !row0.isSmallerRow;
