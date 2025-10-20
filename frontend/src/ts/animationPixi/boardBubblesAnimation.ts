@@ -8,7 +8,7 @@ export function renderBoardBubbles(instance: GameInstance): void {
     const precisionHeight = instance.playGrid.precisionHeight;
     const bubbleFullRadius = instance.playGrid.bubbleFullRadius;
     const spriteWidth = (bubbleFullRadius / precisionWidth) * gridBackground.width * 2;
-    const spriteHeight = (bubbleFullRadius / precisionHeight) * gridBackground.height * 2;
+    const spriteHeight = spriteWidth;
 
     const animation: PixiAnimation = {
         startMS: 0,

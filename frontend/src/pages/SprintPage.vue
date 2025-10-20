@@ -55,7 +55,7 @@ export default {
 
     function startSprint(): void {
       transitionIntoGame();
-      gameStore.startGame();
+      // gameStore.startGame();
     }
 
     return {
