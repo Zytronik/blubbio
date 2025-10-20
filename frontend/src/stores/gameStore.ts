@@ -96,7 +96,6 @@ export const useGameStore = defineStore('game', () => {
     }
 
     function createMonkeyTesting(monkeyAmount: number): void {
-        // game = getEmptyGame();
         game.gameMode = GAME_MODE.SPRINT;
         game.inputContext = INPUT_CONTEXT.GAME_NO_RESET;
         game.spectating = true;
@@ -106,11 +105,6 @@ export const useGameStore = defineStore('game', () => {
             addMonkeyActions(instance, name);
             game.instancesMap.set(name, instance);
         }
-        // game.gameMode = GAME_MODE.SPRINT;
-        // game.inputContext = INPUT_CONTEXT.GAME_NO_RESET;
-        // game.spectating = true;
-        // const instance = newSprintInstance();
-        // game.instancesMap.set('test', instance);
     }
 
     function addGarbageToAllInstances(amount: number): void {

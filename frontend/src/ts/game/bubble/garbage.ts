@@ -337,8 +337,6 @@ function convertToRowInformation(row: Row): RowInformation {
     row.fields.forEach(field => {
         ids.push(field.bubble?.type);
     });
-    // console.log("row:", row)
-    // console.log("ids:", ids)
     return {
         isSmallerRow: row.isSmallerRow,
         colorIDs: ids,
