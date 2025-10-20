@@ -9,7 +9,7 @@ export function getEmptyGrid(settings: GameSettings): Grid {
     const precisionWidth = settings.widthPrecisionUnits;
     const bubbleFullRadius = precisionWidth / (2 * settings.gridWidth);
     const bubbleDiameter = bubbleFullRadius * 2;
-    const precisionRowHeight = Math.floor(bubbleFullRadius * Math.sqrt(3));
+    const precisionRowHeight = Math.floor(Math.sqrt(3 * bubbleFullRadius * bubbleFullRadius));
     const precisionHeight = precisionRowHeight * (settings.gridHeight + settings.gridExtraHeight);
     const playGrid: Grid = {
         gridWidth: settings.gridWidth,

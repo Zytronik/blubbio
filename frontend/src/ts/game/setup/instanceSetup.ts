@@ -17,6 +17,11 @@ export function newSprintInstance(): GameInstance {
     const startBubbleSeed = { value: Date.now() };
     const startGarbageSeed = { value: Date.now() + 123456789 };
     const sprites = getAllGameSprites(SPRINT_SETTINGS);
+    const precisionWidth = SPRINT_SETTINGS.widthPrecisionUnits;
+    const bubbleFullRadius = precisionWidth / (2 * SPRINT_SETTINGS.gridWidth);
+    const precisionRowHeight = Math.floor(Math.sqrt(3 * bubbleFullRadius * bubbleFullRadius));
+    const precisionHeight = precisionRowHeight * (SPRINT_SETTINGS.gridHeight + SPRINT_SETTINGS.gridExtraHeight);
+    const precisionAspectRatio = precisionWidth / precisionHeight;
     const instance: GameInstance = {
         gameSettings: SPRINT_SETTINGS,
         handlingSettings: HANDLING_SETTINGS,
@@ -32,15 +37,13 @@ export function newSprintInstance(): GameInstance {
         right: false,
         aps: HANDLING_SETTINGS.defaultAPS,
         gameSprites: sprites,
-        gameContainers: setupBoardVisuals(sprites),
+        gameContainers: setupBoardVisuals(sprites, precisionAspectRatio),
         instanceAnimations: [],
     };
     XORRandom(0, 0, instance.bubbleSeed);
     XORRandom(0, 0, instance.garbageSeed);
     nextBubble(instance);
     prefillBoard(instance);
-
-    renderAngleUpdate(instance);
 
     return instance;
 }
