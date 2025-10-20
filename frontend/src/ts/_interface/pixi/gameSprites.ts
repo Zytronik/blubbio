@@ -4,7 +4,7 @@ export interface GameSprites {
     arrow: Sprite,
     currentBubble: Container,
     bubbleQueue: Container[],
-    // bubble: Sprite,
+    fieldBubbles: Container[][],
     // bgRed: Sprite,
     // bgPurple: Sprite,
 }

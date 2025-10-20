@@ -6,5 +6,5 @@ export interface Field {
     coords: Coordinates;
     precisionCoords: Coordinates;
     bubble?: Bubble;
-    bubbleSpriteContainer: Container;
+    dirty: boolean;
 }
