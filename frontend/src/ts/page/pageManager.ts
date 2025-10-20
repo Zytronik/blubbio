@@ -63,18 +63,9 @@ export function checkIfCanJoinRoomByUrl() {
   }
 }
 
-function hideTopAndBottomBars() {
+export function hideTopAndBottomBars() {
   const topBar = document.querySelector('.topbar') as HTMLElement;
   const bottomBar = document.querySelector('.bottomBar') as HTMLElement;
   if (topBar) topBar.style.display = 'none';
   if (bottomBar) bottomBar.style.display = 'none';
-}
-
-export function setFullScreenGameView() {
-  hideTopAndBottomBars();
-  const main = document.querySelector('main') as HTMLElement;
-  if (main) main.style.padding = '0px';
-  const pixiCanvas = document.getElementById('pixiCanvas') as HTMLElement;
-  if (pixiCanvas) pixiCanvas.style.display = 'block';
-  pixiCanvas.style.zIndex = '1';
 }

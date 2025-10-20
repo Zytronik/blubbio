@@ -1,4 +1,4 @@
-import { setFullScreenGameView, setPage } from '../page/pageManager';
+import { hideTopAndBottomBars, setPage } from '../page/pageManager';
 import { useSoundStore } from '@/stores/soundStore';
 import gsap from 'gsap';
 import { PAGE } from '../_enum/page';
@@ -12,7 +12,7 @@ export function transitionIntoGame() {
 
   tl.call(() => {
     setPage(PAGE.gamePage);
-    setFullScreenGameView();
+    hideTopAndBottomBars();
   });
 
   tl.set('.pageWrapper', { x: '0vw' });
