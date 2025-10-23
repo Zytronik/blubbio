@@ -25,6 +25,7 @@ export interface BoardVisuals {
     queueContainer: Container;
     arrowContainer: Container;
     garbageContainer: Container;
+    holdContainer: Container;
 }
 
 export const gameVisuals: GameVisuals = {
@@ -63,6 +64,7 @@ export function setupBoardVisuals(sprites: GameSprites, precisionAspectRatio: nu
     const queueContainer = new Container({ label: "queueContainer" });
     const arrowContainer = new Container({ label: "arrowContainer" });
     const garbageContainer = new Container({ label: "garbageContainer" });
+    const holdContainer = new Container({ label: "holdContainer" });
 
     gameVisuals.gameContainer.addChild(boardContainer);
     boardContainer.addChild(gridContainer);
@@ -70,6 +72,7 @@ export function setupBoardVisuals(sprites: GameSprites, precisionAspectRatio: nu
     boardContainer.addChild(queueContainer);
     boardContainer.addChild(garbageContainer);
     gridContainer.addChild(arrowContainer);
+    boardContainer.addChild(holdContainer);
 
     PADDING_BOARD_LEFT = 1 / gameSettings.gridWidth;
     PADDING_BOARD_RIGHT = 1 / gameSettings.gridWidth;
@@ -85,6 +88,7 @@ export function setupBoardVisuals(sprites: GameSprites, precisionAspectRatio: nu
         queueContainer: queueContainer,
         arrowContainer: arrowContainer,
         garbageContainer: garbageContainer,
+        holdContainer: holdContainer,
     };
 
     gameVisuals.boardVisuals.push(visuals);
@@ -222,6 +226,23 @@ function drawQueueContainer(visuals: BoardVisuals): void {
     const background = new Graphics().rect(0, 0, width, height).fill({ color: "violet" });
     background.label = "queueContainerBackground";
     queueContainer.addChild(background);
+}
+
+function drawHoldContainer(visuals: BoardVisuals): void {
+    const holdContainer = visuals.holdContainer;
+
+    const paddingBoardLeft = getBoardPaddingLeft(visuals);
+    const paddingBoardTop = getBoardPaddingTop(visuals);
+
+    holdContainer.x = getGridWidth(visuals) + paddingBoardLeft;
+    holdContainer.y = paddingBoardTop;
+
+    const width = getGridWidth(visuals) / visuals.gameSettings.gridWidth;
+    const height = width
+
+    const background = new Graphics().rect(0, 0, width, height).fill({ color: "black" });
+    background.label = "holdContainerBackground";
+    holdContainer.addChild(background);
 }
 
 function drawArrowContainer(visuals: BoardVisuals): void {
@@ -387,6 +408,7 @@ function drawBoardContainer(visuals: BoardVisuals, width: number, height: number
     drawQueueContainer(visuals);
     drawArrowContainer(visuals);
     drawGarbageContainer(visuals);
+    drawHoldContainer(visuals);
 }
 
 function getBoardPaddingLeft(visuals: BoardVisuals): number {

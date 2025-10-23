@@ -18,6 +18,7 @@ import { gameVisuals, drawGame, setupGameVisuals } from '@/ts/pixi/container';
 import { renderBoard } from '@/ts/animationPixi/boardAnimation';
 import { renderArrowUpdate } from '@/ts/animationPixi/arrowAnimation';
 import { renderQueueBubbles } from '@/ts/animationPixi/queueBubblesAnimation';
+import { renderHoldBubble } from '@/ts/animationPixi/holdBubbleAnimation';
 
 
 export const useGameStore = defineStore('game', () => {
@@ -38,6 +39,7 @@ export const useGameStore = defineStore('game', () => {
         //maybe container store?
         for (const instance of game.instancesMap.values()) {
             renderQueueBubbles(instance);
+            renderHoldBubble(instance);
             renderBoard(instance);
             renderArrowUpdate(instance);
         }
