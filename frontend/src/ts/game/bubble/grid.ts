@@ -7,6 +7,9 @@ export function applyShotResultToGrid(shotResult: ShotResult): void {
     shotResult.clearedBubbles.forEach(field => {
         field.bubble = undefined;
     });
+    shotResult.freeFloatingBubbles.forEach(field => {
+        field.bubble = undefined;
+    });
 }
 
 export function getAdjacentFieldVectors(grid: Grid, gridPosition: Coordinates): Coordinates[] {

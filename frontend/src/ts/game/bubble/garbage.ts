@@ -61,7 +61,6 @@ export function pushOneGarbageRow(instance: GameInstance): void {
     const lastBigRowXCoordinate = bigRowXCoordinates[bigRowXCoordinates.length - 1];
 
     const incomingAmount = instance.garbagePreview.generatedGarbage.length;
-    console.log('garbageMaxAtOnce:', garbageMaxAtOnce, 'incomingAmount:', incomingAmount);
     for (let i = 0; i < Math.min(garbageMaxAtOnce, incomingAmount); i++) {
         const row0 = grid.rows[0];
         const garbage = instance.garbagePreview.generatedGarbage.shift()!.garbage;
@@ -72,19 +71,6 @@ export function pushOneGarbageRow(instance: GameInstance): void {
             smallRowGarbagePush(row0, garbage);
         }
     }
-
-    let fieldString = '';
-    instance.playGrid.rows.forEach(row => {
-        row.fields.forEach(field => {
-            if (field.bubble) {
-                fieldString += field.bubble.type;
-            } else {
-                fieldString += '-';
-            }
-        });
-        fieldString += '\n';
-    });
-    console.log(fieldString);
 
     function allRowsDown() {
         for (let y = indexTotalGridHeight; y > 0; y--) {

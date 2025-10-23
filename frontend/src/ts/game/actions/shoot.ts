@@ -230,7 +230,14 @@ export function shootBubble(instance: GameInstance): ShotResult {
                 function findBubblesConnectoToTop(x: number, y: number): void {
                     const isInBounds = grid.rows[y] != undefined && grid.rows[y].fields[x] != undefined;
                     const alreadyTraversed = connected.has(`${x}${komma}${y}`);
-                    if (!isInBounds || !grid.rows[y].fields[x].bubble || alreadyTraversed) {
+                    let alreadyCleared = false;
+                    for (let i = 0; i < clearedBubbleFields.length; i++) {
+                        const clearedField = clearedBubbleFields[i];
+                        if (clearedField.coords.x === x && clearedField.coords.y === y) {
+                            alreadyCleared = true;
+                        }
+                    }
+                    if (!isInBounds || !grid.rows[y].fields[x].bubble || alreadyTraversed || alreadyCleared) {
                         return;
                     }
                     connected.add(`${x}${komma}${y}`);
