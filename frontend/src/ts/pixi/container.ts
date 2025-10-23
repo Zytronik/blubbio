@@ -27,6 +27,7 @@ export interface BoardVisuals {
     gridBackground: Container;
     queueContainer: Container;
     arrowContainer: Container;
+    garbageContainer: Container;
 }
 
 export const gameVisuals: GameVisuals = {
@@ -64,11 +65,13 @@ export function setupBoardVisuals(sprites: GameSprites, precisionAspectRatio: nu
     const gridBackground = new Container({ label: "gridBackground" });
     const queueContainer = new Container({ label: "queueContainer" });
     const arrowContainer = new Container({ label: "arrowContainer" });
+    const garbageContainer = new Container({ label: "garbageContainer" });
 
     gameVisuals.gameContainer.addChild(boardContainer);
     boardContainer.addChild(gridContainer);
     boardContainer.addChild(gridBackground);
     boardContainer.addChild(queueContainer);
+    boardContainer.addChild(garbageContainer);
     gridContainer.addChild(arrowContainer);
 
     const visuals: BoardVisuals = {
@@ -79,7 +82,7 @@ export function setupBoardVisuals(sprites: GameSprites, precisionAspectRatio: nu
         gridBackground: gridBackground,
         queueContainer: queueContainer,
         arrowContainer: arrowContainer,
-
+        garbageContainer: garbageContainer,
     };
 
     gameVisuals.boardVisuals.push(visuals);
