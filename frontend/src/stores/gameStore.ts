@@ -15,7 +15,7 @@ import { newSprintInstance } from '@/ts/game/setup/instanceSetup';
 import { nextBubble } from '@/ts/game/bubble/queue';
 import { prepareGarbage } from '@/ts/game/bubble/garbage';
 import { gameVisuals, drawGame, setupGameVisuals } from '@/ts/pixi/container';
-import { renderBoardBubbles } from '@/ts/animationPixi/boardAnimation';
+import { renderBoard } from '@/ts/animationPixi/boardAnimation';
 import { renderArrowUpdate } from '@/ts/animationPixi/arrowAnimation';
 import { renderQueueBubbles } from '@/ts/animationPixi/queueBubblesAnimation';
 
@@ -37,8 +37,8 @@ export const useGameStore = defineStore('game', () => {
         drawGame();
         //maybe container store?
         for (const instance of game.instancesMap.values()) {
-            renderBoardBubbles(instance);
             renderQueueBubbles(instance);
+            renderBoard(instance);
             renderArrowUpdate(instance);
         }
     }

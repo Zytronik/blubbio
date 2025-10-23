@@ -3,8 +3,6 @@ import { SPRINT_SETTINGS } from '../settings/sprintSettings';
 import { HANDLING_SETTINGS } from '../settings/handlingSettings';
 import { getEmptyStats } from './statsSetup';
 import { getEmptyGrid } from './gridSetup';
-import { renderArrowUpdate } from '@/ts/animationPixi/arrowAnimation';
-import { renderBoardBubbles } from '@/ts/animationPixi/boardAnimation';
 import { getAllGameSprites } from './spriteSetup';
 import { allBubbles } from '../bubble/bubbleTypes';
 import { nextBubble } from '../bubble/queue';

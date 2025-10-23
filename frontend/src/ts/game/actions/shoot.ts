@@ -310,7 +310,7 @@ export function calculatePreview(instance: GameInstance): void {
     findtravelLineCoords();
     const gridDestination: Field = findNearestEmptyField();
 
-    instance.bubblePreview.gridLocation = gridDestination.coords;
+    instance.bubblePreview.gridLocation = gridDestination.precisionCoords;
     instance.bubblePreview.travelLineCoords = travelLineCoords;
     instance.bubblePreview.tint = bubbleTint;
 
