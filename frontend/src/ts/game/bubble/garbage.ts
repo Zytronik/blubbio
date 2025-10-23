@@ -8,7 +8,6 @@ import { allBubbles } from './bubbleTypes';
 import { renderGarbagePreview } from '@/ts/animationPixi/garbagePreviewAnimation';
 import { RowInformation } from '@/ts/_interface/game/rowInformation';
 import { Field } from '@/ts/_interface/game/field';
-import { useSpriteStore } from '@/stores/spriteStore';
 
 export function prefillBoard(instance: GameInstance): void {
     const totalHeight = instance.gameSettings.gridHeight + instance.gameSettings.gridExtraHeight - 1;

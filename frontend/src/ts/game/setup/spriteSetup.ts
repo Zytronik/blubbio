@@ -17,12 +17,18 @@ export function getAllGameSprites(settings: GameSettings): GameSprites {
             fieldBubbles[x][y] = useSpriteStore().getBubbleSprite();
         }
     }
+
+    const garbagePreview: Container[] = [];
+    for (let x = 0; x < settings.gridWidth; x++) {
+        garbagePreview.push(useSpriteStore().getBubbleSprite());
+    }
     
     return {
         arrow: new Sprite(arrowTexture.texture),
         currentBubble: useSpriteStore().getBubbleSprite(),
         bubbleQueue: queue,
         fieldBubbles: fieldBubbles,
+        garbageBubbles: garbagePreview,
         // bgRed: new Sprite(bgRedTexture.texture),
         // bgPurple: new Sprite(bgPurpleTexture.texture),
     };

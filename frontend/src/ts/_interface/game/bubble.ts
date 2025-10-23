@@ -5,6 +5,4 @@ export interface Bubble {
     type: number,
     wallbounce: boolean,
     tint: string,
-    // sprite: Sprite,
-    // animation: PixiAnimation[]
 }

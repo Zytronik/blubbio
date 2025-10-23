@@ -1,17 +1,17 @@
-import { GameInstance } from "@/ts/_interface/game/gameInstance";
-import { SPRINT_SETTINGS } from "../settings/sprintSettings";
-import { HANDLING_SETTINGS } from "../settings/handlingSettings";
-import { getEmptyStats } from "./statsSetup";
-import { getEmptyGrid } from "./gridSetup";
-import { renderArrowUpdate } from "@/ts/animationPixi/arrowAnimation";
-import { renderBoardBubbles } from "@/ts/animationPixi/boardBubblesAnimation";
-import { getAllGameSprites } from "./spriteSetup";
-import { allBubbles } from "../bubble/bubbleTypes";
-import { nextBubble } from "../bubble/queue";
-import { XORRandom } from "../rng";
-import { getEmptyGarbagePreview } from "./garbageSetup";
-import { prefillBoard } from "../bubble/garbage";
-import { setupBoardVisuals } from "@/ts/pixi/container";
+import { GameInstance } from '@/ts/_interface/game/gameInstance';
+import { SPRINT_SETTINGS } from '../settings/sprintSettings';
+import { HANDLING_SETTINGS } from '../settings/handlingSettings';
+import { getEmptyStats } from './statsSetup';
+import { getEmptyGrid } from './gridSetup';
+import { renderArrowUpdate } from '@/ts/animationPixi/arrowAnimation';
+import { renderBoardBubbles } from '@/ts/animationPixi/boardAnimation';
+import { getAllGameSprites } from './spriteSetup';
+import { allBubbles } from '../bubble/bubbleTypes';
+import { nextBubble } from '../bubble/queue';
+import { XORRandom } from '../rng';
+import { getEmptyGarbagePreview } from './garbageSetup';
+import { prefillBoard } from '../bubble/garbage';
+import { setupBoardVisuals } from '@/ts/pixi/container';
 
 export function newSprintInstance(): GameInstance {
     const startBubbleSeed = { value: Date.now() };
@@ -29,6 +29,11 @@ export function newSprintInstance(): GameInstance {
         garbageSeed: startGarbageSeed,
         angle: 90,
         currentBubble: allBubbles[0],
+        bubblePreview: {
+            tint: '',
+            gridLocation: {x: 0, y: 0},
+            travelLineCoords: []
+        },
         bubbleQueue: [],
         playGrid: getEmptyGrid(SPRINT_SETTINGS),
         garbagePreview: getEmptyGarbagePreview(SPRINT_SETTINGS),

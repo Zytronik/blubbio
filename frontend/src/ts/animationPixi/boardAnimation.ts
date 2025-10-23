@@ -72,3 +72,4 @@ export function renderBoardBubbles(instance: GameInstance): void {
     animation.onStart();
     instance.instanceAnimations.push(animation);
 }
+

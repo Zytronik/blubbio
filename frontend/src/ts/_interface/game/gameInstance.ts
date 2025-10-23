@@ -7,7 +7,8 @@ import { HandlingSettings } from './handlingSettings';
 import { GameSprites } from '../pixi/gameSprites';
 import { rngReference } from './rngReference';
 import { GarbagePreview } from './garbagePreview';
-import { BoardVisuals, GameVisuals } from '@/ts/pixi/container';
+import { BoardVisuals } from '@/ts/pixi/container';
+import { BubblePreview } from './bubblePreview';
 
 export interface GameInstance {
     gameSettings: GameSettings;
@@ -16,7 +17,7 @@ export interface GameInstance {
     garbageSeed: rngReference;
     angle: number;
     currentBubble: Bubble;
-    previewBubble?: Bubble;
+    bubblePreview: BubblePreview;
     holdBubble?: Bubble;
     bubbleQueue: Bubble[];
     playGrid: Grid;
