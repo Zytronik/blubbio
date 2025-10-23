@@ -15,7 +15,7 @@ export const SPRINT_SETTINGS: GameSettings = {
     prefillBoardAmount: 0,
     prefillMessiness: GARBAGE_MESSINESS.CLEAN,
     refillBoard: true,
-    refillBoardAtLine: 0,
+    refillBoardAtLine: 6,
     refillMessiness: GARBAGE_MESSINESS.CLEAN,
     bubbleBagSize: 10,
     clearFloatingBubbles: false,
