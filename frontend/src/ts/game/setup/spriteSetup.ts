@@ -20,9 +20,11 @@ export function getAllGameSprites(settings: GameSettings): GameSprites {
 
     const garbagePreview: Container[] = [];
     for (let x = 0; x < settings.gridWidth; x++) {
-        garbagePreview.push(useSpriteStore().getBubbleSprite());
+        const sprite = useSpriteStore().getBubbleSprite();
+        sprite.visible = false;
+        garbagePreview.push(sprite);
     }
-    
+
     return {
         arrow: new Sprite(arrowTexture.texture),
         currentBubble: useSpriteStore().getBubbleSprite(),

@@ -42,7 +42,8 @@ export const pixiVisuals: PixiVisuals = {
 };
 
 const PADDING_BOARD_LEFT = 1 / 8;  // Full board width divided by bubble row count
-const PADDING_BOARD_RIGHT = 0.2;
+const PADDING_BOARD_RIGHT = 1 / 8;
+const PADDING_BOARD_TOP = 1 / 12; // Full board height divided by bubble column count
 
 export function setupPixiVisuals(): void {
     const stage = usePixiStore().getPixiApp().stage;
@@ -156,12 +157,14 @@ function drawGridContainer(visuals: BoardVisuals): void {
     const aspectRatio = visuals.precisionAspectRatio;
 
     const paddingBoardLeft = getBoardPaddingLeft(visuals);
+    const paddingBoardTop = getBoardPaddingTop(visuals);
+    const paddingBoardRight = getBoardPaddingRight(visuals);
 
     gridContainer.x = paddingBoardLeft;
-    gridContainer.y = 0;
+    gridContainer.y = paddingBoardTop;
 
-    const height = parent.height;
-    const width = height * aspectRatio;
+    const height = parent.height - paddingBoardTop;
+    const width = parent.width - paddingBoardLeft - paddingBoardRight;
 
     const background = new Graphics().rect(0, 0, width, height).fill({ color: 0x000000, alpha: 0.8 });
     background.label = "gridContainerBackground";
@@ -175,29 +178,57 @@ function drawGridBackgroundContainer(visuals: BoardVisuals): void {
     const aspectRatio = visuals.precisionAspectRatio;
 
     const paddingBoardLeft = getBoardPaddingLeft(visuals);
+    const paddingBoardTop = getBoardPaddingTop(visuals);
+    const paddingBoardRight = getBoardPaddingRight(visuals);
 
     gridBackground.x = paddingBoardLeft;
-    gridBackground.y = 0;
+    gridBackground.y = paddingBoardTop;
 
-    const height = parent.height;
-    const width = height * aspectRatio;
+    const height = parent.height - paddingBoardTop;
+    const width = parent.width - paddingBoardLeft - paddingBoardRight;
 
     const background = new Graphics().rect(0, 0, width, height).fill({ color: "yellow" });
     background.label = "gridBackgroundBackground";
     gridBackground.addChild(background);
 }
 
+function drawGarbageContainer(visuals: BoardVisuals): void {
+    const garbageContainer = visuals.garbageContainer;
+
+    const paddingBoardLeft = getBoardPaddingLeft(visuals);
+    const paddingBoardRight = getBoardPaddingRight(visuals);
+    const paddingBoardTop = getBoardPaddingTop(visuals);
+
+    garbageContainer.x = paddingBoardLeft;
+    garbageContainer.y = 0;
+
+    const parent = garbageContainer.parent;
+    const width = parent.width - paddingBoardLeft - paddingBoardRight;
+    const height = paddingBoardTop;
+
+    const background = new Graphics().rect(0, 0, width, height).fill({ color: "white" });
+    background.label = "garbageContainerBackground";
+
+    const bubbleSprites = visuals.sprites.garbageBubbles;
+
+    garbageContainer.addChild(background);
+    bubbleSprites.forEach((sprite) => {
+        garbageContainer.addChild(sprite);
+    });
+}
+
 function drawQueueContainer(visuals: BoardVisuals): void {
     const queueContainer = visuals.queueContainer;
 
     const paddingBoardLeft = getBoardPaddingLeft(visuals);
+    const paddingBoardTop = getBoardPaddingTop(visuals);
 
     queueContainer.x = 0;
-    queueContainer.y = 0;
+    queueContainer.y = paddingBoardTop;
 
     const parent = queueContainer.parent;
     const width = paddingBoardLeft;
-    const height = parent.height / 12 * 5; // TODO adjust according to bubble queue size
+    const height = width * 5; // TODO adjust according to bubble queue size
 
     const background = new Graphics().rect(0, 0, width, height).fill({ color: "violet" });
     background.label = "queueContainerBackground";
@@ -254,8 +285,8 @@ function drawSoloLayout(): void {
     const maxHeightPercent = 0.8;
 
     const boardHeight = gameContainer.height * maxHeightPercent;
-    const boardWidthNoPadding = boardHeight * aspectRatio;
-
+    const paddingBoardTop = boardHeight * PADDING_BOARD_TOP;
+    const boardWidthNoPadding = (boardHeight - paddingBoardTop) * aspectRatio;
     const paddingBoardLeft = boardWidthNoPadding * PADDING_BOARD_LEFT;
     const paddingBoardRight = boardWidthNoPadding * PADDING_BOARD_RIGHT;
 
@@ -280,7 +311,8 @@ function draw1VS1Layout(): void {
     const maxHeightPercent = 0.8;
 
     const boardHeight = gameContainer.height * maxHeightPercent;
-    const boardWidthNoPadding = boardHeight * aspectRatio;
+    const paddingBoardTop = boardHeight * PADDING_BOARD_TOP;
+    const boardWidthNoPadding = (boardHeight - paddingBoardTop) * aspectRatio;
     const paddingBoardLeft = boardWidthNoPadding * PADDING_BOARD_LEFT;
     const paddingBoardRight = boardWidthNoPadding * PADDING_BOARD_RIGHT;
     const boardWidth = boardWidthNoPadding + paddingBoardLeft + paddingBoardRight;
@@ -308,7 +340,8 @@ function drawMultiLayout(): void {
 
     // Left board
     const mainBoardHeight = gameContainer.height * 0.8
-    const mainBoardWidthNoPadding = mainBoardHeight * aspectRatio
+    const paddingBoardTop = mainBoardHeight * PADDING_BOARD_TOP;
+    const mainBoardWidthNoPadding = (mainBoardHeight - paddingBoardTop) * aspectRatio
     const paddingBoardLeft = mainBoardWidthNoPadding * PADDING_BOARD_LEFT;
     const paddingBoardRight = mainBoardWidthNoPadding * PADDING_BOARD_RIGHT;
     const mainBoardWidth = mainBoardWidthNoPadding + paddingBoardLeft + paddingBoardRight;
@@ -327,7 +360,8 @@ function drawMultiLayout(): void {
     const gridSize = Math.ceil(Math.sqrt(remainingBoards.length));
 
     const gridBoardHeight = (mainBoardHeight - padding * (gridSize - 1)) / gridSize;
-    const gridBoardWidthNoPadding = gridBoardHeight * aspectRatio;
+    const paddingBoardTopGrid = gridBoardHeight * PADDING_BOARD_TOP;
+    const gridBoardWidthNoPadding = (gridBoardHeight - paddingBoardTopGrid) * aspectRatio;
     const paddingBoardLeftGrid = gridBoardWidthNoPadding * PADDING_BOARD_LEFT;
     const paddingBoardRightGrid = gridBoardWidthNoPadding * PADDING_BOARD_RIGHT;
     const gridBoardWidth = gridBoardWidthNoPadding + paddingBoardLeftGrid + paddingBoardRightGrid;
@@ -363,6 +397,7 @@ function drawBoardContainer(visuals: BoardVisuals, width: number, height: number
     drawGridContainer(visuals);
     drawQueueContainer(visuals);
     drawArrowContainer(visuals);
+    drawGarbageContainer(visuals);
 }
 
 function getBoardPaddingLeft(visuals: BoardVisuals): number {
@@ -370,7 +405,11 @@ function getBoardPaddingLeft(visuals: BoardVisuals): number {
 }
 
 function getBoardPaddingRight(visuals: BoardVisuals): number {
-    return visuals.boardContainer.width / (1 + PADDING_BOARD_LEFT + PADDING_BOARD_LEFT) * PADDING_BOARD_RIGHT;
+    return visuals.boardContainer.width / (1 + PADDING_BOARD_LEFT + PADDING_BOARD_RIGHT) * PADDING_BOARD_RIGHT;
+}
+
+function getBoardPaddingTop(visuals: BoardVisuals): number {
+    return visuals.boardContainer.height / (1 + PADDING_BOARD_TOP) * PADDING_BOARD_TOP;
 }
 
 /* 

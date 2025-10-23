@@ -4,7 +4,6 @@ import { GameInstance } from '../_interface/game/gameInstance';
 export function renderQueueBubbles(instance: GameInstance): void {
     const queueSprites = instance.gameSprites.bubbleQueue;
     const precisionWidth = instance.playGrid.precisionWidth;
-    const precisionHeight = instance.playGrid.precisionHeight;
     const queueContainer = instance.gameContainers.queueContainer;
     const gridBackground = instance.gameContainers.gridBackground;
     const bubbleFullRadius = instance.playGrid.bubbleFullRadius;
