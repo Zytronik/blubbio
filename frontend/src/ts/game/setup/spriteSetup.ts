@@ -28,6 +28,7 @@ export function getAllGameSprites(settings: GameSettings): GameSprites {
     return {
         arrow: new Sprite(arrowTexture.texture),
         currentBubble: useSpriteStore().getBubbleSprite(),
+        holdBubble: useSpriteStore().getBubbleSprite(),
         previewBubble: useSpriteStore().getBubbleSprite(),
         bubbleQueue: queue,
         fieldBubbles: fieldBubbles,
