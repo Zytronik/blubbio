@@ -10,12 +10,12 @@ export function renderGarbagePreview(instance: GameInstance): void {
         const now = performance.now();
         const isSmallerRow = instance.garbagePreview.generatedGarbage[0].isSmallerRow;
         const precisionWidth = instance.playGrid.precisionWidth;
-        const garbageContainer = instance.gameContainers.garbageContainer;
         const gridBackground = instance.gameContainers.gridBackground;
         const bubbleFullRadius = instance.playGrid.bubbleFullRadius;
         const spriteWidth = (bubbleFullRadius / precisionWidth) * gridBackground.width * 2;
         const spriteHeight = spriteWidth;
         const garbagePreviewSprites = instance.gameSprites.garbageBubbles;
+        const garbagePreviewLineCount = instance.garbagePreview.generatedGarbage.length;
 
         const animation: PixiAnimation = {
             startMS: now,

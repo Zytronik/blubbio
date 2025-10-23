@@ -29,7 +29,7 @@ export function newSprintInstance(): GameInstance {
         currentBubble: allBubbles[0],
         bubblePreview: {
             tint: '',
-            gridLocation: {x: 0, y: 0},
+            gridLocation: { x: 0, y: 0 },
             travelLineCoords: []
         },
         bubbleQueue: [],
@@ -40,7 +40,7 @@ export function newSprintInstance(): GameInstance {
         right: false,
         aps: HANDLING_SETTINGS.defaultAPS,
         gameSprites: sprites,
-        gameContainers: setupBoardVisuals(sprites, precisionAspectRatio),
+        gameContainers: setupBoardVisuals(sprites, precisionAspectRatio, SPRINT_SETTINGS),
         instanceAnimations: [],
     };
     XORRandom(0, 0, instance.bubbleSeed);

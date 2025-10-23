@@ -22,6 +22,7 @@ export function renderQueueBubbles(instance: GameInstance): void {
                 queueContainer.addChild(sprite);
                 sprite.x = x;
                 sprite.y = y;
+                sprite.visible = false;
             });
         },
         renderFrame: function (currentTime: number): void {
