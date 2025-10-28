@@ -15,14 +15,19 @@ export function renderGarbagePreview(instance: GameInstance): void {
         const spriteWidth = (bubbleFullRadius / precisionWidth) * gridBackground.width * 2;
         const spriteHeight = spriteWidth;
         const garbagePreviewSprites = instance.gameSprites.garbageBubbles;
-        const garbagePreviewLineCount = instance.garbagePreview.generatedGarbage.length;
+        const garbageRow = preview.generatedGarbage[0].garbage;
+        const garbagePreviewLineCount = preview.generatedGarbage.length;
+
+        const totalDuration = preview.previewBaseDuration / preview.durationSpeedMultiplier;
+        const fadeInDuration = totalDuration * 0.6;
+        const delayPerBubble = fadeInDuration / garbageRow.length;
 
         const animation: PixiAnimation = {
             startMS: now,
-            endMS: now + preview.previewBaseDuration / preview.durationSpeedMultiplier,
+            endMS: now + totalDuration,
             onStart: function (): void {
                 garbagePreviewSprites.forEach((sprite, index) => {
-                    if (isSmallerRow && index >= preview.generatedGarbage[0].garbage.length) {
+                    if (isSmallerRow && index >= garbageRow.length) {
                         sprite.visible = false;
                         return;
                     }
@@ -32,14 +37,21 @@ export function renderGarbagePreview(instance: GameInstance): void {
                     sprite.height = spriteHeight;
                     sprite.x = x;
                     sprite.y = y;
-                    sprite.alpha = 0.5;
+                    sprite.alpha = 0;
                     sprite.visible = true;
-                    sprite.tint = allBubbles[preview.generatedGarbage[0].garbage[index]].tint;
+                    sprite.tint = allBubbles[garbageRow[index]].tint;
                 });
             },
             renderFrame: function (currentTime: number): void {
-                //fill a square bar behind the bubbles based on time
-                //if bar passes bubble, apply color from generatedGarbage[0] to previewrow
+                const progress = (currentTime - now) / fadeInDuration;
+                garbagePreviewSprites.forEach((sprite, index) => {
+                    if (!sprite.visible) return;
+                    const bubbleStart = index * delayPerBubble;
+                    const bubbleEnd = bubbleStart + delayPerBubble * 2;
+
+                    const localProgress = (currentTime - now - bubbleStart) / (bubbleEnd - bubbleStart);
+                    sprite.alpha = Math.min(Math.max(localProgress, 0), 0.6);
+                });
             },
             onEnd: function (): void {
                 pushOneGarbageRow(instance);
@@ -51,7 +63,7 @@ export function renderGarbagePreview(instance: GameInstance): void {
                     renderGarbagePreview(instance);
                 }
             }
-        }
+        };
         animation.onStart();
         instance.instanceAnimations.push(animation);
     }
