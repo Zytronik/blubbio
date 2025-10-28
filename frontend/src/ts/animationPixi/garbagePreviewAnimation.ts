@@ -50,7 +50,7 @@ export function renderGarbagePreview(instance: GameInstance): void {
                     const bubbleEnd = bubbleStart + delayPerBubble * 2;
 
                     const localProgress = (currentTime - now - bubbleStart) / (bubbleEnd - bubbleStart);
-                    sprite.alpha = Math.min(Math.max(localProgress, 0), 1);
+                    sprite.alpha = Math.min(Math.max(localProgress, 0), 0.6);
                 });
             },
             onEnd: function (): void {
