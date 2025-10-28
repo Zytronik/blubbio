@@ -56,7 +56,7 @@ export function renderGarbagePreview(instance: GameInstance): void {
             onEnd: function (): void {
                 pushOneGarbageRow(instance);
                 preview.isPreviewRunning = false;
-                garbagePreviewSprites.forEach((sprite) => {
+                garbagePreviewSprites.forEach((sprite, index) => {
                     sprite.visible = false;
                 });
                 if (preview.generatedGarbage.length > 0) {
