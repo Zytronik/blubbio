@@ -220,7 +220,7 @@ export function shootBubble(instance: GameInstance): ShotResult {
     }
 
     function getFloatingBubbleFields(): Field[] {
-        if (clearedBubbleFields.length > 1) {
+        if (instance.gameSettings.clearFloatingBubbles && clearedBubbleFields.length > 1) {
             const komma = ',';
             const connected = new Set<string>();
             const unconnected = new Set<string>();
