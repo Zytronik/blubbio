@@ -19,7 +19,7 @@ export function renderGarbagePreview(instance: GameInstance): void {
         const garbagePreviewLineCount = preview.generatedGarbage.length;
 
         const totalDuration = preview.previewBaseDuration / preview.durationSpeedMultiplier;
-        const fadeInDuration = totalDuration * 0.6;
+        const fadeInDuration = totalDuration * 1;
         const delayPerBubble = fadeInDuration / garbageRow.length;
 
         const animation: PixiAnimation = {
