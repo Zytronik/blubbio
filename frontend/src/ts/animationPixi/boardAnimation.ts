@@ -1,6 +1,6 @@
 import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
 import { GameInstance } from '../_interface/game/gameInstance';
-import { calculatePreview } from '../game/actions/shoot';
+import { calculatePreview } from '../gameLogic/actions/shoot';
 import { Graphics } from 'pixi.js';
 
 export function renderBoard(instance: GameInstance): void {

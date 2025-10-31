@@ -1,8 +1,9 @@
 import { Sprite } from 'pixi.js';
 import { thisIsATexture } from '../pixi/allTextures';
 import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
-import { playPixiAnimation, getLerpT } from '../pixi/animation';
+import { getLerpT } from '../pixi/animationCurves';
 import { pixiVisuals } from '../pixi/container';
+import { useAnimationStore } from '@/stores/animationStore';
 
 export function playExample(): void {
     const x = Math.random() * 100;
@@ -29,5 +30,5 @@ export function playExample(): void {
             pixiVisuals.mainContainer.removeChild(bunny);
         },
     };
-    playPixiAnimation(exampleAnim);
+    useAnimationStore().playGlobalAnimation(exampleAnim);
 }

@@ -1,7 +1,7 @@
 import { GameInstance } from "../_interface/game/gameInstance";
 import { PixiAnimation } from "../_interface/pixi/pixiAnimation";
-import { allBubbles } from "../game/bubble/bubbleTypes";
-import { pushOneGarbageRow } from "../game/bubble/garbage";
+import { allBubbles } from "../gameLogic/bubble/bubbleTypes";
+import { pushOneGarbageRow } from "../gameLogic/bubble/garbage";
 
 export function renderGarbagePreview(instance: GameInstance): void {
     const preview = instance.garbagePreview;

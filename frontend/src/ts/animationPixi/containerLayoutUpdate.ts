@@ -1,6 +1,5 @@
+import { useAnimationStore } from "@/stores/animationStore";
 import { PixiAnimation } from "../_interface/pixi/pixiAnimation";
-import { updateContainerLayout } from "../pixi/container";
-import { playPixiAnimation } from "../pixi/animation";
 
 export function renderContainerSizes(): void {
     const exampleAnim: PixiAnimation = {
@@ -16,5 +15,5 @@ export function renderContainerSizes(): void {
             return;
         },
     };
-    playPixiAnimation(exampleAnim);
+    useAnimationStore().playGlobalAnimation(exampleAnim);
 }
