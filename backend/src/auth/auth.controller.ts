@@ -15,7 +15,7 @@ import { JwtAuthGuard } from './jwt/auth.jwt.guard';
 import { ForgotPwDto } from 'src/_dto/auth.forgotPw';
 import { LoginDto } from 'src/_dto/auth.login';
 import { RegisterDto } from 'src/_dto/auth.register';
-import { AuthenticatedRequest } from 'src/_interface/auth.authRequest';
+import { AuthenticatedRequest } from 'src/_interface/authRequest';
 
 @Controller('auth')
 export class AuthController {

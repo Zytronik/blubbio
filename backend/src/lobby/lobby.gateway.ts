@@ -5,11 +5,7 @@ import {
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import {
-  JoinLobbyPayload,
-  LeaveLobbyPayload,
-  LobbyUpdate,
-} from 'src/_interface/lobby.lobby';
+import { JoinLobbyPayload, LeaveLobbyPayload } from 'src/_interface/lobby';
 import { LobbyService } from './lobby.service';
 
 @WebSocketGateway({
@@ -41,8 +37,9 @@ export class LobbyGateway implements OnGatewayDisconnect {
     const lobby = this.lobbyService.joinLobby(client, payload);
     if (lobby) {
       client.join(payload.lobbyId);
-      this.broadcastLobbyUpdate(payload.lobbyId);
       client.emit('lobbyJoined', lobby);
+      this.broadcastLobbyUpdate(payload.lobbyId);
+      this.broadcastLobbyList();
     } else {
       client.emit('lobbyJoinFailed', { lobbyId: payload.lobbyId });
     }
@@ -53,17 +50,46 @@ export class LobbyGateway implements OnGatewayDisconnect {
     const lobby = this.lobbyService.leaveLobby(client, payload);
     client.leave(payload.lobbyId);
 
-    if (!lobby) {
-      this.broadcastLobbyList();
-    } else {
+    if (lobby) {
       this.broadcastLobbyUpdate(payload.lobbyId);
     }
+    this.broadcastLobbyList();
   }
 
   @SubscribeMessage('fetchLobbies')
   handleFetchLobbies(client: Socket): void {
     const lobbyList = this.lobbyService.fetchLobbies();
     client.emit('lobbyList', { lobbies: lobbyList });
+  }
+
+  @SubscribeMessage('startLobby')
+  handleStartLobby(client: Socket, payload: { lobbyId: string }): void {
+    const lobby = this.lobbyService.getLobbyById(payload.lobbyId);
+    if (!lobby) {
+      console.error(`Tried to start non-existing lobby ${payload.lobbyId}`);
+      return;
+    }
+
+    const isHost = lobby.users.some(
+      user => user.socketId === client.id && user.isHost,
+    );
+    if (!isHost) {
+      console.error(
+        'User with socket ID ' +
+          client.id +
+          ' is not host and tried to start the lobby ' +
+          payload.lobbyId,
+      );
+      return;
+    }
+
+    lobby.lobbyStarted = true;
+    this.broadcastLobbyUpdate(payload.lobbyId);
+    this.broadcastLobbyStarted(payload.lobbyId);
+  }
+
+  private broadcastLobbyStarted(lobbyId: string): void {
+    this.server.to(lobbyId).emit('lobbyStarted', { lobbyId });
   }
 
   private broadcastLobbyList(): void {
@@ -74,11 +100,7 @@ export class LobbyGateway implements OnGatewayDisconnect {
   private broadcastLobbyUpdate(lobbyId: string): void {
     const lobby = this.lobbyService.fetchLobbies().find(l => l.id === lobbyId);
     if (lobby) {
-      const update: LobbyUpdate = {
-        lobbyId,
-        users: lobby.users,
-      };
-      this.server.to(lobbyId).emit('lobbyUpdate', update);
+      this.server.to(lobbyId).emit('lobbyUpdate', lobby);
     }
   }
 

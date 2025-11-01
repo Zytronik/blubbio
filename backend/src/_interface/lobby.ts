@@ -2,6 +2,7 @@ export interface Lobby {
   id: string;
   name: string;
   users: LobbyUser[];
+  lobbyStarted: boolean;
 }
 
 export interface LobbyUser {
@@ -19,9 +20,4 @@ export interface JoinLobbyPayload {
 
 export interface LeaveLobbyPayload {
   lobbyId: string;
-}
-
-export interface LobbyUpdate {
-  lobbyId: string;
-  users: LobbyUser[];
 }

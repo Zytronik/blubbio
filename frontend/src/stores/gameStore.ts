@@ -20,6 +20,8 @@ import { renderArrowUpdate } from '@/ts/animationPixi/arrowAnimation';
 import { renderQueueBubbles } from '@/ts/animationPixi/queueBubblesAnimation';
 import { renderHoldBubble } from '@/ts/animationPixi/holdBubbleAnimation';
 import { GameSettings } from '@/ts/_interface/game/gameSettings';
+import { NETWORK_COMMAND } from '@/ts/_enum/networkCommand';
+import { useSocketStore } from './socketStore';
 
 export const useGameStore = defineStore('game', () => {
     const game = getEmptyGame();
@@ -31,15 +33,30 @@ export const useGameStore = defineStore('game', () => {
         game.instancesMap.set(userName, newSprintInstance());
         setupGameVisuals();
     }
-    function setupMultiplayer(gameSettings: GameSettings, otherPlayersUsername: string[]): void {
+    function setupMultiplayer(gameSettings: GameSettings, otherPlayersUsernames: string[]): void {
         const playerUserName = useUserStore().getUserName();
         game.gameMode = GAME_MODE.SPRINT;
         game.inputContext = INPUT_CONTEXT.GAME_WITH_RESET;
         game.spectating = false;
         game.instancesMap.set(playerUserName, newSprintInstance());
-        otherPlayersUsername.forEach(userName => {
+        otherPlayersUsernames.forEach(userName => {
             game.instancesMap.set(userName, newSprintInstance());
             setupGameVisuals(); //multiplayer? 
+        });
+
+        const socketStore = useSocketStore();
+        const webSocket = socketStore.webSocket;
+
+        if (!webSocket) {
+            console.error('WebSocket not initialized!');
+            return;
+        }
+
+        webSocket.on('gameCommand', ({ command, username }) => {
+            console.log('Received game command:', command, 'from', username);
+            if (command === NETWORK_COMMAND.SHOOT) {
+                pressedShoot(username, false);
+            }
         });
     }
     function startGame(): void {
@@ -53,6 +70,14 @@ export const useGameStore = defineStore('game', () => {
             renderHoldBubble(instance);
             renderBoard(instance);
             renderArrowUpdate(instance);
+        }
+    }
+    function notifyEnemies(networkCommand: NETWORK_COMMAND): void {
+        const socketStore = useSocketStore();
+        if (socketStore.webSocket) {
+            socketStore.webSocket.emit('gameCommand', { command: networkCommand });
+        } else {
+            console.error('WebSocket not initialized!');
         }
     }
     function pressedLeft(userName: string): void {
@@ -97,7 +122,7 @@ export const useGameStore = defineStore('game', () => {
             mirrorAngle(instance);
         }
     }
-    function pressedShoot(userName: string): void {
+    function pressedShoot(userName: string, notify = true): void {
         const instance = game.instancesMap.get(userName);
         if (instance) {
             const shotResult = shootBubble(instance);
@@ -108,6 +133,9 @@ export const useGameStore = defineStore('game', () => {
                 prepareGarbage(instance, messiness, amount);
             }
             nextBubble(instance);
+            if (notify) {
+                notifyEnemies(NETWORK_COMMAND.SHOOT);
+            }
         }
     }
     function pressedHold(userName: string): void {
@@ -167,6 +195,7 @@ export const useGameStore = defineStore('game', () => {
 
     return {
         setupSprint,
+        setupMultiplayer,
         startGame,
         pressedLeft,
         pressedRight,

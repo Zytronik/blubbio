@@ -11,7 +11,7 @@ export class SessionService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   isValidToken(token: string): boolean {
     return token && token !== 'null';
@@ -152,4 +152,13 @@ export class SessionService {
       secret: this.configService.get<string>('JWT_SECRET'),
     });
   }
+
+  getUsernameByClientId(
+    clientId: string,
+    activeUsers: Map<string, UserSession>,
+  ): string | null {
+    const userSession = activeUsers.get(clientId);
+    return userSession ? userSession.username : null;
+  }
+
 }

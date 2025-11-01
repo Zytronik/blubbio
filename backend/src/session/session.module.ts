@@ -7,6 +7,6 @@ import { UsersModule } from 'src/user/user.module';
 @Module({
   imports: [JwtModule, UsersModule],
   providers: [SessionGateway, SessionService],
-  exports: [SessionService],
+  exports: [SessionService, SessionGateway],
 })
-export class SessionModule {}
+export class SessionModule { }

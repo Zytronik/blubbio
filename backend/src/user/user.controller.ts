@@ -13,7 +13,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { AuthenticatedRequest } from 'src/_interface/auth.authRequest';
+import { AuthenticatedRequest } from 'src/_interface/authRequest';
 import { JwtAuthGuard } from 'src/auth/jwt/auth.jwt.guard';
 import { ValidateImagePipe } from './validateImgPipeline';
 import { SaveSettingsDto } from 'src/_dto/user.saveSettings';

@@ -36,6 +36,6 @@ export function getUserRankImgUrl(rankName: string): string {
 
 
 export const UploadFileTypeUrls: Record<UploadFileType, string> = {
-  [UploadFileType.ProfilePicture]: 'users/updateProfilePic',
-  [UploadFileType.ProfileBanner]: 'users/updateProfileBanner',
+  [UploadFileType.PROFILE_PICTURE]: 'users/updateProfilePic',
+  [UploadFileType.PROFILE_BANNER]: 'users/updateProfileBanner',
 };

@@ -4,7 +4,7 @@ import {
   JoinLobbyPayload,
   LeaveLobbyPayload,
   Lobby,
-} from 'src/_interface/lobby.lobby';
+} from 'src/_interface/lobby';
 import { SessionService } from 'src/session/session.service';
 
 @Injectable()
@@ -23,6 +23,7 @@ export class LobbyService {
     const newLobby: Lobby = {
       id: lobbyId,
       name: 'Lobby ' + lobbyId,
+      lobbyStarted: false,
       users: [
         {
           socketId: client.id,
@@ -89,6 +90,10 @@ export class LobbyService {
       this.clientRooms.has(client.id) &&
       this.clientRooms.get(client.id).size > 0
     );
+  }
+
+  getLobbyById(lobbyId: string): Lobby | undefined {
+    return this.lobbies.get(lobbyId);
   }
 
   private generateLobbyId(): string {

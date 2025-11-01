@@ -6,6 +6,7 @@ import { MailModule } from './mailer/mailer.module';
 import { UsersModule } from './user/user.module';
 import { SessionModule } from './session/session.module';
 import { LobbyModule } from './lobby/lobby.module';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { LobbyModule } from './lobby/lobby.module';
     UsersModule,
     SessionModule,
     LobbyModule,
+    GameModule,
   ],
   providers: [],
 })

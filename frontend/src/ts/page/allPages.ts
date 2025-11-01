@@ -163,7 +163,7 @@ export const allPages: Pages = {
         title: 'Room Page',
         color: 'rgb(38, 16, 27)',
         component: RoomPage,
-        allowedTransitions: [PAGE.startMenu, PAGE.roomListing],
+        allowedTransitions: [PAGE.startMenu, PAGE.roomListing, PAGE.gamePage],
         backButtons: [
             {
                 page: PAGE.roomListing,

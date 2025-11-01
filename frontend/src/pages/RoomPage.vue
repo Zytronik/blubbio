@@ -1,15 +1,17 @@
 <template>
   <h1>{{ room?.name || 'Room' }}</h1>
+  <p>{{ room?.lobbyStarted ? 'Lobby is in progress' : 'Waiting for Host to start the lobby' }}</p>
   <ul>
     <li v-for="user in room?.users" :key="user.socketId">
       {{ user.username }} <span v-if="user.isHost">(Host)</span>
     </li>
   </ul>
+  <button v-if="showStartButton" @click="startLobby">Start Game</button>
   <button @click="leaveRoom">Leave Room</button>
 </template>
 
 <script lang="ts">
-import { ref, computed, onMounted, watch, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useLobbyStore } from '@/stores/lobbyStore';
 import { PAGE } from '@/ts/_enum/page';
 import { transitionPageBackwardsAnimation } from '@/ts/animationCSS/transitionPageBackwards';
@@ -21,7 +23,15 @@ export default {
     const roomId = ref<string | null>(null);
 
     const room = computed(() => {
-      return lobbyStore.lobbies.find(lobby => lobby.id === roomId.value) || null;
+      return lobbyStore.currentLobby
+    });
+
+    const amICurrentLobbyHost = computed(() => {
+      return lobbyStore.amICurrentLobbyHost;
+    });
+
+    const showStartButton = computed(() => {
+      return amICurrentLobbyHost.value && room.value && !room.value.lobbyStarted && room.value.users.length > 1;
     });
 
     onMounted(async () => {
@@ -45,7 +55,8 @@ export default {
     });
 
     onUnmounted(() => {
-      if (roomId.value) {
+      if (roomId.value && room.value?.lobbyStarted === false) {
+        console.log('Leaving lobby on unmount', room.value?.lobbyStarted === false);
         lobbyStore.leaveLobby(roomId.value);
         roomId.value = null;
       }
@@ -63,9 +74,18 @@ export default {
       return window.location.hash.replace('#', '') || null;
     }
 
+    function startLobby() {
+      if (roomId.value) {
+        lobbyStore.startLobby();
+      }
+    }
+
     return {
       room,
       leaveRoom,
+      amICurrentLobbyHost,
+      startLobby,
+      showStartButton,
     };
   },
 };

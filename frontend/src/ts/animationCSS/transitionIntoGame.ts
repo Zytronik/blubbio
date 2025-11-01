@@ -32,7 +32,6 @@ export function transitionIntoGame() {
 
     setPage(PAGE.gamePage);
     hideTopAndBottomBars();
-    gameStore.setupSprint();
     gameStore.startGame();
 
     gsap.fromTo(overlay, { opacity: 1 }, { duration: 1, opacity: 0, delay: 0.5 });

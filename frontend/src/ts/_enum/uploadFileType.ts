@@ -1,4 +1,4 @@
 export enum UploadFileType {
-  ProfilePicture = 'profile_picture',
-  ProfileBanner = 'profile_banner',
+  PROFILE_PICTURE = 'profile_picture',
+  PROFILE_BANNER = 'profile_banner',
 }
