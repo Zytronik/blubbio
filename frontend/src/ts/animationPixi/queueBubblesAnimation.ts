@@ -1,22 +1,24 @@
 import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
 import { GameInstance } from '../_interface/game/gameInstance';
+import { useAnimationStore } from '@/stores/animationStore';
 
 export function renderQueueBubbles(instance: GameInstance): void {
     const queueSprites = instance.gameSprites.bubbleQueue;
     const precisionWidth = instance.playGrid.precisionWidth;
-    const queueContainer = instance.gameContainers.queueContainer;
-    const gridBackground = instance.gameContainers.gridBackground;
+    const queueContainer = instance.gameSubContainers.queueContainer;
+    const gridBackground = instance.gameSubContainers.gridBackground;
     const bubbleFullRadius = instance.playGrid.bubbleFullRadius;
     const spriteWidth = (bubbleFullRadius / precisionWidth) * gridBackground.width * 2;
     const spriteHeight = spriteWidth;
 
     const animation: PixiAnimation = {
+        name: 'queueAnimation',
         startMS: 0,
         endMS: Infinity,
         onStart: function (): void {
             queueSprites.forEach((sprite, index) => {
                 const x = 0;
-                const y = (index * spriteWidth);
+                const y = index * spriteWidth;
                 sprite.width = spriteWidth;
                 sprite.height = spriteHeight;
                 queueContainer.addChild(sprite);
@@ -37,7 +39,9 @@ export function renderQueueBubbles(instance: GameInstance): void {
         onEnd: function (): void {
             // console.log('end');
         },
+        onCancel: function (): void {
+            // console.log('cancel');
+        },
     };
-    animation.onStart();
-    instance.instanceAnimations.push(animation);
+    useAnimationStore().playGlobalAnimation(animation);
 }

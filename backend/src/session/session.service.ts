@@ -11,7 +11,7 @@ export class SessionService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   isValidToken(token: string): boolean {
     return token && token !== 'null';
@@ -160,5 +160,4 @@ export class SessionService {
     const userSession = activeUsers.get(clientId);
     return userSession ? userSession.username : null;
   }
-
 }

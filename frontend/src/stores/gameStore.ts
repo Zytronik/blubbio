@@ -5,7 +5,6 @@ import { useInputStore } from './inputStore';
 import { INPUT_CONTEXT } from '@/ts/_enum/inputContext';
 import { GameInstance } from '@/ts/_interface/game/gameInstance';
 import { startGameLogicLoop } from '@/ts/gameLogic/gameLogicLoop';
-import { addMonkeyActions } from '@/ts/animationPixi/monkeyActions';
 import { centerAngle, changeAPS, mirrorAngle } from '@/ts/gameLogic/actions/aiming';
 import { shootBubble } from '@/ts/gameLogic/actions/shoot';
 import { applyShotResultToGrid } from '@/ts/gameLogic/bubble/grid';
@@ -14,7 +13,6 @@ import { getEmptyGame } from '@/ts/gameLogic/setup/gameSetup';
 import { newSprintInstance } from '@/ts/gameLogic/setup/instanceSetup';
 import { nextBubble } from '@/ts/gameLogic/bubble/queue';
 import { prepareGarbage } from '@/ts/gameLogic/bubble/garbage';
-import { gameVisuals, drawGame, setupGameVisuals } from '@/ts/pixi/container';
 import { renderBoard } from '@/ts/animationPixi/boardAnimation';
 import { renderArrowUpdate } from '@/ts/animationPixi/arrowAnimation';
 import { renderQueueBubbles } from '@/ts/animationPixi/queueBubblesAnimation';
@@ -22,7 +20,11 @@ import { renderHoldBubble } from '@/ts/animationPixi/holdBubbleAnimation';
 import { GameSettings } from '@/ts/_interface/game/gameSettings';
 import { NETWORK_COMMAND } from '@/ts/_enum/networkCommand';
 import { useSocketStore } from './socketStore';
+import { useContainerStore } from './containerStore';
+import { PixiAnimation } from '@/ts/_interface/pixi/pixiAnimation';
 
+//game should keep track of layouting. its part of the games animation.
+//similarly, who is currently the main spectator target should also be tracked by the game
 export const useGameStore = defineStore('game', () => {
     const game = getEmptyGame();
     function setupSprint(): void {
@@ -31,7 +33,6 @@ export const useGameStore = defineStore('game', () => {
         game.inputContext = INPUT_CONTEXT.GAME_WITH_RESET;
         game.spectating = false;
         game.instancesMap.set(userName, newSprintInstance());
-        setupGameVisuals();
     }
     function setupMultiplayer(gameSettings: GameSettings, otherPlayersUsernames: string[]): void {
         const playerUserName = useUserStore().getUserName();
@@ -41,7 +42,7 @@ export const useGameStore = defineStore('game', () => {
         game.instancesMap.set(playerUserName, newSprintInstance());
         otherPlayersUsernames.forEach(userName => {
             game.instancesMap.set(userName, newSprintInstance());
-            setupGameVisuals(); //multiplayer? 
+            // setupGameVisuals(); //multiplayer? 
         });
 
         const socketStore = useSocketStore();
@@ -61,9 +62,8 @@ export const useGameStore = defineStore('game', () => {
     }
     function startGame(): void {
         useInputStore().setInputContext(game.inputContext);
-        gameVisuals.gameContainer.visible = true; //this should become a store!
+        useContainerStore().showGame();
         startGameLogicLoop();
-        drawGame();
         //maybe container store?
         for (const instance of game.instancesMap.values()) {
             renderQueueBubbles(instance);
@@ -144,28 +144,21 @@ export const useGameStore = defineStore('game', () => {
             swapHoldBubble(instance);
         }
     }
-    function getAllInstances(): GameInstance[] {
+    function getAllInstanceAnimations(): Map<string, PixiAnimation>[] {
         return [...game.instancesMap.values()];
     }
 
     function createMonkeyTesting(monkeyAmount: number): void {
-        game.gameMode = GAME_MODE.SPRINT;
-        game.inputContext = INPUT_CONTEXT.GAME_NO_RESET;
-        game.spectating = true;
-        setupGameVisuals();
-        for (let i = 1; i <= monkeyAmount; i++) {
-            const name = 'Monkey-' + i;
-            const instance = newSprintInstance();
-            addMonkeyActions(instance, name);
-            game.instancesMap.set(name, instance);
-        }
-        drawGame();
-
         // game.gameMode = GAME_MODE.SPRINT;
         // game.inputContext = INPUT_CONTEXT.GAME_NO_RESET;
         // game.spectating = true;
-        // const instance = newSprintInstance();
-        // game.instancesMap.set('test', instance);
+        // setupGameVisuals();
+        // for (let i = 1; i <= monkeyAmount; i++) {
+        //     const name = 'Monkey-' + i;
+        //     const instance = newSprintInstance();
+        //     addMonkeyActions(instance, name);
+        //     game.instancesMap.set(name, instance);
+        // }
     }
 
     function addGarbageToAllInstances(amount: number): void {
@@ -206,9 +199,11 @@ export const useGameStore = defineStore('game', () => {
         pressedMirror,
         pressedShoot,
         pressedHold,
-        getAllInstances,
+        getAllInstances: getAllInstanceAnimations,
         createMonkeyTesting,
         debugLogGameField,
         addGarbageToAllInstances,
     };
 });
+
+

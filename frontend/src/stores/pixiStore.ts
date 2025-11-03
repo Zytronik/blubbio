@@ -1,9 +1,9 @@
-import { setupPixiVisuals } from '@/ts/pixi/container';
-import { allTextures } from '@/ts/pixi/allTextures';
+import { allTextures } from '@/ts/pixi/data/allTextures';
 import { defineStore } from 'pinia';
 import { Application, Assets } from 'pixi.js';
-import { allFonts } from '@/ts/pixi/allFonts';
+import { allFonts } from '@/ts/pixi/data/allFonts';
 import { useAnimationStore } from './animationStore';
+import { useContainerStore } from './containerStore';
 
 export const usePixiStore = defineStore('pixi', () => {
     const pixiApp = new Application();
@@ -17,7 +17,7 @@ export const usePixiStore = defineStore('pixi', () => {
             })
             .then(async () => {
                 document.querySelector(CANVAS_ID)?.appendChild(pixiApp.canvas);
-                setupPixiVisuals();
+                useContainerStore().setupGlobalContainers();
                 useAnimationStore().startAnimationLoop();
             });
         allTextures.forEach(async asset => {

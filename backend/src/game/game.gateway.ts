@@ -9,7 +9,7 @@ export class GameGateway {
   constructor(
     private readonly sessionGateway: SessionGateway,
     private readonly sessionService: SessionService,
-  ) { }
+  ) {}
 
   @SubscribeMessage('gameCommand')
   handleGameCommand(client: Socket, payload: GameCommandPayload): void {

@@ -1,13 +1,16 @@
 import { useGameStore } from '@/stores/gameStore';
 import { GameInstance } from '../_interface/game/gameInstance';
 import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
+import { useAnimationStore } from '@/stores/animationStore';
 
 export function addMonkeyActions(instance: GameInstance, monkeyName: string): void {
     const gameStore = useGameStore();
     const pressFrequency = 400; //press something every 400ms
     let lastPressedAt = 0;
 
-    const doNothing = (): void => { 123 };
+    const doNothing = (): void => {
+        123;
+    };
     const left = (): void => gameStore.pressedLeft(monkeyName);
     const releasedLeft = (): void => gameStore.releasedLeft(monkeyName);
     const right = (): void => gameStore.pressedRight(monkeyName);
@@ -21,6 +24,7 @@ export function addMonkeyActions(instance: GameInstance, monkeyName: string): vo
     const actions: CallableFunction[] = [doNothing, left, releasedLeft, right, releasedRight, center, mirror, hold];
 
     const monkeyActions: PixiAnimation = {
+        name: 'monkeyDo',
         startMS: 0,
         endMS: Infinity,
         onStart: function (): void {
@@ -38,6 +42,9 @@ export function addMonkeyActions(instance: GameInstance, monkeyName: string): vo
         onEnd: function (): void {
             console.log('Monkey ', monkeyName, ' shutting down.');
         },
+        onCancel: function (): void {
+            // console.log('cancel');
+        },
     };
-    instance.instanceAnimations.push(monkeyActions);
+    useAnimationStore().playInstanceAnimation(monkeyActions, instance);
 }

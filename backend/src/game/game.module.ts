@@ -4,8 +4,8 @@ import { GameService } from './game.service';
 import { SessionModule } from 'src/session/session.module';
 
 @Module({
-    imports: [SessionModule],
-    providers: [GameGateway, GameService],
-    exports: [],
+  imports: [SessionModule],
+  providers: [GameGateway, GameService],
+  exports: [],
 })
-export class GameModule { }
+export class GameModule {}

@@ -1,7 +1,7 @@
 import { useSpriteStore } from '@/stores/spriteStore';
 import { GameSettings } from '@/ts/_interface/game/gameSettings';
 import { GameSprites } from '@/ts/_interface/pixi/gameSprites';
-import { arrowTexture } from '@/ts/pixi/allTextures';
+import { arrowTexture } from '@/ts/pixi/data/allTextures';
 import { Container, Sprite } from 'pixi.js';
 
 export function getAllGameSprites(settings: GameSettings): GameSprites {
@@ -33,7 +33,5 @@ export function getAllGameSprites(settings: GameSettings): GameSprites {
         bubbleQueue: queue,
         fieldBubbles: fieldBubbles,
         garbageBubbles: garbagePreview,
-        // bgRed: new Sprite(bgRedTexture.texture),
-        // bgPurple: new Sprite(bgPurpleTexture.texture),
     };
 }

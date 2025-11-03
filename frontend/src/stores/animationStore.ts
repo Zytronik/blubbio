@@ -1,8 +1,9 @@
 import { PixiAnimation } from '@/ts/_interface/pixi/pixiAnimation';
 import { defineStore } from 'pinia';
 import { useGameStore } from './gameStore';
+import { GameInstance } from '@/ts/_interface/game/gameInstance';
 
-const globalAnimations: PixiAnimation[] = [];
+const globalAnimations: Map<string, PixiAnimation> = new Map<string, PixiAnimation>();
 export const useAnimationStore = defineStore('animation', () => {
     let pixiAnimationRunning = false;
     function startAnimationLoop(): void {
@@ -13,35 +14,48 @@ export const useAnimationStore = defineStore('animation', () => {
     }
     function playGlobalAnimation(animation: PixiAnimation): void {
         animation.onStart();
-        globalAnimations.push(animation);
+        globalAnimations.set(animation.name, animation);
     }
-    return { startAnimationLoop, playGlobalAnimation };
+    function playInstanceAnimation(animation: PixiAnimation, instance: GameInstance): void {
+        animation.onStart();
+        instance.instanceAnimations.set(animation.name, animation);
+    }
+    function stopGlobalAnimation(animationName: string): void {
+        globalAnimations.get(animationName)?.onCancel();
+        globalAnimations.delete(animationName);
+    }
+    function stopInstanceAnimation(animationName: string, instance: GameInstance): void {
+        instance.instanceAnimations.get(animationName)?.onCancel();
+        instance.instanceAnimations.delete(animationName);
+    }
+    return { startAnimationLoop, playGlobalAnimation, playInstanceAnimation, stopGlobalAnimation, stopInstanceAnimation };
 });
 
 function animationLoop(): void {
     const now = performance.now();
-    for (let i = globalAnimations.length - 1; i >= 0; i--) {
-        const animation = globalAnimations[i];
+    globalAnimations.forEach((animation, name) => {
         if (animation.endMS < now) {
             animation.onEnd();
-            globalAnimations.splice(i, 1);
+            //TODO: HAS NOT BEEN TESTED YET
+            console.log('before deletion', globalAnimations.size);
+            globalAnimations.delete(name);
+            console.log('deleted', globalAnimations.size);
         } else {
             animation.renderFrame(now);
         }
-    }
+    });
     useGameStore()
         .getAllInstances()
         .forEach(gameInstance => {
             const gameAnimations = gameInstance.instanceAnimations;
-            for (let i = gameAnimations.length - 1; i >= 0; i--) {
-                const animation = gameAnimations[i];
+            gameAnimations.forEach((animation, name) => {
                 if (animation.endMS < now) {
                     animation.onEnd();
-                    gameAnimations.splice(i, 1);
+                    gameAnimations.delete(name);
                 } else {
                     animation.renderFrame(now);
                 }
-            }
+            });
         });
     requestAnimationFrame(() => animationLoop());
 }

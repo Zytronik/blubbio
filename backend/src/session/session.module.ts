@@ -9,4 +9,4 @@ import { UsersModule } from 'src/user/user.module';
   providers: [SessionGateway, SessionService],
   exports: [SessionService, SessionGateway],
 })
-export class SessionModule { }
+export class SessionModule {}

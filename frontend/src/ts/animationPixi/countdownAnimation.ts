@@ -1,10 +1,10 @@
 import { Text } from 'pixi.js';
-import { countDownFont } from '../pixi/allFonts';
+import { countDownFont } from '../pixi/data/allFonts';
 import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
 import { usePixiStore } from '@/stores/pixiStore';
 import { gameVisuals } from '../pixi/container';
 import { useAnimationStore } from '@/stores/animationStore';
-import { getLerpT } from '../pixi/animationCurves';
+import { getLerpT } from '../pixi/math/animationCurves';
 
 export function renderCountdown() {
     const duration = 2000;
@@ -50,6 +50,7 @@ export function renderCountdown() {
     three.y = -(three.height / 2);
     const threeTravelDistance = three.height / 2 + usePixiStore().getCanvasHeight() / 2;
     const threeDownAnimation: PixiAnimation = {
+        name: 'threeDownAnimation',
         startMS: now,
         endMS: now + duration * segmentPercentages[0],
         onStart: function (): void {
@@ -63,8 +64,12 @@ export function renderCountdown() {
         onEnd: function (): void {
             useAnimationStore().playGlobalAnimation(threeShrinkAnimation);
         },
+        onCancel: function (): void {
+            // console.log('cancel');
+        },
     };
     const threeShrinkAnimation: PixiAnimation = {
+        name: 'threeShrinkAnimation',
         startMS: now + duration * segmentPercentages[0],
         endMS: now + duration * segmentPercentages[1],
         onStart: function (): void {
@@ -78,8 +83,12 @@ export function renderCountdown() {
             three.visible = false;
             useAnimationStore().playGlobalAnimation(twoShrinkAnimation);
         },
+        onCancel: function (): void {
+            // console.log('cancel');
+        },
     };
     const twoShrinkAnimation: PixiAnimation = {
+        name: 'twoShrinkAnimation',
         startMS: now + duration * segmentPercentages[1],
         endMS: now + duration * segmentPercentages[2],
         onStart: function (): void {
@@ -93,8 +102,12 @@ export function renderCountdown() {
             two.visible = false;
             useAnimationStore().playGlobalAnimation(oneShrinkAnimation);
         },
+        onCancel: function (): void {
+            // console.log('cancel');
+        },
     };
     const oneShrinkAnimation: PixiAnimation = {
+        name: 'oneShrinkAnimation',
         startMS: now + duration * segmentPercentages[2],
         endMS: now + duration * segmentPercentages[3],
         onStart: function (): void {
@@ -108,8 +121,12 @@ export function renderCountdown() {
             one.visible = false;
             useAnimationStore().playGlobalAnimation(goShrinkAnimation);
         },
+        onCancel: function (): void {
+            // console.log('cancel');
+        },
     };
     const goShrinkAnimation: PixiAnimation = {
+        name: 'goShrinkAnimation',
         startMS: now + duration * segmentPercentages[3],
         endMS: now + duration,
         onStart: function (): void {
@@ -123,6 +140,9 @@ export function renderCountdown() {
             [go, one, two, three].forEach(text => {
                 gameVisuals.countDownContainer.removeChild(text);
             });
+        },
+        onCancel: function (): void {
+            // console.log('cancel');
         },
     };
     useAnimationStore().playGlobalAnimation(threeDownAnimation);

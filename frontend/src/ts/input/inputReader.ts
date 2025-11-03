@@ -1,6 +1,7 @@
 import { useInputStore } from "@/stores/inputStore";
 import { Input } from "../_interface/input";
 import { allInputs, defaultBlocker } from "./allInputs";
+import { INPUT_CONTEXT } from "../_enum/inputContext";
 
 export function attachInputReader() {
     document.addEventListener("keydown", (event) => handleKeyDown(event));
@@ -73,5 +74,8 @@ function handleHeldDownKeys(): void {
 }
 
 function checkInputContext(input: Input) : boolean {
+    if (input.inputContext.includes(INPUT_CONTEXT.DEBUG)) {
+        return true;
+    }
     return input.inputContext.includes(useInputStore().context);
 }
