@@ -1,8 +1,10 @@
-import { GameInstance } from "@/ts/_interface/game/gameInstance";
-import { GameSettings } from "@/ts/_interface/game/gameSettings";
-import { LayoutProperties } from "@/ts/_interface/pixi/layoutProperties";
+import { useContainerStore } from '@/stores/containerStore';
+import { GameInstance } from '@/ts/_interface/game/gameInstance';
+import { GameSettings } from '@/ts/_interface/game/gameSettings';
+import { LayoutProperties } from '@/ts/_interface/pixi/layoutProperties';
 
-export function applyGameLayout(gameInstances: GameInstance[], settings: GameSettings, layout: LayoutProperties) {
+export function applyGameLayout(gameInstances: GameInstance[], settings: GameSettings) {
+    const layoutProperties = useContainerStore().getLayoutProperties();
     const boardAmount = gameInstances.length;
     if (boardAmount === 1) {
         drawSoloLayout(gameInstances[0]);
@@ -17,7 +19,7 @@ export function applyGameLayout(gameInstances: GameInstance[], settings: GameSet
 
 function drawSoloLayout(gameInstance: GameInstance): void {
     // const gameContainer = gameInstance.gameSubContainers.boardContainer.parent; //not sure if that works
-    const containers = gameInstance.gameSubContainers
+    const containers = gameInstance.gameSubContainers;
     const board = containers.boardContainer;
 
     const aspectRatio = containers.precisionAspectRatio;

@@ -1,7 +1,7 @@
-import { useContainerStore } from "@/stores/containerStore";
-import { GameSubContainers } from "@/ts/_interface/pixi/boardVisuals";
-import { LayoutProperties } from "@/ts/_interface/pixi/layoutProperties";
-import { Container, Graphics } from "pixi.js";
+import { useContainerStore } from '@/stores/containerStore';
+import { GameSubContainers } from '@/ts/_interface/pixi/boardVisuals';
+import { LayoutProperties } from '@/ts/_interface/pixi/layoutProperties';
+import { Container, Graphics } from 'pixi.js';
 
 export function getGameSubContainers(): GameSubContainers {
     const boardContainer = new Container();
@@ -30,7 +30,7 @@ export function getGameSubContainers(): GameSubContainers {
         holdContainer: holdContainer,
     };
 
-    const layoutProperties = useContainerStore().getLayoutProperties()
+    const layoutProperties = useContainerStore().getLayoutProperties();
     drawBoardContainerLayoutRect(layoutProperties);
     drawGridContainerLayoutRect(layoutProperties);
     drawGridBackgroundContainerLayoutRect(layoutProperties);
@@ -41,7 +41,6 @@ export function getGameSubContainers(): GameSubContainers {
 
     return visuals;
 }
-
 
 function drawBoardContainerLayoutRect(layoutProperties: LayoutProperties): void {
     const boardContainer = visuals.boardContainer;
@@ -79,7 +78,6 @@ function drawGridBackgroundContainerLayoutRect(layoutProperties: LayoutPropertie
     const background = new Graphics().rect(0, 0, width, height).fill({ color: 'yellow' });
     gridBackground.addChild(background);
 }
-
 
 function drawGarbageContainerLayoutRect(layoutProperties: LayoutProperties): void {
     const garbageContainer = visuals.garbageContainer;

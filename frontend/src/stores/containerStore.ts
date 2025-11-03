@@ -14,8 +14,7 @@ export const useContainerStore = defineStore('container', () => {
         allContainers = getGlobalContainer();
     }
     function refreshLayout(gameInstances: GameInstance[], settings: GameSettings): void {
-        const layoutProperties = calculateLayoutProperties()
-        applyGameLayout(gameInstances, settings, layoutProperties)
+        applyGameLayout(gameInstances, settings);
     }
     function showGame(): void {
         allContainers.gameContainer.visible = true;
@@ -23,8 +22,10 @@ export const useContainerStore = defineStore('container', () => {
     function getGameContainer(): Container {
         return allContainers.gameContainer;
     }
+    function getLayoutProperties(): LayoutProperties {
+        return calculateLayoutProperties();
+    }
     //handles visibility and probably content clean up after finished game
     //maybe aspect ratio and responsive
-    //refresh layout will probably become an animation.
-    return { setupGlobalContainers, refreshLayout, showGame, getGameContainer };
+    return { setupGlobalContainers, refreshLayout, showGame, getGameContainer, getLayoutProperties };
 });
