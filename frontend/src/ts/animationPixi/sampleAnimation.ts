@@ -1,11 +1,11 @@
 import { Sprite } from 'pixi.js';
-import { thisIsATexture } from '../pixi/allTextures';
+import { thisIsATexture } from '../pixi/data/allTextures';
 import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
-import { getLerpT } from '../pixi/animationCurves';
-import { pixiVisuals } from '../pixi/container';
+import { getLerpT } from '../pixi/math/animationCurves';
 import { useAnimationStore } from '@/stores/animationStore';
 
-export function playExample(): void {
+export function getAnimationExample(): void {
+    /*
     const x = Math.random() * 100;
     const y = Math.random() * 100;
     const now = performance.now();
@@ -15,10 +15,11 @@ export function playExample(): void {
     bunny.anchor.set(0.5);
 
     const exampleAnim: PixiAnimation = {
+        name: 'exampleBunnySpinning',
         startMS: now,
         endMS: now + duration,
         onStart: function (): void {
-            pixiVisuals.mainContainer.addChild(bunny);
+            globalVisuals.mainContainer.addChild(bunny);
         },
         renderFrame: function (currentTime: number): void {
             const currentAngle = getLerpT(this.startMS, this.endMS, currentTime) * flipAmount * 360;
@@ -27,8 +28,12 @@ export function playExample(): void {
             bunny.angle = currentAngle;
         },
         onEnd: function (): void {
-            pixiVisuals.mainContainer.removeChild(bunny);
+            globalVisuals.mainContainer.removeChild(bunny);
         },
+        onCancel: function (): void {
+            // console.log('cancel');
+        }
     };
     useAnimationStore().playGlobalAnimation(exampleAnim);
+    */
 }

@@ -1,7 +1,8 @@
-import { GameInstance } from "../_interface/game/gameInstance";
-import { PixiAnimation } from "../_interface/pixi/pixiAnimation";
-import { allBubbles } from "../gameLogic/bubble/bubbleTypes";
-import { pushOneGarbageRow } from "../gameLogic/bubble/garbage";
+import { useAnimationStore } from '@/stores/animationStore';
+import { GameInstance } from '../_interface/game/gameInstance';
+import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
+import { allBubbles } from '../gameLogic/bubble/bubbleTypes';
+import { pushOneGarbageRow } from '../gameLogic/bubble/garbage';
 
 export function renderGarbagePreview(instance: GameInstance): void {
     const preview = instance.garbagePreview;
@@ -10,7 +11,7 @@ export function renderGarbagePreview(instance: GameInstance): void {
         const now = performance.now();
         const isSmallerRow = instance.garbagePreview.generatedGarbage[0].isSmallerRow;
         const precisionWidth = instance.playGrid.precisionWidth;
-        const gridBackground = instance.gameContainers.gridBackground;
+        const gridBackground = instance.gameSubContainers.gridBackground;
         const bubbleFullRadius = instance.playGrid.bubbleFullRadius;
         const spriteWidth = (bubbleFullRadius / precisionWidth) * gridBackground.width * 2;
         const spriteHeight = spriteWidth;
@@ -23,6 +24,7 @@ export function renderGarbagePreview(instance: GameInstance): void {
         const delayPerBubble = fadeInDuration / garbageRow.length;
 
         const animation: PixiAnimation = {
+            name: 'garbagePreview',
             startMS: now,
             endMS: now + totalDuration,
             onStart: function (): void {
@@ -31,7 +33,7 @@ export function renderGarbagePreview(instance: GameInstance): void {
                         sprite.visible = false;
                         return;
                     }
-                    const x = (index * spriteWidth) + (isSmallerRow ? spriteWidth / 2 : 0);
+                    const x = index * spriteWidth + (isSmallerRow ? spriteWidth / 2 : 0);
                     const y = 0;
                     sprite.width = spriteWidth;
                     sprite.height = spriteHeight;
@@ -62,9 +64,11 @@ export function renderGarbagePreview(instance: GameInstance): void {
                 if (preview.generatedGarbage.length > 0) {
                     renderGarbagePreview(instance);
                 }
-            }
+            },
+            onCancel: function (): void {
+                // console.log('cancel');
+            },
         };
-        animation.onStart();
-        instance.instanceAnimations.push(animation);
+        useAnimationStore().playInstanceAnimation(animation, instance);
     }
 }

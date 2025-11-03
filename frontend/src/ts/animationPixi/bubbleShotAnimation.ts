@@ -1,16 +1,18 @@
-import { Field } from "../_interface/game/field";
-import { GameInstance } from "../_interface/game/gameInstance";
-import { Row } from "../_interface/game/row";
-import { PixiAnimation } from "../_interface/pixi/pixiAnimation";
+import { useAnimationStore } from '@/stores/animationStore';
+import { Field } from '../_interface/game/field';
+import { GameInstance } from '../_interface/game/gameInstance';
+import { Row } from '../_interface/game/row';
+import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
 
 export function renderBubbleShot(instance: GameInstance): void {
-    const now = performance.now()
+    const now = performance.now();
     const travelTime = instance.handlingSettings.bubbleTravelDurationMS;
     const animation: PixiAnimation = {
+        name: 'bubbleShot',
         startMS: now,
         endMS: now + travelTime,
         onStart: function (): void {
-            console.log("start");
+            console.log('start');
         },
         renderFrame: function (currentTime: number): void {
             const rows: Row[] = instance.playGrid.rows;
@@ -18,14 +20,16 @@ export function renderBubbleShot(instance: GameInstance): void {
                 const fields: Field[] = row.fields;
                 fields.forEach(field => {
                     if (field.bubble) {
-
                     }
                 });
             });
         },
         onEnd: function (): void {
-            console.log("end");
-        }
-    }
-    instance.instanceAnimations.push(animation);
+            console.log('end');
+        },
+        onCancel: function (): void {
+            // console.log('cancel');
+        },
+    };
+    useAnimationStore().playInstanceAnimation(animation, instance);
 }

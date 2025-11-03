@@ -1,9 +1,7 @@
 import { useGameStore } from '@/stores/gameStore';
 import { INPUT_CONTEXT } from '../_enum/inputContext';
 import { Input } from '../_interface/input';
-import { updateContainerLayout } from '../pixi/container';
 import { usePageStore } from '@/stores/pageStore';
-import { useContainerStore } from '@/stores/containerStore';
 import { useUserStore } from '@/stores/userStore';
 import { renderCountdown } from '../animationPixi/countdownAnimation';
 
@@ -170,7 +168,7 @@ export const pixiDebug1: Input = {
         useGameStore().setupSprint();
         // useGameStore().createMonkeyTesting(3);
     },
-    inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET],
+    inputContext: [INPUT_CONTEXT.DEBUG],
 };
 export const pixiDebug2: Input = {
     name: '1v1GameplayView',
@@ -183,7 +181,7 @@ export const pixiDebug2: Input = {
         console.log('pressed debug 2');
         useGameStore().startGame();
     },
-    inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET],
+    inputContext: [INPUT_CONTEXT.DEBUG],
 };
 export const pixiDebug3: Input = {
     name: '3ormoreplayers',
@@ -194,9 +192,9 @@ export const pixiDebug3: Input = {
     pressed: false,
     fire: () => {
         console.log('pressed debug 3');
-        updateContainerLayout();
+        // updateContainerLayout();
     },
-    inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET],
+    inputContext: [INPUT_CONTEXT.DEBUG],
 };
 export const pixiDebug4: Input = {
     name: 'ShowCountdown',
@@ -210,7 +208,7 @@ export const pixiDebug4: Input = {
         renderCountdown();
         //useContainerStore().cleanUpGameContainer();
     },
-    inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET],
+    inputContext: [INPUT_CONTEXT.DEBUG],
 };
 export const pixiDebug5: Input = {
     name: 'asdf',
@@ -223,7 +221,7 @@ export const pixiDebug5: Input = {
         console.log('pressed debug 5');
         useGameStore().debugLogGameField();
     },
-    inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET],
+    inputContext: [INPUT_CONTEXT.DEBUG],
 };
 export const pixiDebug6: Input = {
     name: 'asdf',
@@ -236,7 +234,7 @@ export const pixiDebug6: Input = {
         console.log('pressed debug 6');
         useGameStore().addGarbageToAllInstances(2);
     },
-    inputContext: [INPUT_CONTEXT.MENU, INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.GAME_NO_RESET],
+    inputContext: [INPUT_CONTEXT.DEBUG],
 };
 
 export const allInputs: Input[] = [

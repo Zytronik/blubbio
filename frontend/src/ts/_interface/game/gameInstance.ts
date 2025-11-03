@@ -7,8 +7,8 @@ import { HandlingSettings } from './handlingSettings';
 import { GameSprites } from '../pixi/gameSprites';
 import { rngReference } from './rngReference';
 import { GarbagePreview } from './garbagePreview';
-import { BoardVisuals } from '@/ts/pixi/container';
 import { BubblePreview } from './bubblePreview';
+import { GameSubContainers } from '../pixi/boardVisuals';
 
 export interface GameInstance {
     gameSettings: GameSettings;
@@ -30,6 +30,6 @@ export interface GameInstance {
     aps: number;
 
     gameSprites: GameSprites;
-    gameContainers: BoardVisuals;
-    instanceAnimations: PixiAnimation[];
+    gameSubContainers: GameSubContainers;
+    instanceAnimations: Map<string, PixiAnimation>;
 }

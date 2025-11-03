@@ -8,6 +8,4 @@ export interface GameSprites {
     bubbleQueue: Container[],
     fieldBubbles: Container[][],
     garbageBubbles: Container[],
-    // bgRed: Sprite,
-    // bgPurple: Sprite,
 }

@@ -3,13 +3,14 @@ import { SPRINT_SETTINGS } from '../settings/sprintSettings';
 import { HANDLING_SETTINGS } from '../settings/handlingSettings';
 import { getEmptyStats } from './statsSetup';
 import { getEmptyGrid } from './gridSetup';
-import { getAllGameSprites } from './spriteSetup';
+import { getAllGameSprites } from '../../pixi/assetFactory/gameSpritesBuilder';
 import { allBubbles } from '../bubble/bubbleTypes';
 import { nextBubble } from '../bubble/queue';
 import { XORRandom } from '../rng';
 import { getEmptyGarbagePreview } from './garbageSetup';
 import { prefillBoard } from '../bubble/garbage';
-import { setupBoardVisuals } from '@/ts/pixi/container';
+import { PixiAnimation } from '@/ts/_interface/pixi/pixiAnimation';
+import { getGameSubContainers } from '@/ts/pixi/assetFactory/gameContainersBuilder';
 
 export function newSprintInstance(): GameInstance {
     const startBubbleSeed = { value: Date.now() };
@@ -40,8 +41,8 @@ export function newSprintInstance(): GameInstance {
         right: false,
         aps: HANDLING_SETTINGS.defaultAPS,
         gameSprites: sprites,
-        gameContainers: setupBoardVisuals(sprites, precisionAspectRatio, SPRINT_SETTINGS),
-        instanceAnimations: [],
+        gameSubContainers: getGameSubContainers(),
+        instanceAnimations: new Map<string, PixiAnimation>(),
     };
     XORRandom(0, 0, instance.bubbleSeed);
     XORRandom(0, 0, instance.garbageSeed);

@@ -3,14 +3,11 @@
 </template>
 
 <script lang="ts">
-
 export default {
     name: 'GamePage',
     components: {},
     setup() {
-        return {
-
-        };
+        return {};
     },
 };
 </script>

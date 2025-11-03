@@ -2,10 +2,11 @@ import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
 import { GameInstance } from '../_interface/game/gameInstance';
 import { calculatePreview } from '../gameLogic/actions/shoot';
 import { Graphics } from 'pixi.js';
+import { useAnimationStore } from '@/stores/animationStore';
 
 export function renderBoard(instance: GameInstance): void {
-    const gridBackground = instance.gameContainers.gridBackground;
-    const gridContainer = instance.gameContainers.gridContainer;
+    const gridBackground = instance.gameSubContainers.gridBackground;
+    const gridContainer = instance.gameSubContainers.gridContainer;
     const precisionWidth = instance.playGrid.precisionWidth;
     const precisionHeight = instance.playGrid.precisionHeight;
     const bubbleFullRadius = instance.playGrid.bubbleFullRadius;
@@ -15,6 +16,7 @@ export function renderBoard(instance: GameInstance): void {
     const gridHeight = instance.gameSettings.gridHeight + instance.gameSettings.gridExtraHeight;
 
     const boardBubbles: PixiAnimation = {
+        name: 'boardBubbles',
         startMS: 0,
         endMS: Infinity,
         onStart: function (): void {
@@ -51,8 +53,6 @@ export function renderBoard(instance: GameInstance): void {
                         continue;
                     }
                     const field = row.fields[x];
-                    // if (field.dirty) {
-                    // field.dirty = false;
                     if (field.bubble) {
                         const viewX = (field.precisionCoords.x / precisionWidth) * gridBackground.width;
                         const viewY = (field.precisionCoords.y / precisionHeight) * gridBackground.height;
@@ -62,7 +62,6 @@ export function renderBoard(instance: GameInstance): void {
                         sprite.tint = field.bubble.tint;
                     } else {
                         sprite.visible = false;
-                        // }
                     }
                 }
             }
@@ -70,9 +69,13 @@ export function renderBoard(instance: GameInstance): void {
         onEnd: function (): void {
             // console.log('end');
         },
+        onCancel: function (): void {
+            // console.log('cancel');
+        },
     };
 
     const previewBubble: PixiAnimation = {
+        name: 'previewBubble',
         startMS: 0,
         endMS: Infinity,
         onStart: function (): void {
@@ -108,18 +111,18 @@ export function renderBoard(instance: GameInstance): void {
                 line.setStrokeStyle({ width: 4, color: 0xaaaaaa, alpha: 0.8 });
                 line.moveTo(startX, startY);
                 line.lineTo(endX, endY);
-                line.stroke({color: 'white', width: 2, alpha: 0.8})
+                line.stroke({ color: 'white', width: 2, alpha: 0.8 });
                 gridContainer.addChild(line);
-                // console.log('startX', startX, 'startY', startX, 'endX', endX, 'endY', endY, "viewX", viewX, "viewY", viewY, preview.travelLineCoords);
             }
         },
         onEnd: function (): void {
             // console.log('end');
         },
+        onCancel: function (): void {
+            // console.log('cancel');
+        },
     };
-
-    boardBubbles.onStart();
-    previewBubble.onStart();
-    instance.instanceAnimations.push(boardBubbles);
-    instance.instanceAnimations.push(previewBubble);
+    
+    useAnimationStore().playInstanceAnimation(boardBubbles, instance);
+    useAnimationStore().playInstanceAnimation(previewBubble, instance);
 }

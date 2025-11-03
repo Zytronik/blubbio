@@ -5,11 +5,11 @@ import { GameInstance } from "@/ts/_interface/game/gameInstance";
 import { RoundData } from "@/ts/_interface/game/roundData";
 
 export function getEmptyGame(): Game {
-    // addUpdateContainerSizeAnimation();
     return {
         gameMode: GAME_MODE.NONE,
         inputContext: INPUT_CONTEXT.DISABLED,
         spectating: false,
+        spectatorTarget: "",
         rounds: [],
         instancesMap: new Map<string, GameInstance>(),
     };
