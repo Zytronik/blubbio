@@ -86,8 +86,8 @@ export const useGameStore = defineStore('game', () => {
     }
 
     
-    function refreshLayout(gameInstances: GameInstance[], settings: GameSettings): void {
-        applyGameLayout(gameInstances, settings);
+    function refreshLayout(): void {
+        // applyGameLayout(gameInstances);
     }
     function getLayoutProperties(): LayoutProperties {
         if (game.instancesMap.size > 0) {

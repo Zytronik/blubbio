@@ -21,5 +21,3 @@ export function getEmptyRoundData(): RoundData {
         gameStartTime: 0,
     };
 }
-
-function getEmpty
