@@ -21,9 +21,10 @@ import { GameSettings } from '@/ts/_interface/game/gameSettings';
 import { NETWORK_COMMAND } from '@/ts/_enum/networkCommand';
 import { useSocketStore } from './socketStore';
 import { useContainerStore } from './containerStore';
-import { PixiAnimation } from '@/ts/_interface/pixi/pixiAnimation';
-import { applyGameLayout } from '@/ts/pixi/layouting/gameLayout';
 import { SPRINT_SETTINGS } from '@/ts/gameLogic/settings/sprintSettings';
+import { LayoutProperties } from '@/ts/_interface/pixi/layoutProperties';
+import { calculateLayoutProperties } from '@/ts/pixi/layouting/layoutProperties';
+import { applyGameLayout } from '@/ts/pixi/layouting/gameLayout';
 
 //game should keep track of layouting. its part of the games animation.
 //similarly, who is currently the main spectator target should also be tracked by the game
@@ -35,7 +36,7 @@ export const useGameStore = defineStore('game', () => {
         game.inputContext = INPUT_CONTEXT.GAME_WITH_RESET;
         game.spectating = false;
         game.instancesMap.set(userName, newSprintInstance());
-        useContainerStore().refreshLayout([...game.instancesMap.values()], SPRINT_SETTINGS);
+        applyGameLayout([...game.instancesMap.values()]);
     }
     function setupMultiplayer(gameSettings: GameSettings, otherPlayersUsernames: string[]): void {
         const playerUserName = useUserStore().getUserName();
@@ -83,6 +84,19 @@ export const useGameStore = defineStore('game', () => {
             console.error('WebSocket not initialized!');
         }
     }
+
+    
+    function refreshLayout(gameInstances: GameInstance[], settings: GameSettings): void {
+        applyGameLayout(gameInstances, settings);
+    }
+    function getLayoutProperties(): LayoutProperties {
+        if (game.instancesMap.size > 0) {
+            return calculateLayoutProperties(game.instancesMap.values().next().value!.gameSettings);
+        }
+        console.error("Something went wrong with layout properties!");
+        return calculateLayoutProperties(SPRINT_SETTINGS);
+    }
+
     function pressedLeft(userName: string): void {
         const instance = game.instancesMap.get(userName);
         if (instance) {
@@ -193,6 +207,7 @@ export const useGameStore = defineStore('game', () => {
         setupSprint,
         setupMultiplayer,
         startGame,
+        getLayoutProperties,
         pressedLeft,
         pressedRight,
         releasedLeft,

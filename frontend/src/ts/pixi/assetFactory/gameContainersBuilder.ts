@@ -1,4 +1,5 @@
 import { useContainerStore } from '@/stores/containerStore';
+import { useGameStore } from '@/stores/gameStore';
 import { GameSubContainers } from '@/ts/_interface/pixi/boardVisuals';
 import { LayoutProperties } from '@/ts/_interface/pixi/layoutProperties';
 import { Container, Graphics } from 'pixi.js';
@@ -30,7 +31,7 @@ export function getGameSubContainers(): GameSubContainers {
         holdContainer: holdContainer,
     };
 
-    const layoutProperties = useContainerStore().getLayoutProperties();
+    const layoutProperties = useGameStore().getLayoutProperties();
     drawBoardContainerLayoutRect(layoutProperties);
     drawGridContainerLayoutRect(layoutProperties);
     drawGridBackgroundContainerLayoutRect(layoutProperties);
@@ -163,7 +164,7 @@ function drawArrowContainerLayoutRect(layoutProperties: LayoutProperties): void 
     arrowContainer.addChild(arrow);
 }
 
-/*
+
 function getGridWidth(visuals: GameSubContainers): number {
     return visuals.boardContainer.width - getBoardPaddingLeft(visuals) - getBoardPaddingRight(visuals);
 }
@@ -184,4 +185,4 @@ function getBoardPaddingRight(visuals: GameSubContainers): number {
 function getBoardPaddingTop(visuals: GameSubContainers): number {
     return (visuals.boardContainer.height / (1 + visuals.paddingBoardTop)) * visuals.paddingBoardTop;
 }
-*/
+
