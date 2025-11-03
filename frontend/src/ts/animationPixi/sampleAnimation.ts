@@ -2,10 +2,10 @@ import { Sprite } from 'pixi.js';
 import { thisIsATexture } from '../pixi/data/allTextures';
 import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
 import { getLerpT } from '../pixi/math/animationCurves';
-import { globalVisuals } from '../pixi/container';
 import { useAnimationStore } from '@/stores/animationStore';
 
 export function getAnimationExample(): void {
+    /*
     const x = Math.random() * 100;
     const y = Math.random() * 100;
     const now = performance.now();
@@ -35,4 +35,5 @@ export function getAnimationExample(): void {
         }
     };
     useAnimationStore().playGlobalAnimation(exampleAnim);
+    */
 }

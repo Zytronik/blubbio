@@ -1,10 +1,9 @@
-import { allContainers } from "@/stores/containerStore";
-import { GameSettings } from "@/ts/_interface/game/gameSettings";
+import { useContainerStore } from "@/stores/containerStore";
 import { GameSubContainers } from "@/ts/_interface/pixi/boardVisuals";
-import { GameSprites } from "@/ts/_interface/pixi/gameSprites";
+import { LayoutProperties } from "@/ts/_interface/pixi/layoutProperties";
 import { Container, Graphics } from "pixi.js";
 
-export function getGameSubContainers(sprites: GameSprites, precisionAspectRatio: number, gameSettings: GameSettings): GameSubContainers {
+export function getGameSubContainers(): GameSubContainers {
     const boardContainer = new Container();
     const gridContainer = new Container();
     const gridBackground = new Container();
@@ -13,7 +12,7 @@ export function getGameSubContainers(sprites: GameSprites, precisionAspectRatio:
     const garbageContainer = new Container();
     const holdContainer = new Container();
 
-    allContainers.gameContainer.addChild(boardContainer);
+    useContainerStore().getGameContainer().addChild(boardContainer);
     boardContainer.addChild(gridContainer);
     boardContainer.addChild(gridBackground);
     boardContainer.addChild(queueContainer);
@@ -22,11 +21,6 @@ export function getGameSubContainers(sprites: GameSprites, precisionAspectRatio:
     boardContainer.addChild(holdContainer);
 
     const visuals: GameSubContainers = {
-        paddingBoardLeft: 1 / gameSettings.gridWidth,
-        paddingBoardRight: 1 / gameSettings.gridWidth,
-        paddingBoardTop: 1 / gameSettings.gridHeight,
-        precisionAspectRatio: precisionAspectRatio,
-        gameSettings: gameSettings,
         boardContainer: boardContainer,
         gridContainer: gridContainer,
         gridBackground: gridBackground,
@@ -36,27 +30,27 @@ export function getGameSubContainers(sprites: GameSprites, precisionAspectRatio:
         holdContainer: holdContainer,
     };
 
-    drawBoardContainerLayoutRect
-    drawGridContainerLayoutRect(visuals)
+    const layoutProperties = useContainerStore().getLayoutProperties()
+    drawBoardContainerLayoutRect(layoutProperties);
+    drawGridContainerLayoutRect(layoutProperties);
+    drawGridBackgroundContainerLayoutRect(layoutProperties);
+    drawGarbageContainerLayoutRect(layoutProperties);
+    drawQueueContainerLayoutRect(layoutProperties);
+    drawHoldContainerLayoutRect(layoutProperties);
+    drawArrowContainerLayoutRect(layoutProperties);
 
     return visuals;
 }
 
 
-function drawBoardContainerLayoutRect(visuals: GameSubContainers, width: number, height: number): void {
+function drawBoardContainerLayoutRect(layoutProperties: LayoutProperties): void {
     const boardContainer = visuals.boardContainer;
     const background = new Graphics().rect(0, 0, width, height).fill({ color: 'green' });
     background.label = 'boardContainerBackground';
     boardContainer.addChildAt(background, 0);
-    drawGridBackgroundContainer(visuals);
-    drawGridContainer(visuals);
-    drawQueueContainer(visuals);
-    drawArrowContainer(visuals);
-    drawGarbageContainer(visuals);
-    drawHoldContainer(visuals);
 }
 
-function drawGridContainerLayoutRect(visuals: GameSubContainers): void {
+function drawGridContainerLayoutRect(layoutProperties: LayoutProperties): void {
     const gridContainer = visuals.gridContainer;
     gridContainer.zIndex = 1;
 
@@ -70,7 +64,7 @@ function drawGridContainerLayoutRect(visuals: GameSubContainers): void {
     gridContainer.addChild(background);
 }
 
-function drawGridBackgroundContainerLayoutRect(visuals: GameSubContainers): void {
+function drawGridBackgroundContainerLayoutRect(layoutProperties: LayoutProperties): void {
     const gridBackground = visuals.gridBackground;
 
     const paddingBoardLeft = getBoardPaddingLeft(visuals);
@@ -87,7 +81,7 @@ function drawGridBackgroundContainerLayoutRect(visuals: GameSubContainers): void
 }
 
 
-function drawGarbageContainerLayoutRect(visuals: GameSubContainers): void {
+function drawGarbageContainerLayoutRect(layoutProperties: LayoutProperties): void {
     const garbageContainer = visuals.garbageContainer;
 
     const paddingBoardLeft = getBoardPaddingLeft(visuals);
@@ -110,7 +104,7 @@ function drawGarbageContainerLayoutRect(visuals: GameSubContainers): void {
     });
 }
 
-function drawQueueContainerLayoutRect(visuals: GameSubContainers): void {
+function drawQueueContainerLayoutRect(layoutProperties: LayoutProperties): void {
     const queueContainer = visuals.queueContainer;
 
     const paddingBoardTop = getBoardPaddingTop(visuals);
@@ -126,7 +120,7 @@ function drawQueueContainerLayoutRect(visuals: GameSubContainers): void {
     queueContainer.addChild(background);
 }
 
-function drawHoldContainerLayoutRect(visuals: GameSubContainers): void {
+function drawHoldContainerLayoutRect(layoutProperties: LayoutProperties): void {
     const holdContainer = visuals.holdContainer;
 
     const paddingBoardLeft = getBoardPaddingLeft(visuals);
@@ -143,7 +137,7 @@ function drawHoldContainerLayoutRect(visuals: GameSubContainers): void {
     holdContainer.addChild(background);
 }
 
-function drawArrowContainerLayoutRect(visuals: GameSubContainers): void {
+function drawArrowContainerLayoutRect(layoutProperties: LayoutProperties): void {
     const { sprites } = visuals;
     const arrowContainer = visuals.arrowContainer;
     const arrow = sprites.arrow;
@@ -171,7 +165,7 @@ function drawArrowContainerLayoutRect(visuals: GameSubContainers): void {
     arrowContainer.addChild(arrow);
 }
 
-
+/*
 function getGridWidth(visuals: GameSubContainers): number {
     return visuals.boardContainer.width - getBoardPaddingLeft(visuals) - getBoardPaddingRight(visuals);
 }
@@ -192,3 +186,4 @@ function getBoardPaddingRight(visuals: GameSubContainers): number {
 function getBoardPaddingTop(visuals: GameSubContainers): number {
     return (visuals.boardContainer.height / (1 + visuals.paddingBoardTop)) * visuals.paddingBoardTop;
 }
+*/

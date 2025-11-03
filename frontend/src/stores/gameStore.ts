@@ -144,7 +144,7 @@ export const useGameStore = defineStore('game', () => {
             swapHoldBubble(instance);
         }
     }
-    function getAllInstanceAnimations(): Map<string, PixiAnimation>[] {
+    function getAllInstances(): GameInstance[] {
         return [...game.instancesMap.values()];
     }
 
@@ -199,7 +199,7 @@ export const useGameStore = defineStore('game', () => {
         pressedMirror,
         pressedShoot,
         pressedHold,
-        getAllInstances: getAllInstanceAnimations,
+        getAllInstances,
         createMonkeyTesting,
         debugLogGameField,
         addGarbageToAllInstances,

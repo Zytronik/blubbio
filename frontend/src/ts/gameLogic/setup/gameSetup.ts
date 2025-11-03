@@ -9,6 +9,7 @@ export function getEmptyGame(): Game {
         gameMode: GAME_MODE.NONE,
         inputContext: INPUT_CONTEXT.DISABLED,
         spectating: false,
+        spectatorTarget: "",
         rounds: [],
         instancesMap: new Map<string, GameInstance>(),
     };

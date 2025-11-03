@@ -3,6 +3,4 @@ export interface LayoutProperties {
     paddingBoardRight: number;
     paddingBoardTop: number;
     precisionAspectRatio: number;
-
-    gameSettings: GameSettings;
 }

@@ -2,11 +2,11 @@ import { Text } from 'pixi.js';
 import { countDownFont } from '../pixi/data/allFonts';
 import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
 import { usePixiStore } from '@/stores/pixiStore';
-import { gameVisuals } from '../pixi/container';
 import { useAnimationStore } from '@/stores/animationStore';
 import { getLerpT } from '../pixi/math/animationCurves';
 
 export function renderCountdown() {
+    /*
     const duration = 2000;
     const segmentPercentages = [0.2, 0.4, 0.6, 0.8];
     const now = performance.now();
@@ -146,4 +146,5 @@ export function renderCountdown() {
         },
     };
     useAnimationStore().playGlobalAnimation(threeDownAnimation);
+    */
 }

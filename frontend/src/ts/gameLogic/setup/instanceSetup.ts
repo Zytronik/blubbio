@@ -41,7 +41,7 @@ export function newSprintInstance(): GameInstance {
         right: false,
         aps: HANDLING_SETTINGS.defaultAPS,
         gameSprites: sprites,
-        gameSubContainers: getGameSubContainers(sprites, precisionAspectRatio, SPRINT_SETTINGS),
+        gameSubContainers: getGameSubContainers(),
         instanceAnimations: new Map<string, PixiAnimation>(),
     };
     XORRandom(0, 0, instance.bubbleSeed);
