@@ -17,7 +17,8 @@ import { UserService } from 'src/user/user.service';
   },
 })
 export class SessionGateway
-  implements OnGatewayConnection, OnGatewayDisconnect {
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer()
   server: Server;
 
@@ -26,7 +27,7 @@ export class SessionGateway
   constructor(
     private readonly sessionService: SessionService,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   async handleConnection(client: Socket) {
     const token = client.handshake.query.token as string;
