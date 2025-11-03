@@ -1,6 +1,8 @@
 import { GameInstance } from "@/ts/_interface/game/gameInstance";
+import { GameSettings } from "@/ts/_interface/game/gameSettings";
+import { LayoutProperties } from "@/ts/_interface/pixi/layoutProperties";
 
-export function applyGameLayout(gameInstances: GameInstance[]) {
+export function applyGameLayout(gameInstances: GameInstance[], settings: GameSettings, layout: LayoutProperties) {
     const boardAmount = gameInstances.length;
     if (boardAmount === 1) {
         drawSoloLayout(gameInstances[0]);
@@ -14,7 +16,7 @@ export function applyGameLayout(gameInstances: GameInstance[]) {
 }
 
 function drawSoloLayout(gameInstance: GameInstance): void {
-    const gameContainer = gameVisuals.gameContainer;
+    // const gameContainer = gameInstance.gameSubContainers.boardContainer.parent; //not sure if that works
     const containers = gameInstance.gameSubContainers
     const board = containers.boardContainer;
 
@@ -35,7 +37,7 @@ function drawSoloLayout(gameInstance: GameInstance): void {
     board.x = relativeX;
     board.y = relativeY;
 
-    drawBoardContainer(containers, boardWidth, boardHeight);
+    // drawBoardContainer(containers, boardWidth, boardHeight);
 }
 
 function draw1VS1Layout(playerLeft: GameInstance, playerRight: GameInstance): void {
@@ -59,15 +61,15 @@ function draw1VS1Layout(playerLeft: GameInstance, playerRight: GameInstance): vo
     const relativeXLeft = gameContainer.width * 0.25 - boardWidth / 2;
     visualsLeft.boardContainer.x = relativeXLeft;
     visualsLeft.boardContainer.y = relativeY;
-    drawBoardContainer(visualsLeft, boardWidth, boardHeight);
+    // drawBoardContainer(visualsLeft, boardWidth, boardHeight);
 
     const relativeXRight = gameContainer.width * 0.75 - boardWidth / 2;
     visualsRight.boardContainer.x = relativeXRight;
     visualsRight.boardContainer.y = relativeY;
-    drawBoardContainer(visualsRight, boardWidth, boardHeight);
+    // drawBoardContainer(visualsRight, boardWidth, boardHeight);
 }
 
-function drawMultiLayout(instances: GameInstance): void {
+function drawMultiLayout(instances: GameInstance[]): void {
     const gameContainer = gameVisuals.gameContainer;
     const boards = gameVisuals.boardVisuals;
     if (boards.length < 3) return;
@@ -90,7 +92,7 @@ function drawMultiLayout(instances: GameInstance): void {
     mainBoard.boardContainer.x = mainX;
     mainBoard.boardContainer.y = mainY;
 
-    drawBoardContainer(mainBoard, mainBoardWidth, mainBoardHeight);
+    // drawBoardContainer(mainBoard, mainBoardWidth, mainBoardHeight);
 
     // Right side grid
     const remainingBoards = boards.slice(1);
@@ -121,6 +123,6 @@ function drawMultiLayout(instances: GameInstance): void {
         board.boardContainer.x = posX;
         board.boardContainer.y = posY;
 
-        drawBoardContainer(board, gridBoardWidth, gridBoardHeight);
+        // drawBoardContainer(board, gridBoardWidth, gridBoardHeight);
     }
 }

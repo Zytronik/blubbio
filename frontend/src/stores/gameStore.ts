@@ -22,6 +22,8 @@ import { NETWORK_COMMAND } from '@/ts/_enum/networkCommand';
 import { useSocketStore } from './socketStore';
 import { useContainerStore } from './containerStore';
 import { PixiAnimation } from '@/ts/_interface/pixi/pixiAnimation';
+import { applyGameLayout } from '@/ts/pixi/layouting/gameLayout';
+import { SPRINT_SETTINGS } from '@/ts/gameLogic/settings/sprintSettings';
 
 //game should keep track of layouting. its part of the games animation.
 //similarly, who is currently the main spectator target should also be tracked by the game
@@ -33,6 +35,7 @@ export const useGameStore = defineStore('game', () => {
         game.inputContext = INPUT_CONTEXT.GAME_WITH_RESET;
         game.spectating = false;
         game.instancesMap.set(userName, newSprintInstance());
+        useContainerStore().refreshLayout([...game.instancesMap.values()], SPRINT_SETTINGS);
     }
     function setupMultiplayer(gameSettings: GameSettings, otherPlayersUsernames: string[]): void {
         const playerUserName = useUserStore().getUserName();
