@@ -10,9 +10,12 @@ export function calculateLayoutProperties(settings: GameSettings): LayoutPropert
     const calculatedProperties: LayoutProperties = {
         paddingBoardLeft: 1 / settings.gridWidth,
         paddingBoardRight: 1 / settings.gridWidth,
-        paddingBoardTop: 1 / settings.gridWidth,
+        paddingBoardTop: 1 / settings.gridHeight,
         precisionAspectRatio: precisionWidth / precisionHeight,
+        maxHeightPercent: 0.8,
+        multiLayoutGridPadding: 20,
+        queuePreviewSize: settings.queuePreviewSize
     };
-    
+
     return calculatedProperties;
 }

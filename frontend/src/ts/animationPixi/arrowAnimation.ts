@@ -4,6 +4,8 @@ import { useAnimationStore } from '@/stores/animationStore';
 
 export function renderArrowUpdate(instance: GameInstance): void {
     const arrowContainer = instance.gameSubContainers.arrowContainer;
+    const arrowSprite = instance.gameSprites.arrow;
+    const currentBubble = instance.gameSprites.currentBubble;
     const gridBackground = instance.gameSubContainers.gridBackground;
     const arrowPrecisionCoords = instance.playGrid.launcherPrecisionPosition;
     const precisionWidth = instance.playGrid.precisionWidth;
@@ -20,11 +22,20 @@ export function renderArrowUpdate(instance: GameInstance): void {
         startMS: 0,
         endMS: Infinity,
         onStart: function (): void {
+            arrowSprite.height = arrowContainer.height;
+            arrowSprite.width = arrowContainer.width;
+
+            currentBubble.width = arrowContainer.width;
+            currentBubble.height = arrowContainer.height;
+
             arrowContainer.x = (arrowPrecisionCoords.x / precisionWidth) * gridBackground.width;
             arrowContainer.y = (arrowPrecisionCoords.y / precisionHeight) * gridBackground.height;
 
             currentBubbleSprite.x = bubbleHeight / 2;
             currentBubbleSprite.y = 0;
+
+            arrowContainer.addChild(currentBubble);
+            arrowContainer.addChild(arrowSprite);
         },
         renderFrame: function (currentTime: number): void {
             arrowContainer.angle = instance.angle;

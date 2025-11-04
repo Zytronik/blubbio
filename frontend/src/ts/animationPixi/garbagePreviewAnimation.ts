@@ -18,6 +18,7 @@ export function renderGarbagePreview(instance: GameInstance): void {
         const garbagePreviewSprites = instance.gameSprites.garbageBubbles;
         const garbageRow = preview.generatedGarbage[0].garbage;
         const garbagePreviewLineCount = preview.generatedGarbage.length;
+        const garbageContainer = instance.gameSubContainers.garbageContainer;
 
         const totalDuration = preview.previewBaseDuration / preview.durationSpeedMultiplier;
         const fadeInDuration = totalDuration * 1;
@@ -42,10 +43,10 @@ export function renderGarbagePreview(instance: GameInstance): void {
                     sprite.alpha = 0;
                     sprite.visible = true;
                     sprite.tint = allBubbles[garbageRow[index]].tint;
+                    garbageContainer.addChild(sprite);
                 });
             },
             renderFrame: function (currentTime: number): void {
-                const progress = (currentTime - now) / fadeInDuration;
                 garbagePreviewSprites.forEach((sprite, index) => {
                     if (!sprite.visible) return;
                     const bubbleStart = index * delayPerBubble;

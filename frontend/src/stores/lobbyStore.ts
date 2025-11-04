@@ -10,10 +10,8 @@ import {
 } from '@/ts/_interface/lobby';
 import { transitionPageForwardsAnimation } from '@/ts/animationCSS/transitionPageForwards';
 import { PAGE } from '@/ts/_enum/page';
-import { useGameStore } from './gameStore';
-import { GameSettings } from '@/ts/_interface/game/gameSettings';
-import { GARBAGE_MESSINESS } from '@/ts/_enum/garbageMessiness';
 import { transitionIntoGame } from '@/ts/animationCSS/transitionIntoGame';
+import { GAME_MODE } from '@/ts/_enum/gameMode';
 
 export const useLobbyStore = defineStore('lobby', {
   state: () => ({
@@ -33,14 +31,12 @@ export const useLobbyStore = defineStore('lobby', {
       const webSocket = socketStore.webSocket;
 
       webSocket.on('lobbyList', (response: LobbyListResponse) => {
-        console.log('Received lobby list:', response.lobbies);
         this.lobbies = response.lobbies;
       });
 
       webSocket.on('lobbyUpdate', (updatedLobby: Lobby) => {
         let lobby = this.lobbies.find(l => l.id === updatedLobby.id);
         if (lobby) {
-          console.log('Lobby updated:', updatedLobby);
           lobby = updatedLobby;
         }
         if (this.currentLobby?.id === updatedLobby.id) {
@@ -68,43 +64,7 @@ export const useLobbyStore = defineStore('lobby', {
       webSocket.on('lobbyStarted', (payload: { lobbyId: string }) => {
         if (this.currentLobby && this.currentLobby.id === payload.lobbyId) {
           this.currentLobby.lobbyStarted = true;
-
-
-          const gameStore = useGameStore();
-          const gameSettings: GameSettings = {
-            gridWidth: 8,
-            gridHeight: 15,
-            gridExtraHeight: 3,
-            minAngle: 12,
-            maxAngle: 168,
-            queuePreviewSize: 5,
-            widthPrecisionUnits: 10000000,
-            collisionRangeFactor: 0.8,
-            sprintVictoryCondition: 100,
-            prefillBoard: true,
-            prefillBoardAmount: 0,
-            prefillMessiness: GARBAGE_MESSINESS.WORST,
-            refillBoard: true,
-            refillBoardAtLine: 6,
-            refillMessiness: GARBAGE_MESSINESS.WORST,
-            bubbleBagSize: 10,
-            clearFloatingBubbles: false,
-            garbageMaxAtOnce: 3,
-            previewBaseDuration: 4000,
-            countDownDuration: 1500,
-          }
-
-          const otherPlayersUsernames = this.currentLobby?.users
-            .filter(user => {
-              const socketStore = useSocketStore();
-              return user.socketId !== socketStore.webSocket?.id;
-            })
-            .map(user => user.username);
-
-          console.log('Starting multiplayer game with other players:', otherPlayersUsernames);
-
-          gameStore.setupMultiplayer(gameSettings, otherPlayersUsernames || []);
-          transitionIntoGame();
+          transitionIntoGame(GAME_MODE.MULTI_PLAYER);
         }
       });
     },

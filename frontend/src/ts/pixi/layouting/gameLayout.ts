@@ -17,112 +17,85 @@ export function applyGameLayout(gameInstances: GameInstance[]) {
 
 function drawSoloLayout(gameInstance: GameInstance): void {
     const gameContainer = gameInstance.gameSubContainers.boardContainer.parent;
-    const containers = gameInstance.gameSubContainers;
-    const board = containers.boardContainer;
+    const board = gameInstance.gameSubContainers.boardContainer;
 
-    const aspectRatio = containers.precisionAspectRatio;
-    const maxHeightPercent = 0.8;
-
-    const boardHeight = gameContainer.height * maxHeightPercent;
-    const paddingBoardTop = boardHeight * PADDING_BOARD_TOP;
-    const boardWidthNoPadding = (boardHeight - paddingBoardTop) * aspectRatio;
-    const paddingBoardLeft = boardWidthNoPadding * PADDING_BOARD_LEFT;
-    const paddingBoardRight = boardWidthNoPadding * PADDING_BOARD_RIGHT;
-
-    const boardWidth = boardWidthNoPadding + paddingBoardLeft + paddingBoardRight;
-
-    const relativeX = (gameContainer.width - boardWidth) / 2;
-    const relativeY = (gameContainer.height - boardHeight) / 2;
+    const relativeX = (gameContainer.width - board.width) / 2;
+    const relativeY = (gameContainer.height - board.height) / 2;
 
     board.x = relativeX;
     board.y = relativeY;
-
-    // drawBoardContainer(containers, boardWidth, boardHeight);
 }
 
 function draw1VS1Layout(playerLeft: GameInstance, playerRight: GameInstance): void {
-    const gameContainer = gameVisuals.gameContainer;
+    const gameContainer = playerLeft.gameSubContainers.boardContainer.parent;
 
-    const visualsLeft = gameVisuals.boardVisuals[0];
-    const visualsRight = gameVisuals.boardVisuals[1];
+    const boardLeft = playerLeft.gameSubContainers.boardContainer;
+    const boardRight = playerRight.gameSubContainers.boardContainer;
 
-    const aspectRatio = visualsLeft.precisionAspectRatio;
-    const maxHeightPercent = 0.8;
+    const relativeY = (gameContainer.height - boardLeft.height) / 2;
 
-    const boardHeight = gameContainer.height * maxHeightPercent;
-    const paddingBoardTop = boardHeight * PADDING_BOARD_TOP;
-    const boardWidthNoPadding = (boardHeight - paddingBoardTop) * aspectRatio;
-    const paddingBoardLeft = boardWidthNoPadding * PADDING_BOARD_LEFT;
-    const paddingBoardRight = boardWidthNoPadding * PADDING_BOARD_RIGHT;
-    const boardWidth = boardWidthNoPadding + paddingBoardLeft + paddingBoardRight;
+    const relativeXLeft = gameContainer.width * 0.25 - boardLeft.width / 2;
+    boardLeft.x = relativeXLeft;
+    boardLeft.y = relativeY;
 
-    const relativeY = (gameContainer.height - boardHeight) / 2;
-
-    const relativeXLeft = gameContainer.width * 0.25 - boardWidth / 2;
-    visualsLeft.boardContainer.x = relativeXLeft;
-    visualsLeft.boardContainer.y = relativeY;
-    // drawBoardContainer(visualsLeft, boardWidth, boardHeight);
-
-    const relativeXRight = gameContainer.width * 0.75 - boardWidth / 2;
-    visualsRight.boardContainer.x = relativeXRight;
-    visualsRight.boardContainer.y = relativeY;
-    // drawBoardContainer(visualsRight, boardWidth, boardHeight);
+    const relativeXRight = gameContainer.width * 0.75 - boardRight.width / 2;
+    boardRight.x = relativeXRight;
+    boardRight.y = relativeY;
 }
 
 function drawMultiLayout(instances: GameInstance[]): void {
-    const gameContainer = gameVisuals.gameContainer;
-    const boards = gameVisuals.boardVisuals;
-    if (boards.length < 3) return;
+    const gameContainer = instances[0].gameSubContainers.boardContainer.parent;
+    const mainBoard = instances[0].gameSubContainers.boardContainer;
+    if (instances.length < 3) return;
 
-    const padding = 20;
-    const aspectRatio = boards[0].precisionAspectRatio;
+    const layoutProperties = useGameStore().getLayoutProperties();
+    const aspectRatio = layoutProperties.precisionAspectRatio;
+    const gridPadding = layoutProperties.multiLayoutGridPadding;
 
-    // Left board
-    const mainBoardHeight = gameContainer.height * 0.8;
-    const paddingBoardTop = mainBoardHeight * PADDING_BOARD_TOP;
-    const mainBoardWidthNoPadding = (mainBoardHeight - paddingBoardTop) * aspectRatio;
-    const paddingBoardLeft = mainBoardWidthNoPadding * PADDING_BOARD_LEFT;
-    const paddingBoardRight = mainBoardWidthNoPadding * PADDING_BOARD_RIGHT;
-    const mainBoardWidth = mainBoardWidthNoPadding + paddingBoardLeft + paddingBoardRight;
+    const mainX = (gameContainer.width * 0.5 - mainBoard.width) / 2;
+    const mainY = (gameContainer.height - mainBoard.height) / 2;
 
-    const mainBoard = boards[0];
-    const mainX = gameContainer.width / 2 / 2 - mainBoardWidth / 2;
-    const mainY = (gameContainer.height - mainBoardHeight) / 2;
+    mainBoard.x = mainX;
+    mainBoard.y = mainY;
 
-    mainBoard.boardContainer.x = mainX;
-    mainBoard.boardContainer.y = mainY;
-
-    // drawBoardContainer(mainBoard, mainBoardWidth, mainBoardHeight);
-
-    // Right side grid
-    const remainingBoards = boards.slice(1);
-    const gridSize = Math.ceil(Math.sqrt(remainingBoards.length));
-
-    const gridBoardHeight = (mainBoardHeight - padding * (gridSize - 1)) / gridSize;
-    const paddingBoardTopGrid = gridBoardHeight * PADDING_BOARD_TOP;
-    const gridBoardWidthNoPadding = (gridBoardHeight - paddingBoardTopGrid) * aspectRatio;
-    const paddingBoardLeftGrid = gridBoardWidthNoPadding * PADDING_BOARD_LEFT;
-    const paddingBoardRightGrid = gridBoardWidthNoPadding * PADDING_BOARD_RIGHT;
-    const gridBoardWidth = gridBoardWidthNoPadding + paddingBoardLeftGrid + paddingBoardRightGrid;
+    const remainingBoards = instances.slice(1);
+    const gridCount = remainingBoards.length;
+    const gridSize = Math.ceil(Math.sqrt(gridCount));
 
     const rightAvailableWidth = gameContainer.width / 2;
-    const totalGridWidth = gridSize * gridBoardWidth + (gridSize - 1) * padding;
-    const horizontalOffset = (rightAvailableWidth - totalGridWidth) / 2;
+    const rightAvailableHeight = mainBoard.height;
 
-    const startX = gameContainer.width / 2 + horizontalOffset;
-    const startY = mainY;
+    const cellHeight =
+        (rightAvailableHeight - gridPadding * (gridSize - 1)) / gridSize;
+    const paddingBoardTopGrid = cellHeight * layoutProperties.paddingBoardTop;
+    const gridBoardWidthNoPadding = (cellHeight - paddingBoardTopGrid) * aspectRatio;
+    const paddingBoardLeftGrid = gridBoardWidthNoPadding * layoutProperties.paddingBoardLeft;
+    const paddingBoardRightGrid = gridBoardWidthNoPadding * layoutProperties.paddingBoardRight;
+    const cellWidth = gridBoardWidthNoPadding + paddingBoardLeftGrid + paddingBoardRightGrid;
 
-    for (let i = 0; i < remainingBoards.length; i++) {
-        const board = remainingBoards[i];
+    const totalGridWidth = gridSize * cellWidth + (gridSize - 1) * gridPadding;
+    const offsetX =
+        gameContainer.width / 2 +
+        (rightAvailableWidth - totalGridWidth) / 2;
+    const offsetY = mainY;
+
+    for (let i = 0; i < gridCount; i++) {
+        const board = remainingBoards[i].gameSubContainers;
         const gridX = i % gridSize;
         const gridY = Math.floor(i / gridSize);
 
-        const posX = startX + gridX * (gridBoardWidth + padding);
-        const posY = startY + gridY * (gridBoardHeight + padding);
+        const scaleGrid = cellHeight / board.boardContainer.height;
+        board.boardContainer.scale.set(scaleGrid);
 
-        board.boardContainer.x = posX;
-        board.boardContainer.y = posY;
+        const scaledWidth = board.boardContainer.width * scaleGrid;
+        const scaledHeight = board.boardContainer.height * scaleGrid;
 
-        // drawBoardContainer(board, gridBoardWidth, gridBoardHeight);
+        const cellX = offsetX + gridX * (cellWidth + gridPadding);
+        const cellY = offsetY + gridY * (cellHeight + gridPadding);
+
+        board.boardContainer.x = cellX + (cellWidth - scaledWidth) / 2;
+        board.boardContainer.y = cellY + (cellHeight - scaledHeight) / 2;
     }
 }
+
+

@@ -9,7 +9,8 @@
     <div class="content">
         <div class="content-wrapper">
             <div class="tabs">
-                <button v-for="tab in leaderboardTabs" :key="tab" :class="{ active: activeLeaderboard === tab }" @click="activeLeaderboard = tab">
+                <button v-for="tab in leaderboardTabs" :key="tab" :class="{ active: activeLeaderboard === tab }"
+                    @click="activeLeaderboard = tab">
                     <span>{{ tab }}</span>
                     <span v-if="tab === 'National' && userSession.countryCode"> ({{ userSession.countryCode }}) </span>
                 </button>
@@ -39,6 +40,7 @@ import LeaderboardList from '@/components/LeaderboardList.vue';
 import HistoryList from '@/components/HistoryList.vue';
 import { transitionIntoGame } from '@/ts/animationCSS/transitionIntoGame';
 import { useGameStore } from '@/stores/gameStore';
+import { GAME_MODE } from '@/ts/_enum/gameMode';
 
 export default {
     name: 'SprintPage',
@@ -50,9 +52,7 @@ export default {
         const userSession = computed(() => userStore.userSession);
 
         function startSprint(): void {
-            useGameStore().setupSprint();
-            console.log("transition start")
-            transitionIntoGame();
+            transitionIntoGame(GAME_MODE.SPRINT);
         }
 
         return {

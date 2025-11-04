@@ -46,8 +46,13 @@ export const useGameStore = defineStore('game', () => {
         game.instancesMap.set(playerUserName, newSprintInstance());
         otherPlayersUsernames.forEach(userName => {
             game.instancesMap.set(userName, newSprintInstance());
+            /*  game.instancesMap.set(userName + "1", newSprintInstance());
+             game.instancesMap.set(userName + "2", newSprintInstance());
+             game.instancesMap.set(userName + "3", newSprintInstance()); */
             // setupGameVisuals(); //multiplayer? 
         });
+
+        applyGameLayout([...game.instancesMap.values()]);
 
         const socketStore = useSocketStore();
         const webSocket = socketStore.webSocket;
@@ -85,7 +90,7 @@ export const useGameStore = defineStore('game', () => {
         }
     }
 
-    
+
     function refreshLayout(): void {
         // applyGameLayout(gameInstances);
     }
@@ -93,7 +98,6 @@ export const useGameStore = defineStore('game', () => {
         if (game.instancesMap.size > 0) {
             return calculateLayoutProperties(game.instancesMap.values().next().value!.gameSettings);
         }
-        console.error("Something went wrong with layout properties!");
         return calculateLayoutProperties(SPRINT_SETTINGS);
     }
 

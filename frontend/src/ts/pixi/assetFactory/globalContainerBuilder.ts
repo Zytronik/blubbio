@@ -22,16 +22,11 @@ export function getGlobalContainer(): AllContainers {
 }
 
 function drawMainContainerLayoutRect(mainContainer: Container): void {
-    // const app = usePixiStore().getPixiApp();
-
     const padding = 20;
     const backgroundColor = 'red';
 
     mainContainer.x = padding;
     mainContainer.y = padding;
-
-    // const width = app.renderer.width - padding * 2;
-    // const height = app.renderer.height - padding * 2;
 
     const width = usePixiStore().getCanvasWidth() - padding * 2;
     const height = usePixiStore().getCanvasHeight() - padding * 2;
