@@ -24,10 +24,10 @@ export function renderQueueBubbles(instance: GameInstance): void {
                 queueContainer.addChild(sprite);
                 sprite.x = x;
                 sprite.y = y;
-                sprite.visible = false;
+                sprite.visible = true;
             });
         },
-        renderFrame: function (currentTime: number): void {
+        renderFrame: function (): void {
             instance.bubbleQueue.forEach((bubble, index) => {
                 const sprite = queueSprites[index];
                 if (sprite) {
@@ -43,5 +43,6 @@ export function renderQueueBubbles(instance: GameInstance): void {
             // console.log('cancel');
         },
     };
-    useAnimationStore().playGlobalAnimation(animation);
+    
+    useAnimationStore().playInstanceAnimation(animation, instance);
 }

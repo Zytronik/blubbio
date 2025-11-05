@@ -13,18 +13,14 @@ import { getEmptyGame } from '@/ts/gameLogic/setup/gameSetup';
 import { newSprintInstance } from '@/ts/gameLogic/setup/instanceSetup';
 import { nextBubble } from '@/ts/gameLogic/bubble/queue';
 import { prepareGarbage } from '@/ts/gameLogic/bubble/garbage';
-import { renderBoard } from '@/ts/animationPixi/boardAnimation';
-import { renderArrowUpdate } from '@/ts/animationPixi/arrowAnimation';
-import { renderQueueBubbles } from '@/ts/animationPixi/queueBubblesAnimation';
-import { renderHoldBubble } from '@/ts/animationPixi/holdBubbleAnimation';
 import { GameSettings } from '@/ts/_interface/game/gameSettings';
-import { NETWORK_COMMAND } from '@/ts/_enum/networkCommand';
-import { useSocketStore } from './socketStore';
 import { useContainerStore } from './containerStore';
 import { SPRINT_SETTINGS } from '@/ts/gameLogic/settings/sprintSettings';
 import { LayoutProperties } from '@/ts/_interface/pixi/layoutProperties';
 import { calculateLayoutProperties } from '@/ts/pixi/layouting/layoutProperties';
 import { applyGameLayout } from '@/ts/pixi/layouting/gameLayout';
+import { addMonkeyActions } from '@/ts/animationPixi/monkeyActions';
+import { useMultiplayerStore } from './multiplayerStore';
 
 //game should keep track of layouting. its part of the games animation.
 //similarly, who is currently the main spectator target should also be tracked by the game
@@ -35,7 +31,7 @@ export const useGameStore = defineStore('game', () => {
         game.gameMode = GAME_MODE.SPRINT;
         game.inputContext = INPUT_CONTEXT.GAME_WITH_RESET;
         game.spectating = false;
-        game.instancesMap.set(userName, newSprintInstance());
+        game.instancesMap.set(userName, newSprintInstance(userName));
         applyGameLayout([...game.instancesMap.values()]);
     }
     function setupMultiplayer(gameSettings: GameSettings, otherPlayersUsernames: string[]): void {
@@ -43,54 +39,18 @@ export const useGameStore = defineStore('game', () => {
         game.gameMode = GAME_MODE.SPRINT;
         game.inputContext = INPUT_CONTEXT.GAME_WITH_RESET;
         game.spectating = false;
-        game.instancesMap.set(playerUserName, newSprintInstance());
+        game.instancesMap.set(playerUserName, newSprintInstance(playerUserName));
         otherPlayersUsernames.forEach(userName => {
-            game.instancesMap.set(userName, newSprintInstance());
-            /*  game.instancesMap.set(userName + "1", newSprintInstance());
-             game.instancesMap.set(userName + "2", newSprintInstance());
-             game.instancesMap.set(userName + "3", newSprintInstance()); */
-            // setupGameVisuals(); //multiplayer? 
+            game.instancesMap.set(userName, newSprintInstance(userName));
         });
-
         applyGameLayout([...game.instancesMap.values()]);
-
-        const socketStore = useSocketStore();
-        const webSocket = socketStore.webSocket;
-
-        if (!webSocket) {
-            console.error('WebSocket not initialized!');
-            return;
-        }
-
-        webSocket.on('gameCommand', ({ command, username }) => {
-            console.log('Received game command:', command, 'from', username);
-            if (command === NETWORK_COMMAND.SHOOT) {
-                pressedShoot(username, false);
-            }
-        });
+        useMultiplayerStore().listenToOtherPlayers();
     }
     function startGame(): void {
         useInputStore().setInputContext(game.inputContext);
         useContainerStore().showGame();
         startGameLogicLoop();
-        //maybe container store?
-        for (const instance of game.instancesMap.values()) {
-            renderQueueBubbles(instance);
-            renderHoldBubble(instance);
-            renderBoard(instance);
-            renderArrowUpdate(instance);
-        }
     }
-    function notifyEnemies(networkCommand: NETWORK_COMMAND): void {
-        const socketStore = useSocketStore();
-        if (socketStore.webSocket) {
-            socketStore.webSocket.emit('gameCommand', { command: networkCommand });
-        } else {
-            console.error('WebSocket not initialized!');
-        }
-    }
-
-
     function refreshLayout(): void {
         // applyGameLayout(gameInstances);
     }
@@ -143,7 +103,7 @@ export const useGameStore = defineStore('game', () => {
             mirrorAngle(instance);
         }
     }
-    function pressedShoot(userName: string, notify = true): void {
+    function pressedShoot(userName: string): void {
         const instance = game.instancesMap.get(userName);
         if (instance) {
             const shotResult = shootBubble(instance);
@@ -154,9 +114,6 @@ export const useGameStore = defineStore('game', () => {
                 prepareGarbage(instance, messiness, amount);
             }
             nextBubble(instance);
-            if (notify) {
-                notifyEnemies(NETWORK_COMMAND.SHOOT);
-            }
         }
     }
     function pressedHold(userName: string): void {
@@ -170,16 +127,15 @@ export const useGameStore = defineStore('game', () => {
     }
 
     function createMonkeyTesting(monkeyAmount: number): void {
-        // game.gameMode = GAME_MODE.SPRINT;
-        // game.inputContext = INPUT_CONTEXT.GAME_NO_RESET;
-        // game.spectating = true;
-        // setupGameVisuals();
-        // for (let i = 1; i <= monkeyAmount; i++) {
-        //     const name = 'Monkey-' + i;
-        //     const instance = newSprintInstance();
-        //     addMonkeyActions(instance, name);
-        //     game.instancesMap.set(name, instance);
-        // }
+        game.gameMode = GAME_MODE.SPRINT;
+        game.inputContext = INPUT_CONTEXT.GAME_NO_RESET;
+        game.spectating = true;
+        for (let i = 1; i <= monkeyAmount; i++) {
+            const name = 'Monkey-' + i;
+            const instance = newSprintInstance(name);
+            addMonkeyActions(instance, name);
+            game.instancesMap.set(name, instance);
+        }
     }
 
     function addGarbageToAllInstances(amount: number): void {

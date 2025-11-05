@@ -21,7 +21,6 @@ export function getAllGameSprites(settings: GameSettings): GameSprites {
     const garbagePreview: Container[] = [];
     for (let x = 0; x < settings.gridWidth; x++) {
         const sprite = useSpriteStore().getBubbleSprite();
-        sprite.visible = false;
         garbagePreview.push(sprite);
     }
 

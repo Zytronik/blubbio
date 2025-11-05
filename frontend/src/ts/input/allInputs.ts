@@ -4,6 +4,8 @@ import { Input } from '../_interface/input';
 import { usePageStore } from '@/stores/pageStore';
 import { useUserStore } from '@/stores/userStore';
 import { renderCountdown } from '../animationPixi/countdownAnimation';
+import { useMultiplayerStore } from '@/stores/multiplayerStore';
+import { NETWORK_COMMAND } from '../_enum/networkCommand';
 
 export const angleLeftInput: Input = {
     name: 'Angle Left',
@@ -97,6 +99,7 @@ export const shootInput: Input = {
     fire: () => {
         const localPlayer = useUserStore().getUserName();
         useGameStore().pressedShoot(localPlayer);
+        useMultiplayerStore().notifyEnemies(NETWORK_COMMAND.SHOOT);
     },
     inputContext: [INPUT_CONTEXT.GAME_NO_RESET, INPUT_CONTEXT.GAME_WITH_RESET],
 };
@@ -157,7 +160,7 @@ export const channelInput: Input = {
 };
 
 export const pixiDebug1: Input = {
-    name: 'soloGameplayView',
+    name: 'debug1',
     description: 'asdf',
     customKeyMap: ['Numpad1', 'KeyI', ''],
     defaultKeyCode: 'Numpad1',
@@ -171,7 +174,7 @@ export const pixiDebug1: Input = {
     inputContext: [INPUT_CONTEXT.DEBUG],
 };
 export const pixiDebug2: Input = {
-    name: '1v1GameplayView',
+    name: 'debug2',
     description: 'asdf',
     customKeyMap: ['Numpad2', 'KeyO', ''],
     defaultKeyCode: 'Numpad2',
@@ -184,7 +187,7 @@ export const pixiDebug2: Input = {
     inputContext: [INPUT_CONTEXT.DEBUG],
 };
 export const pixiDebug3: Input = {
-    name: '3ormoreplayers',
+    name: 'debug3',
     description: 'asdf',
     customKeyMap: ['Numpad3', 'KeyP', ''],
     defaultKeyCode: 'Numpad3',
@@ -197,7 +200,7 @@ export const pixiDebug3: Input = {
     inputContext: [INPUT_CONTEXT.DEBUG],
 };
 export const pixiDebug4: Input = {
-    name: 'ShowCountdown',
+    name: 'debug4',
     description: 'asdf',
     customKeyMap: ['Numpad4', 'KeyF', ''],
     defaultKeyCode: 'Numpad4',
@@ -211,7 +214,7 @@ export const pixiDebug4: Input = {
     inputContext: [INPUT_CONTEXT.DEBUG],
 };
 export const pixiDebug5: Input = {
-    name: 'asdf',
+    name: 'debug5',
     description: 'asdf',
     customKeyMap: ['Numpad5', '', ''],
     defaultKeyCode: 'Numpad5',
@@ -224,7 +227,7 @@ export const pixiDebug5: Input = {
     inputContext: [INPUT_CONTEXT.DEBUG],
 };
 export const pixiDebug6: Input = {
-    name: 'asdf',
+    name: 'debug6',
     description: 'asdf',
     customKeyMap: ['Numpad6', '', ''],
     defaultKeyCode: 'Numpad6',

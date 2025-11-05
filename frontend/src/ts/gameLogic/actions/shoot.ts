@@ -101,7 +101,7 @@ export function shootBubble(instance: GameInstance): ShotResult {
 
         function getTravelTimeToHitGridBubble(): number {
             let closestT = Infinity;
-            let collidedWith: Coordinates = { x: -1, y: -1 };
+            // let collidedWith: Coordinates = { x: -1, y: -1 };
 
             const speedX = currentFlightDirection.x;
             const speedY = currentFlightDirection.y;
@@ -123,7 +123,7 @@ export function shootBubble(instance: GameInstance): ShotResult {
 
                 const t = t1 > 0 ? t1 : t2 > 0 ? t2 : Infinity;
                 if (t < closestT) {
-                    collidedWith = { x: gridBubble.x, y: gridBubble.y };
+                    // collidedWith = { x: gridBubble.x, y: gridBubble.y };
                     closestT = t;
                 }
             }
@@ -378,7 +378,6 @@ export function calculatePreview(instance: GameInstance): void {
 
         function getTravelTimeToHitGridBubble(): number {
             let closestT = Infinity;
-            let collidedWith: Coordinates = { x: -1, y: -1 };
 
             const speedX = currentFlightDirection.x;
             const speedY = currentFlightDirection.y;
@@ -400,7 +399,6 @@ export function calculatePreview(instance: GameInstance): void {
 
                 const t = t1 > 0 ? t1 : t2 > 0 ? t2 : Infinity;
                 if (t < closestT) {
-                    collidedWith = { x: gridBubble.x, y: gridBubble.y };
                     closestT = t;
                 }
             }

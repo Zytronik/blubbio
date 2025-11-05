@@ -2,7 +2,6 @@ import { useGameStore } from '@/stores/gameStore';
 import { GameInstance } from '@/ts/_interface/game/gameInstance';
 
 export function applyGameLayout(gameInstances: GameInstance[]) {
-    const layoutProperties = useGameStore().getLayoutProperties();
     const boardAmount = gameInstances.length;
     if (boardAmount === 1) {
         drawSoloLayout(gameInstances[0]);
@@ -65,8 +64,7 @@ function drawMultiLayout(instances: GameInstance[]): void {
     const rightAvailableWidth = gameContainer.width / 2;
     const rightAvailableHeight = mainBoard.height;
 
-    const cellHeight =
-        (rightAvailableHeight - gridPadding * (gridSize - 1)) / gridSize;
+    const cellHeight = (rightAvailableHeight - gridPadding * (gridSize - 1)) / gridSize;
     const paddingBoardTopGrid = cellHeight * layoutProperties.paddingBoardTop;
     const gridBoardWidthNoPadding = (cellHeight - paddingBoardTopGrid) * aspectRatio;
     const paddingBoardLeftGrid = gridBoardWidthNoPadding * layoutProperties.paddingBoardLeft;
@@ -74,9 +72,7 @@ function drawMultiLayout(instances: GameInstance[]): void {
     const cellWidth = gridBoardWidthNoPadding + paddingBoardLeftGrid + paddingBoardRightGrid;
 
     const totalGridWidth = gridSize * cellWidth + (gridSize - 1) * gridPadding;
-    const offsetX =
-        gameContainer.width / 2 +
-        (rightAvailableWidth - totalGridWidth) / 2;
+    const offsetX = gameContainer.width / 2 + (rightAvailableWidth - totalGridWidth) / 2;
     const offsetY = mainY;
 
     for (let i = 0; i < gridCount; i++) {
@@ -97,5 +93,3 @@ function drawMultiLayout(instances: GameInstance[]): void {
         board.boardContainer.y = cellY + (cellHeight - scaledHeight) / 2;
     }
 }
-
-

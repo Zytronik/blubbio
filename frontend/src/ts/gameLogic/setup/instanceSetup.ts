@@ -11,12 +11,17 @@ import { getEmptyGarbagePreview } from './garbageSetup';
 import { prefillBoard } from '../bubble/garbage';
 import { PixiAnimation } from '@/ts/_interface/pixi/pixiAnimation';
 import { getGameSubContainers } from '@/ts/pixi/assetFactory/gameContainersBuilder';
+import { renderQueueBubbles } from '@/ts/animationPixi/queueBubblesAnimation';
+import { renderHoldBubble } from '@/ts/animationPixi/holdBubbleAnimation';
+import { renderBoard } from '@/ts/animationPixi/boardAnimation';
+import { renderArrowUpdate } from '@/ts/animationPixi/arrowAnimation';
 
-export function newSprintInstance(): GameInstance {
+export function newSprintInstance(playerName: string): GameInstance {
     const startBubbleSeed = { value: Date.now() };
     const startGarbageSeed = { value: Date.now() + 123456789 };
     const sprites = getAllGameSprites(SPRINT_SETTINGS);
     const instance: GameInstance = {
+        playerName,
         gameSettings: SPRINT_SETTINGS,
         handlingSettings: HANDLING_SETTINGS,
         bubbleSeed: startBubbleSeed,
@@ -26,7 +31,7 @@ export function newSprintInstance(): GameInstance {
         bubblePreview: {
             tint: '',
             gridLocation: { x: 0, y: 0 },
-            travelLineCoords: []
+            travelLineCoords: [],
         },
         bubbleQueue: [],
         playGrid: getEmptyGrid(SPRINT_SETTINGS),
@@ -43,6 +48,14 @@ export function newSprintInstance(): GameInstance {
     XORRandom(0, 0, instance.garbageSeed);
     nextBubble(instance);
     prefillBoard(instance);
+    startGameplayAnimations(instance);
 
     return instance;
+}
+
+function startGameplayAnimations(instance: GameInstance): void {
+    renderQueueBubbles(instance);
+    renderHoldBubble(instance);
+    renderBoard(instance);
+    renderArrowUpdate(instance);
 }

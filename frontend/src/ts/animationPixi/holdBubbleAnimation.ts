@@ -23,7 +23,7 @@ export function renderHoldBubble(instance: GameInstance): void {
             holdSprite.y = 0;
             holdSprite.visible = false;
         },
-        renderFrame: function (currentTime: number): void {
+        renderFrame: function (): void {
             const holdBubble = instance.holdBubble;
             if (holdBubble) {
                 holdSprite.visible = true;

@@ -43,7 +43,7 @@ export function renderBoard(instance: GameInstance): void {
                 }
             }
         },
-        renderFrame: function (currentTime: number): void {
+        renderFrame: function (): void {
             for (let y = 0; y < gridHeight; y++) {
                 for (let x = 0; x < gridWidth; x++) {
                     const row = instance.playGrid.rows[y];
@@ -86,7 +86,7 @@ export function renderBoard(instance: GameInstance): void {
             sprite.visible = true;
             sprite.alpha = 0.5;
         },
-        renderFrame: function (currentTime: number): void {
+        renderFrame: function (): void {
             gridContainer.getChildrenByLabel('previewLineDeleteThis').forEach(child => {
                 child.visible = false;
                 child.destroy;

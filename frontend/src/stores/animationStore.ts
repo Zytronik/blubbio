@@ -36,7 +36,6 @@ function animationLoop(): void {
     globalAnimations.forEach((animation, name) => {
         if (animation.endMS < now) {
             animation.onEnd();
-            //TODO: HAS NOT BEEN TESTED YET
             console.log('before deletion', globalAnimations.size);
             globalAnimations.delete(name);
             console.log('deleted', globalAnimations.size);

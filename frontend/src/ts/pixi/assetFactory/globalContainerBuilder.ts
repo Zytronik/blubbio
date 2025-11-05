@@ -13,6 +13,7 @@ export function getGlobalContainer(): AllContainers {
 
     drawMainContainerLayoutRect(main);
     drawGameContainerLayoutRect(game);
+    drawCountDownContainerLayoutRect(countDown);
 
     return {
         mainContainer: main,

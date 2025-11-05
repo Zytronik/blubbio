@@ -1,4 +1,3 @@
-import { GameInstance } from '@/ts/_interface/game/gameInstance';
 import { bubbleTexture } from '@/ts/pixi/data/allTextures';
 import { defineStore } from 'pinia';
 import { Container, Sprite } from 'pixi.js';

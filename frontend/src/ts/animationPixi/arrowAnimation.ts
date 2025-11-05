@@ -37,7 +37,7 @@ export function renderArrowUpdate(instance: GameInstance): void {
             arrowContainer.addChild(currentBubble);
             arrowContainer.addChild(arrowSprite);
         },
-        renderFrame: function (currentTime: number): void {
+        renderFrame: function (): void {
             arrowContainer.angle = instance.angle;
             if (currentBubbleSprite) {
                 currentBubbleSprite.visible = true;

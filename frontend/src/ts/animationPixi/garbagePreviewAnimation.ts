@@ -17,7 +17,6 @@ export function renderGarbagePreview(instance: GameInstance): void {
         const spriteHeight = spriteWidth;
         const garbagePreviewSprites = instance.gameSprites.garbageBubbles;
         const garbageRow = preview.generatedGarbage[0].garbage;
-        const garbagePreviewLineCount = preview.generatedGarbage.length;
         const garbageContainer = instance.gameSubContainers.garbageContainer;
 
         const totalDuration = preview.previewBaseDuration / preview.durationSpeedMultiplier;
@@ -59,7 +58,7 @@ export function renderGarbagePreview(instance: GameInstance): void {
             onEnd: function (): void {
                 pushOneGarbageRow(instance);
                 preview.isPreviewRunning = false;
-                garbagePreviewSprites.forEach((sprite, index) => {
+                garbagePreviewSprites.forEach((sprite) => {
                     sprite.visible = false;
                 });
                 if (preview.generatedGarbage.length > 0) {

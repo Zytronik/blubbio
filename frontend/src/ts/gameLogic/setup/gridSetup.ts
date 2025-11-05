@@ -3,7 +3,6 @@ import { GameSettings } from '@/ts/_interface/game/gameSettings';
 import { Grid } from '@/ts/_interface/game/grid';
 import { Row } from '@/ts/_interface/game/row';
 import { GARBAGE_MESSINESS } from '@/ts/_enum/garbageMessiness';
-import { useSpriteStore } from '@/stores/spriteStore';
 
 export function getEmptyGrid(settings: GameSettings): Grid {
     const precisionWidth = settings.widthPrecisionUnits;

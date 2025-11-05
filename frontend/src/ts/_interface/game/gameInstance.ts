@@ -11,6 +11,7 @@ import { BubblePreview } from './bubblePreview';
 import { GameSubContainers } from '../pixi/boardVisuals';
 
 export interface GameInstance {
+    playerName: string,
     gameSettings: GameSettings;
     handlingSettings: HandlingSettings;
     bubbleSeed: rngReference;

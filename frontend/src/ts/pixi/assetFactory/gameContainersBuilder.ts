@@ -116,7 +116,7 @@ function drawQueueContainerLayoutRect(layoutProperties: LayoutProperties, queueC
     const width = getBoardPaddingLeft(boardContainer, layoutProperties);
     const height = width * layoutProperties.queuePreviewSize;
 
-    const background = new Graphics().rect(0, 0, width, height).fill({ color: 'violet' });
+    const background = new Graphics().rect(0, 0, width, height).fill({ color: 'violet'  });
     background.label = 'queueContainerBackground';
     queueContainer.addChild(background);
 }

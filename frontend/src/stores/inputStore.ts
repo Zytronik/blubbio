@@ -1,9 +1,6 @@
 import { INPUT_CONTEXT } from '@/ts/_enum/inputContext';
-import { channelInput } from '@/ts/input/allInputs';
 import { attachInputReader } from '@/ts/input/inputReader';
 import { defineStore } from 'pinia';
-import { usePageStore } from './pageStore';
-import { renderCountdown } from '@/ts/animationPixi/countdownAnimation';
 
 export const useInputStore = defineStore('input', {
   state: () => ({
