@@ -8,6 +8,7 @@ import { GameSettings } from '../_interface/game/gameSettings';
 import { GARBAGE_MESSINESS } from '../_enum/garbageMessiness';
 import { useSocketStore } from '@/stores/socketStore';
 import { useLobbyStore } from '@/stores/lobbyStore';
+import { useContainerStore } from '@/stores/containerStore';
 
 export function transitionIntoGame(gameMode: GAME_MODE) {
     useSoundStore().playSound('menu_front');
@@ -74,7 +75,7 @@ export function transitionIntoGame(gameMode: GAME_MODE) {
 
             gameStore.setupMultiplayer(gameSettings, otherPlayersUsernames || []);
         }
-
+        useContainerStore().showGame()
         gsap.fromTo(overlay, { opacity: 1 }, { duration: 1, opacity: 0, delay: 0.5 });
         setTimeout(() => {
             main.removeChild(overlay);

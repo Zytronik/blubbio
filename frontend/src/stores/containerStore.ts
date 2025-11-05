@@ -14,7 +14,10 @@ export const useContainerStore = defineStore('container', () => {
     function getGameContainer(): Container {
         return allContainers.gameContainer;
     }
+    function getCountdownContainer(): Container {
+        return allContainers.countDownContainer;
+    }
     //handles visibility and probably content clean up after finished game
     //maybe aspect ratio and responsive
-    return { setupGlobalContainers, showGame, getGameContainer };
+    return { setupGlobalContainers, showGame, getGameContainer, getCountdownContainer };
 });

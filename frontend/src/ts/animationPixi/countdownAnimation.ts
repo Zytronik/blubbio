@@ -4,9 +4,10 @@ import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
 import { usePixiStore } from '@/stores/pixiStore';
 import { useAnimationStore } from '@/stores/animationStore';
 import { getLerpT } from '../pixi/math/animationCurves';
+import { useContainerStore } from '@/stores/containerStore';
+import { useGameStore } from '@/stores/gameStore';
 
-export function renderCountdown() {
-    /*
+export function renderCountdown(afterCountdown: () => void) {
     const duration = 2000;
     const segmentPercentages = [0.2, 0.4, 0.6, 0.8];
     const now = performance.now();
@@ -41,11 +42,10 @@ export function renderCountdown() {
     [go, one, two, three].forEach(text => {
         text.visible = false;
         text.anchor.set(0.5);
-        text.x = gameVisuals.countDownContainer.width / 2;
-        text.y = gameVisuals.countDownContainer.height / 2;
+        text.x = useContainerStore().getCountdownContainer().width / 2;
+        text.y = useContainerStore().getCountdownContainer().height / 2;
 
-        gameVisuals.countDownContainer.addChild(text);
-        console.log('Added countdown text ', text.text);
+        useContainerStore().getCountdownContainer().addChild(text);
     });
     three.y = -(three.height / 2);
     const threeTravelDistance = three.height / 2 + usePixiStore().getCanvasHeight() / 2;
@@ -54,7 +54,7 @@ export function renderCountdown() {
         startMS: now,
         endMS: now + duration * segmentPercentages[0],
         onStart: function (): void {
-            gameVisuals.countDownContainer.visible = true;
+            useContainerStore().getCountdownContainer().visible = true;
             three.visible = true;
         },
         renderFrame: function (currentTime: number): void {
@@ -120,6 +120,7 @@ export function renderCountdown() {
         onEnd: function (): void {
             one.visible = false;
             useAnimationStore().playGlobalAnimation(goShrinkAnimation);
+            afterCountdown();
         },
         onCancel: function (): void {
             // console.log('cancel');
@@ -138,7 +139,7 @@ export function renderCountdown() {
         },
         onEnd: function (): void {
             [go, one, two, three].forEach(text => {
-                gameVisuals.countDownContainer.removeChild(text);
+                useContainerStore().getCountdownContainer().removeChild(text);
             });
         },
         onCancel: function (): void {
@@ -146,5 +147,4 @@ export function renderCountdown() {
         },
     };
     useAnimationStore().playGlobalAnimation(threeDownAnimation);
-    */
 }

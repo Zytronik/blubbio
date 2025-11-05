@@ -39,7 +39,6 @@ import { computed, ref } from 'vue';
 import LeaderboardList from '@/components/LeaderboardList.vue';
 import HistoryList from '@/components/HistoryList.vue';
 import { transitionIntoGame } from '@/ts/animationCSS/transitionIntoGame';
-import { useGameStore } from '@/stores/gameStore';
 import { GAME_MODE } from '@/ts/_enum/gameMode';
 
 export default {

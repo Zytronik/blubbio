@@ -36,9 +36,7 @@ function animationLoop(): void {
     globalAnimations.forEach((animation, name) => {
         if (animation.endMS < now) {
             animation.onEnd();
-            console.log('before deletion', globalAnimations.size);
             globalAnimations.delete(name);
-            console.log('deleted', globalAnimations.size);
         } else {
             animation.renderFrame(now);
         }

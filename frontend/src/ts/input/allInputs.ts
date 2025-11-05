@@ -168,8 +168,8 @@ export const pixiDebug1: Input = {
     pressed: false,
     fire: () => {
         console.log('pressed debug 1');
-        useGameStore().setupSprint();
-        // useGameStore().createMonkeyTesting(3);
+        // useGameStore().setupSprint();
+        useGameStore().createMonkeyTesting(5);
     },
     inputContext: [INPUT_CONTEXT.DEBUG],
 };
@@ -195,7 +195,7 @@ export const pixiDebug3: Input = {
     pressed: false,
     fire: () => {
         console.log('pressed debug 3');
-        // updateContainerLayout();
+        useGameStore().refreshLayout();
     },
     inputContext: [INPUT_CONTEXT.DEBUG],
 };
@@ -208,8 +208,7 @@ export const pixiDebug4: Input = {
     pressed: false,
     fire: () => {
         console.log('pressed debug 4');
-        renderCountdown();
-        //useContainerStore().cleanUpGameContainer();
+        renderCountdown(() => {true});
     },
     inputContext: [INPUT_CONTEXT.DEBUG],
 };

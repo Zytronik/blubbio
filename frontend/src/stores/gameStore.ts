@@ -21,6 +21,7 @@ import { calculateLayoutProperties } from '@/ts/pixi/layouting/layoutProperties'
 import { applyGameLayout } from '@/ts/pixi/layouting/gameLayout';
 import { addMonkeyActions } from '@/ts/animationPixi/monkeyActions';
 import { useMultiplayerStore } from './multiplayerStore';
+import { renderCountdown } from '@/ts/animationPixi/countdownAnimation';
 
 //game should keep track of layouting. its part of the games animation.
 //similarly, who is currently the main spectator target should also be tracked by the game
@@ -47,12 +48,14 @@ export const useGameStore = defineStore('game', () => {
         useMultiplayerStore().listenToOtherPlayers();
     }
     function startGame(): void {
-        useInputStore().setInputContext(game.inputContext);
-        useContainerStore().showGame();
-        startGameLogicLoop();
+        renderCountdown(afterCountdown);
+        function afterCountdown(): void {
+            startGameLogicLoop();
+            useInputStore().setInputContext(game.inputContext);
+        }
     }
     function refreshLayout(): void {
-        // applyGameLayout(gameInstances);
+        applyGameLayout([...game.instancesMap.values()]);
     }
     function getLayoutProperties(): LayoutProperties {
         if (game.instancesMap.size > 0) {
@@ -167,6 +170,7 @@ export const useGameStore = defineStore('game', () => {
         setupSprint,
         setupMultiplayer,
         startGame,
+        refreshLayout,
         getLayoutProperties,
         pressedLeft,
         pressedRight,

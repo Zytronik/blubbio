@@ -4,8 +4,8 @@ import { Container, Graphics } from 'pixi.js';
 
 export function getGlobalContainer(): AllContainers {
     const main = new Container();
-    const game = new Container();
-    const countDown = new Container();
+    const game = new Container({visible: false});
+    const countDown = new Container({visible: false});
 
     usePixiStore().getPixiApp().stage.addChild(main);
     main.addChild(game);
