@@ -9,6 +9,9 @@ export const useInputStore = defineStore('input', {
     context: INPUT_CONTEXT.MENU,
   }),
   actions: {
+    getInputContext(): INPUT_CONTEXT {
+      return this.context;
+    },
     setInputContext(inputContext: INPUT_CONTEXT) {
       allInputs.forEach(input => {
         input.pressed = false;
