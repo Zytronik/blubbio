@@ -12,9 +12,11 @@ export const useContainerStore = defineStore('container', () => {
         allContainers.gameContainer.visible = true;
     }
     function cleanUpGameContainer(): void {
-        allContainers.gameContainer.children.forEach(child => {
-            child.destroy({children: true});
-        })
+        const length = allContainers.gameContainer.children.length - 1;
+        for (let i = length; i >= 0; i--) {
+            const child = allContainers.gameContainer.children[i];
+            child.destroy({children: true})
+        }
     }
     function getGameContainer(): Container {
         return allContainers.gameContainer;

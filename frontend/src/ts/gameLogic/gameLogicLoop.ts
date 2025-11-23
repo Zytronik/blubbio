@@ -1,4 +1,5 @@
 import { angleUpdate } from "./actions/aiming";
+import { holdBackToQuitGame } from "./actions/back";
 
 let gameLoopRunning = false;
 export function startGameLogicLoop(): void {
@@ -17,7 +18,7 @@ function gameLoop(): void {
     const deltaTimeMS = now - lastTick;
 
     angleUpdate(deltaTimeMS);
-    //backButton(deltaTimeMS)
+    holdBackToQuitGame()
 
     requestAnimationFrame(() => gameLoop());
     lastTick = performance.now()

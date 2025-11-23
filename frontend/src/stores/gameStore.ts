@@ -22,6 +22,7 @@ import { addMonkeyActions } from '@/ts/animationPixi/monkeyActions';
 import { useMultiplayerStore } from './multiplayerStore';
 import { renderCountdown } from '@/ts/animationPixi/countdownAnimation';
 import { useContainerStore } from './containerStore';
+import { transitionOutOfGame } from '@/ts/animationCSS/transitionOutOfGame';
 
 //game should keep track of layouting. its part of the games animation.
 //similarly, who is currently the main spectator target should also be tracked by the game
@@ -58,6 +59,7 @@ export const useGameStore = defineStore('game', () => {
         //stop all animations
         game.instancesMap.clear();
         useContainerStore().cleanUpGameContainer();
+        // transitionOutOfGame(game.gameMode);
     }
     function refreshLayout(): void {
         applyGameLayout([...game.instancesMap.values()]);
@@ -193,5 +195,3 @@ export const useGameStore = defineStore('game', () => {
         addGarbageToAllInstances,
     };
 });
-
-

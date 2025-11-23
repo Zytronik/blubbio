@@ -39,11 +39,9 @@ export function transitionOutOfGame(gameMode: GAME_MODE) {
             setPage(PAGE.roomPage);
         }
 
-        useContainerStore().showGame()
         gsap.fromTo(overlay, { opacity: 1 }, { duration: 1, opacity: 0, delay: 0.5 });
         setTimeout(() => {
             main.removeChild(overlay);
-            gameStore.startGame();
         }, 1500);
     });
 }

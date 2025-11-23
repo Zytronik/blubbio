@@ -160,7 +160,7 @@ export const backInputMenu: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        //asfd
+        transitionPageBackwardsAnimation();
     },
     inputContext: [INPUT_CONTEXT.MENU],
 };
@@ -269,6 +269,7 @@ export const allInputs: Input[] = [
     holdInput,
     resetInput,
     backInputGame,
+    backInputMenu,
     channelInput,
     pixiDebug1,
     pixiDebug2,
