@@ -50,6 +50,7 @@ export const useGameStore = defineStore('game', () => {
     }
     function startGame(): void {
         const countDownDuration = game.instancesMap.values().next().value!.gameSettings.countDownDuration;
+        useInputStore().setInputContext(INPUT_CONTEXT.COUNTDOWN);
         renderCountdown(countDownDuration, afterCountdown);
         function afterCountdown(): void {
             startGameLogicLoop();
@@ -57,11 +58,20 @@ export const useGameStore = defineStore('game', () => {
         }
     }
     function cancelGame(): void {
-        //stop all animations
+        //TODO stop all animations
+        useInputStore().setInputContext(INPUT_CONTEXT.DISABLED);
         game.instancesMap.clear();
         transitionOutOfGame(game.gameMode);
         useContainerStore().cleanUpGameContainer();
         useInputStore().setInputContext(INPUT_CONTEXT.MENU);
+    }
+    function resetGame(): void {
+        useInputStore().setInputContext(INPUT_CONTEXT.DISABLED);
+        game.instancesMap.clear();
+        useContainerStore().cleanUpGameContainer();
+        //TODO has to respect game mode at some point
+        setupSprint();
+        startGame();
     }
     function refreshLayout(): void {
         applyGameLayout([...game.instancesMap.values()]);
@@ -180,6 +190,7 @@ export const useGameStore = defineStore('game', () => {
         setupMultiplayer,
         startGame,
         cancelGame,
+        resetGame,
         refreshLayout,
         getLayoutProperties,
         pressedLeft,

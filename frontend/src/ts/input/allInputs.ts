@@ -3,7 +3,6 @@ import { INPUT_CONTEXT } from '../_enum/inputContext';
 import { Input } from '../_interface/input';
 import { usePageStore } from '@/stores/pageStore';
 import { useUserStore } from '@/stores/userStore';
-import { renderCountdown } from '../animationPixi/countdownAnimation';
 import { useMultiplayerStore } from '@/stores/multiplayerStore';
 import { NETWORK_COMMAND } from '../_enum/networkCommand';
 import { useContainerStore } from '@/stores/containerStore';
@@ -130,13 +129,12 @@ export const resetInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        // const localPlayer = useUserStore().getUserName();
-        // useGameStore().(localPlayer);
+        useGameStore().resetGame();
     },
-    inputContext: [INPUT_CONTEXT.GAME_WITH_RESET],
+    inputContext: [INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.COUNTDOWN],
 };
 
-export const backInputGame: Input = {
+export const backInput: Input = {
     name: 'Leave Game',
     description: 'Go back one menu',
     customKeyMap: ['Escape', '', ''],
@@ -144,25 +142,25 @@ export const backInputGame: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        buttonBackDown();
+        const context = useInputStore().getInputContext();
+        switch (context) {
+            case INPUT_CONTEXT.MENU:
+                transitionPageBackwardsAnimation();
+                break;
+            case INPUT_CONTEXT.GAME_WITH_RESET:
+                buttonBackDown();
+                break;
+            case INPUT_CONTEXT.COUNTDOWN:
+                useGameStore().cancelGame();
+                break;
+            default:
+                break;
+        }
     },
     release: () => {
         buttonBackUp();
     },
-    inputContext: [INPUT_CONTEXT.GAME_WITH_RESET],
-};
-
-export const backInputMenu: Input = {
-    name: 'Back',
-    description: 'Go back one menu',
-    customKeyMap: ['Escape', '', ''],
-    defaultKeyCode: 'Escape',
-    isSingleTriggerAction: true,
-    pressed: false,
-    fire: () => {
-        transitionPageBackwardsAnimation();
-    },
-    inputContext: [INPUT_CONTEXT.MENU],
+    inputContext: [INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.COUNTDOWN, INPUT_CONTEXT.MENU],
 };
 
 export const channelInput: Input = {
@@ -268,8 +266,7 @@ export const allInputs: Input[] = [
     shootInput,
     holdInput,
     resetInput,
-    backInputGame,
-    backInputMenu,
+    backInput,
     channelInput,
     pixiDebug1,
     pixiDebug2,
