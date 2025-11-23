@@ -5,7 +5,6 @@ import { usePixiStore } from '@/stores/pixiStore';
 import { useAnimationStore } from '@/stores/animationStore';
 import { getLerpT } from '../pixi/math/animationCurves';
 import { useContainerStore } from '@/stores/containerStore';
-import { useGameStore } from '@/stores/gameStore';
 
 export function renderCountdown(afterCountdown: () => void) {
     const duration = 2000;

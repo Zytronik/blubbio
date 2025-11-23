@@ -21,7 +21,7 @@ export function addMonkeyActions(instance: GameInstance, monkeyName: string): vo
     const hold = (): void => gameStore.pressedHold(monkeyName);
 
     // const actions: CallableFunction[] = [shoot];
-    const actions: CallableFunction[] = [doNothing, left, releasedLeft, right, releasedRight, center, mirror, hold];
+    const actions: CallableFunction[] = [doNothing, left, releasedLeft, right, releasedRight, center, mirror, shoot, hold];
 
     const monkeyActions: PixiAnimation = {
         name: 'monkeyDo',

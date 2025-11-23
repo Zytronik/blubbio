@@ -14,7 +14,6 @@ import { newSprintInstance } from '@/ts/gameLogic/setup/instanceSetup';
 import { nextBubble } from '@/ts/gameLogic/bubble/queue';
 import { prepareGarbage } from '@/ts/gameLogic/bubble/garbage';
 import { GameSettings } from '@/ts/_interface/game/gameSettings';
-import { useContainerStore } from './containerStore';
 import { SPRINT_SETTINGS } from '@/ts/gameLogic/settings/sprintSettings';
 import { LayoutProperties } from '@/ts/_interface/pixi/layoutProperties';
 import { calculateLayoutProperties } from '@/ts/pixi/layouting/layoutProperties';
@@ -22,6 +21,7 @@ import { applyGameLayout } from '@/ts/pixi/layouting/gameLayout';
 import { addMonkeyActions } from '@/ts/animationPixi/monkeyActions';
 import { useMultiplayerStore } from './multiplayerStore';
 import { renderCountdown } from '@/ts/animationPixi/countdownAnimation';
+import { useContainerStore } from './containerStore';
 
 //game should keep track of layouting. its part of the games animation.
 //similarly, who is currently the main spectator target should also be tracked by the game
@@ -53,6 +53,11 @@ export const useGameStore = defineStore('game', () => {
             startGameLogicLoop();
             useInputStore().setInputContext(game.inputContext);
         }
+    }
+    function cancelGame(): void {
+        //stop all animations
+        game.instancesMap.clear();
+        useContainerStore().cleanUpGameContainer();
     }
     function refreshLayout(): void {
         applyGameLayout([...game.instancesMap.values()]);
@@ -141,7 +146,7 @@ export const useGameStore = defineStore('game', () => {
         }
     }
 
-    function addGarbageToAllInstances(amount: number): void {
+    function addGarbageToAllInstances(): void {
         game.instancesMap.forEach(instance => {
             const messiness = instance.gameSettings.refillMessiness;
             prepareGarbage(instance, messiness, 1);
@@ -170,6 +175,7 @@ export const useGameStore = defineStore('game', () => {
         setupSprint,
         setupMultiplayer,
         startGame,
+        cancelGame,
         refreshLayout,
         getLayoutProperties,
         pressedLeft,
