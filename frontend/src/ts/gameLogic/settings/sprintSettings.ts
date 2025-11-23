@@ -21,5 +21,5 @@ export const SPRINT_SETTINGS: GameSettings = {
     clearFloatingBubbles: false,
     garbageMaxAtOnce: 3,
     previewBaseDuration: 4000,
-    countDownDuration: 1500,
+    countDownDuration: 1200,
 }

@@ -37,7 +37,7 @@ function drawMainContainerLayoutRect(mainContainer: Container): void {
     mainContainer.addChildAt(background, 0);
 }
 
-function drawGameContainerLayoutRect(gameContainer: Container): void {
+export function drawGameContainerLayoutRect(gameContainer: Container): void {
     const parent = gameContainer.parent;
     const paddingX = 200;
     const paddingY = 20;

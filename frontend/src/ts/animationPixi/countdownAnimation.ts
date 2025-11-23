@@ -6,8 +6,7 @@ import { useAnimationStore } from '@/stores/animationStore';
 import { getLerpT } from '../pixi/math/animationCurves';
 import { useContainerStore } from '@/stores/containerStore';
 
-export function renderCountdown(afterCountdown: () => void) {
-    const duration = 2000;
+export function renderCountdown(duration: number, afterCountdown: () => void) {
     const segmentPercentages = [0.2, 0.4, 0.6, 0.8];
     const now = performance.now();
     const three = new Text({

@@ -18,7 +18,7 @@ function gameLoop(): void {
     const deltaTimeMS = now - lastTick;
 
     angleUpdate(deltaTimeMS);
-    holdBackToQuitGame()
+    holdBackToQuitGame();
 
     requestAnimationFrame(() => gameLoop());
     lastTick = performance.now()

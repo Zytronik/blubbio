@@ -1,4 +1,5 @@
 import { INPUT_CONTEXT } from '@/ts/_enum/inputContext';
+import { allInputs } from '@/ts/input/allInputs';
 import { attachInputReader } from '@/ts/input/inputReader';
 import { defineStore } from 'pinia';
 
@@ -9,6 +10,9 @@ export const useInputStore = defineStore('input', {
   }),
   actions: {
     setInputContext(inputContext: INPUT_CONTEXT) {
+      allInputs.forEach(input => {
+        input.pressed = false;
+      })
       this.context = inputContext;
     },
     setupInputReader(): void {

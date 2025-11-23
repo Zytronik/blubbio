@@ -49,7 +49,8 @@ export const useGameStore = defineStore('game', () => {
         useMultiplayerStore().listenToOtherPlayers();
     }
     function startGame(): void {
-        renderCountdown(afterCountdown);
+        const countDownDuration = game.instancesMap.values().next().value!.gameSettings.countDownDuration;
+        renderCountdown(countDownDuration, afterCountdown);
         function afterCountdown(): void {
             startGameLogicLoop();
             useInputStore().setInputContext(game.inputContext);
@@ -58,8 +59,9 @@ export const useGameStore = defineStore('game', () => {
     function cancelGame(): void {
         //stop all animations
         game.instancesMap.clear();
+        transitionOutOfGame(game.gameMode);
         useContainerStore().cleanUpGameContainer();
-        // transitionOutOfGame(game.gameMode);
+        useInputStore().setInputContext(INPUT_CONTEXT.MENU);
     }
     function refreshLayout(): void {
         applyGameLayout([...game.instancesMap.values()]);

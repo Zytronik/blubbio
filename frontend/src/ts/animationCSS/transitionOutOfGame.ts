@@ -3,6 +3,7 @@ import { useSoundStore } from '@/stores/soundStore';
 import gsap from 'gsap';
 import { PAGE } from '../_enum/page';
 import { GAME_MODE } from '../_enum/gameMode';
+import { useContainerStore } from '@/stores/containerStore';
 
 export function transitionOutOfGame(gameMode: GAME_MODE) {
     useSoundStore().playSound('menu_back');
@@ -38,6 +39,7 @@ export function transitionOutOfGame(gameMode: GAME_MODE) {
 
         gsap.fromTo(overlay, { opacity: 1 }, { duration: 1, opacity: 0, delay: 0.5 });
         setTimeout(() => {
+            useContainerStore().hideGame();
             main.removeChild(overlay);
         }, 1500);
     });
