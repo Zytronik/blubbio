@@ -25,10 +25,11 @@ export function transitionOutOfGame(gameMode: GAME_MODE) {
     const tl = gsap.timeline();
 
     tl.set(".gameTransitionOverlay", { x: '-100vw', opacity: 1 }, 0);
-    tl.to('#pixiCanvas', { duration: 5, x: '100vw' }, 0);
-    tl.to(".gameTransitionOverlay", { duration: 5, x: '0' }, 0);
+    tl.to('#pixiCanvas', { duration: 0.15, x: '100vw' }, 0);
+    tl.to(".gameTransitionOverlay", { duration: 0.15, x: '0' }, 0);
     tl.set('#pixiCanvas', { x: '0vw' });
     tl.call(() => {
+        useContainerStore().cleanUpGameContainer();
         useContainerStore().hideGame();
         showTopAndBottomBars();
         if (gameMode === GAME_MODE.SPRINT) {

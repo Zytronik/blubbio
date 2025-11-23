@@ -62,7 +62,6 @@ export const useGameStore = defineStore('game', () => {
         useInputStore().setInputContext(INPUT_CONTEXT.DISABLED);
         game.instancesMap.clear();
         transitionOutOfGame(game.gameMode);
-        useContainerStore().cleanUpGameContainer();
         useInputStore().setInputContext(INPUT_CONTEXT.MENU);
     }
     function resetGame(): void {
