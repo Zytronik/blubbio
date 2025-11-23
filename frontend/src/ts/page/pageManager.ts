@@ -70,6 +70,13 @@ export function hideTopAndBottomBars() {
   if (bottomBar) bottomBar.style.display = 'none';
 }
 
+export function showTopAndBottomBars() {
+  const topBar = document.querySelector('.topbar') as HTMLElement;
+  const bottomBar = document.querySelector('.bottomBar') as HTMLElement;
+  if (topBar) topBar.style.display = 'flex';
+  if (bottomBar) bottomBar.style.display = 'flex';
+}
+
 export function getBackPage(): PAGE | null {
   const pageStore = usePageStore();
   const currentPage = pageStore.currentPage;

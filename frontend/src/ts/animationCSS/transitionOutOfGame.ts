@@ -1,14 +1,11 @@
-import { hideTopAndBottomBars, setPage } from '../page/pageManager';
+import { showTopAndBottomBars, setPage } from '../page/pageManager';
 import { useSoundStore } from '@/stores/soundStore';
 import gsap from 'gsap';
 import { PAGE } from '../_enum/page';
-import { useGameStore } from '@/stores/gameStore';
 import { GAME_MODE } from '../_enum/gameMode';
-import { useContainerStore } from '@/stores/containerStore';
 
 export function transitionOutOfGame(gameMode: GAME_MODE) {
     useSoundStore().playSound('menu_back');
-    const gameStore = useGameStore();
     const main = document.querySelector('main') as HTMLElement;
     const overlay = document.createElement('div');
 
@@ -31,7 +28,7 @@ export function transitionOutOfGame(gameMode: GAME_MODE) {
     z-index:9999;
   `;
         main.appendChild(overlay);
-        hideTopAndBottomBars();
+        showTopAndBottomBars();
 
         if (gameMode === GAME_MODE.SPRINT) {
             setPage(PAGE.sprintPage);

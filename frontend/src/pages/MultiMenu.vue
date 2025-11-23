@@ -1,6 +1,6 @@
 <template>
   <div class="pageTitle">
-    <h1><span class="text-noWhiteSpaces">S</span><span class="text-noWhiteSpaces">ingleplayer</span></h1>
+    <h1><span class="text-noWhiteSpaces">M</span><span class="text-noWhiteSpaces">ultiplayer</span></h1>
   </div>
   <div class="menuWrapper">
     <div v-for="(button, index) in menuButtonsData" :key="index" :class="[
