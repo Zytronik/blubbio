@@ -176,6 +176,6 @@ export const allPages: Pages = {
         title: 'Game Page',
         color: 'rgb(0, 0, 0)',
         component: GamePage,
-        allowedTransitions: [],
+        allowedTransitions: [PAGE.sprintPage, PAGE.roomPage],
     }
 };
