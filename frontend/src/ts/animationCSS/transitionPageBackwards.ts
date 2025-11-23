@@ -11,6 +11,9 @@ export function transitionPageBackwardsAnimation(transitionToPage?: PAGE) {
     }
     transitionToPage = backPage;
   }
+  if (!transitionToPage) {
+    return;
+  }
   useSoundStore().playSound('menu_back');
 
   const tl = gsap.timeline();
