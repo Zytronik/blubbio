@@ -15,6 +15,8 @@ import { renderQueueBubbles } from '@/ts/animationPixi/queueBubblesAnimation';
 import { renderHoldBubble } from '@/ts/animationPixi/holdBubbleAnimation';
 import { renderBoard } from '@/ts/animationPixi/boardAnimation';
 import { renderArrowUpdate } from '@/ts/animationPixi/arrowAnimation';
+import { addUsernameAnimation } from '@/ts/animationPixi/addUsernameAnimation';
+import { statsAnimation } from '@/ts/animationPixi/statsAnimation';
 
 export function newSprintInstance(playerName: string): GameInstance {
     const startBubbleSeed = { value: Date.now() };
@@ -58,4 +60,6 @@ function startGameplayAnimations(instance: GameInstance): void {
     renderHoldBubble(instance);
     renderBoard(instance);
     renderArrowUpdate(instance);
+    addUsernameAnimation(instance);
+    statsAnimation(instance);
 }

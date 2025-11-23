@@ -5,7 +5,13 @@ export const countDownFont: FontReference = {
     name: "abc"
 }
 
-export const allFonts: FontReference[] = 
-[
-    countDownFont,
-]
+export const defaultFont: FontReference = {
+    src: "./fonts/Helvetica.woff",
+    name: "Helvetica"
+}
+
+export const allFonts: FontReference[] =
+    [
+        countDownFont,
+        defaultFont
+    ]

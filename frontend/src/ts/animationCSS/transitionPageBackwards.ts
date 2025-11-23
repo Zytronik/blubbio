@@ -1,9 +1,19 @@
-import { setPage } from '../page/pageManager';
+import { getBackPage, setPage } from '../page/pageManager';
 import { useSoundStore } from '@/stores/soundStore';
 import { PAGE } from '../_enum/page';
 import gsap from 'gsap';
 
-export function transitionPageBackwardsAnimation(transitionToPage: PAGE) {
+export function transitionPageBackwardsAnimation(transitionToPage?: PAGE) {
+  if (!transitionToPage) {
+    const backPage = getBackPage();
+    if (!backPage) {
+      return;
+    }
+    transitionToPage = backPage;
+  }
+  if (!transitionToPage) {
+    return;
+  }
   useSoundStore().playSound('menu_back');
 
   const tl = gsap.timeline();

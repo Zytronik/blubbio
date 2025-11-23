@@ -69,3 +69,17 @@ export function hideTopAndBottomBars() {
   if (topBar) topBar.style.display = 'none';
   if (bottomBar) bottomBar.style.display = 'none';
 }
+
+export function getBackPage(): PAGE | null {
+  const pageStore = usePageStore();
+  const currentPage = pageStore.currentPage;
+  const pageInfo = allPages[currentPage];
+  if (pageInfo.backButtons && pageInfo.backButtons.length > 0) {
+    for (const backButton of pageInfo.backButtons) {
+      if (!backButton.disabled) {
+        return backButton.page;
+      }
+    }
+  }
+  return null;
+}

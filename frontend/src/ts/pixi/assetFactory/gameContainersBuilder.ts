@@ -12,14 +12,20 @@ export function getGameSubContainers(): GameSubContainers {
     const arrowContainer = new Container();
     const garbageContainer = new Container();
     const holdContainer = new Container();
+    const statsContainer = new Container();
+    const nameContainer = new Container();
 
-    useContainerStore().getGameContainer().addChild(boardContainer);
+    const gameContainer = useContainerStore().getGameContainer();
+    gameContainer.addChild(boardContainer);
+    boardContainer.addChild(statsContainer);
+
     boardContainer.addChild(gridContainer);
     boardContainer.addChild(gridBackground);
     boardContainer.addChild(queueContainer);
     boardContainer.addChild(garbageContainer);
     gridContainer.addChild(arrowContainer);
     boardContainer.addChild(holdContainer);
+    boardContainer.addChild(nameContainer);
 
     const visuals: GameSubContainers = {
         boardContainer: boardContainer,
@@ -29,6 +35,8 @@ export function getGameSubContainers(): GameSubContainers {
         arrowContainer: arrowContainer,
         garbageContainer: garbageContainer,
         holdContainer: holdContainer,
+        statsContainer: statsContainer,
+        nameContainer: nameContainer,
     };
 
     const layoutProperties = useGameStore().getLayoutProperties();
@@ -40,7 +48,38 @@ export function getGameSubContainers(): GameSubContainers {
     drawHoldContainerLayoutRect(layoutProperties, holdContainer);
     drawArrowContainerLayoutRect(layoutProperties, arrowContainer);
 
+    const boadContainerWidth = boardContainer.width; // save the width before changing it because of overflow containers
+    const boardContainerHeight = boardContainer.height; // save the height before changing it because of overflow containers
+
+    //overflow containers
+    drawStatsContainerLayoutRect(layoutProperties, statsContainer);
+    drawNameContainerLayoutRect(layoutProperties, nameContainer, boadContainerWidth);
+
     return visuals;
+}
+
+function drawStatsContainerLayoutRect(layoutProperties: LayoutProperties, statsContainer: Container): void {
+    const boardContainer = statsContainer.parent as Container;
+    const paddingBoardLeft = getBoardPaddingLeft(boardContainer, layoutProperties);
+    statsContainer.x = - boardContainer.width / 3 - paddingBoardLeft / 2;
+    statsContainer.y = boardContainer.height / 2;
+    const width = boardContainer.width / 3;
+    const height = boardContainer.height / 2
+    const background = new Graphics().rect(0, 0, width, height).fill({ color: 'yellow' });
+    background.label = 'statsContainerBackground';
+    statsContainer.addChild(background);
+}
+
+function drawNameContainerLayoutRect(layoutProperties: LayoutProperties, nameContainer: Container, boardContainerWidth: number): void {
+    const boardContainer = nameContainer.parent as Container;
+    const paddingBoardTop = getBoardPaddingTop(boardContainer, layoutProperties);
+    nameContainer.x = 0;
+    nameContainer.y = boardContainer.height + paddingBoardTop / 2;
+    const width = boardContainerWidth;
+    const height = paddingBoardTop;
+    const background = new Graphics().rect(0, 0, width, height).fill({ color: 'yellow' });
+    background.label = 'nameContainerBackground';
+    nameContainer.addChild(background);
 }
 
 function drawBoardContainerLayoutRect(layoutProperties: LayoutProperties, boardContainer: Container): void {
@@ -58,7 +97,6 @@ function drawBoardContainerLayoutRect(layoutProperties: LayoutProperties, boardC
 }
 
 function drawGridContainerLayoutRect(layoutProperties: LayoutProperties, gridContainer: Container): void {
-
     const boardContainer = gridContainer.parent as Container;
     const paddingBoardLeft = getBoardPaddingLeft(boardContainer, layoutProperties);
     const paddingBoardTop = getBoardPaddingTop(boardContainer, layoutProperties);
@@ -116,7 +154,7 @@ function drawQueueContainerLayoutRect(layoutProperties: LayoutProperties, queueC
     const width = getBoardPaddingLeft(boardContainer, layoutProperties);
     const height = width * layoutProperties.queuePreviewSize;
 
-    const background = new Graphics().rect(0, 0, width, height).fill({ color: 'violet'  });
+    const background = new Graphics().rect(0, 0, width, height).fill({ color: 'violet' });
     background.label = 'queueContainerBackground';
     queueContainer.addChild(background);
 }

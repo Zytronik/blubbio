@@ -8,4 +8,6 @@ export interface GameSubContainers {
     arrowContainer: Container;
     garbageContainer: Container;
     holdContainer: Container;
+    statsContainer: Container;
+    nameContainer: Container;
 }
