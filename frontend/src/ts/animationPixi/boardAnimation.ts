@@ -122,7 +122,7 @@ export function renderBoard(instance: GameInstance): void {
             // console.log('cancel');
         },
     };
-    
+
     useAnimationStore().playInstanceAnimation(boardBubbles, instance);
     useAnimationStore().playInstanceAnimation(previewBubble, instance);
 }
