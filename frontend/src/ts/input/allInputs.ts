@@ -6,6 +6,10 @@ import { useUserStore } from '@/stores/userStore';
 import { renderCountdown } from '../animationPixi/countdownAnimation';
 import { useMultiplayerStore } from '@/stores/multiplayerStore';
 import { NETWORK_COMMAND } from '../_enum/networkCommand';
+import { useContainerStore } from '@/stores/containerStore';
+import { buttonBackDown, buttonBackUp } from '../gameLogic/actions/back';
+import { transitionPageBackwardsAnimation } from '../animationCSS/transitionPageBackwards';
+import { useInputStore } from '@/stores/inputStore';
 
 export const angleLeftInput: Input = {
     name: 'Angle Left',
@@ -132,7 +136,23 @@ export const resetInput: Input = {
     inputContext: [INPUT_CONTEXT.GAME_WITH_RESET],
 };
 
-export const backInput: Input = {
+export const backInputGame: Input = {
+    name: 'Leave Game',
+    description: 'Go back one menu',
+    customKeyMap: ['Escape', '', ''],
+    defaultKeyCode: 'Escape',
+    isSingleTriggerAction: true,
+    pressed: false,
+    fire: () => {
+        buttonBackDown();
+    },
+    release: () => {
+        buttonBackUp();
+    },
+    inputContext: [INPUT_CONTEXT.GAME_WITH_RESET],
+};
+
+export const backInputMenu: Input = {
     name: 'Back',
     description: 'Go back one menu',
     customKeyMap: ['Escape', '', ''],
@@ -140,10 +160,9 @@ export const backInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        // const localPlayer = useUserStore().getUserName();
-        // useGameStore().pressedShoot(localPlayer);
+        //asfd
     },
-    inputContext: [INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.MENU],
+    inputContext: [INPUT_CONTEXT.MENU],
 };
 
 export const channelInput: Input = {
@@ -208,7 +227,8 @@ export const pixiDebug4: Input = {
     pressed: false,
     fire: () => {
         console.log('pressed debug 4');
-        renderCountdown(() => {true});
+        // renderCountdown(() => {true});
+        useContainerStore().cleanUpGameContainer();
     },
     inputContext: [INPUT_CONTEXT.DEBUG],
 };
@@ -234,7 +254,7 @@ export const pixiDebug6: Input = {
     pressed: false,
     fire: () => {
         console.log('pressed debug 6');
-        useGameStore().addGarbageToAllInstances(2);
+        useGameStore().addGarbageToAllInstances();
     },
     inputContext: [INPUT_CONTEXT.DEBUG],
 };
@@ -248,7 +268,7 @@ export const allInputs: Input[] = [
     shootInput,
     holdInput,
     resetInput,
-    backInput,
+    backInputGame,
     channelInput,
     pixiDebug1,
     pixiDebug2,

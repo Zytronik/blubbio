@@ -11,6 +11,11 @@ export const useContainerStore = defineStore('container', () => {
     function showGame(): void {
         allContainers.gameContainer.visible = true;
     }
+    function cleanUpGameContainer(): void {
+        allContainers.gameContainer.children.forEach(child => {
+            child.destroy({children: true});
+        })
+    }
     function getGameContainer(): Container {
         return allContainers.gameContainer;
     }
@@ -19,5 +24,5 @@ export const useContainerStore = defineStore('container', () => {
     }
     //handles visibility and probably content clean up after finished game
     //maybe aspect ratio and responsive
-    return { setupGlobalContainers, showGame, getGameContainer, getCountdownContainer };
+    return { setupGlobalContainers, showGame, cleanUpGameContainer, getGameContainer, getCountdownContainer };
 });
