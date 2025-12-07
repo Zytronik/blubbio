@@ -18,7 +18,7 @@ export const useContainerStore = defineStore('container', () => {
         const length = allContainers.gameContainer.children.length - 1;
         for (let i = length; i >= 0; i--) {
             const child = allContainers.gameContainer.children[i];
-            child.destroy({children: true})
+            child.destroy({ children: true })
         }
         drawGameContainerLayoutRect(allContainers.gameContainer)
         // allContainers.gameContainer.children[1].destroy({children: true})
@@ -26,10 +26,10 @@ export const useContainerStore = defineStore('container', () => {
     function getGameContainer(): Container {
         return allContainers.gameContainer;
     }
-    function getCountdownContainer(): Container {
-        return allContainers.countDownContainer;
+    function getOverlayContainer(): Container {
+        return allContainers.overlayContainer;
     }
     //handles visibility and probably content clean up after finished game
     //maybe aspect ratio and responsive
-    return { setupGlobalContainers, showGame, hideGame, cleanUpGameContainer, getGameContainer, getCountdownContainer };
+    return { setupGlobalContainers, showGame, hideGame, cleanUpGameContainer, getGameContainer, getOverlayContainer };
 });
