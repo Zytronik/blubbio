@@ -1,70 +1,58 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { put, del } from '@vercel/blob';
+
+type ImageType = 'banner' | 'pb';
 
 @Injectable()
 export class FileStorageService {
-    private s3Client: S3Client;
+    private readonly token: string;
 
-    constructor(private configService: ConfigService) {
-        this.s3Client = new S3Client({
-            region: this.configService.get<string>('DO_SPACE_REGION'),
-            credentials: {
-                accessKeyId: this.configService.get<string>('DO_SPACE_ACCESS_KEY_ID'),
-                secretAccessKey: this.configService.get<string>('DO_SPACE_SECRET_ACCESS_KEY'),
-            },
-            endpoint: this.configService.get<string>('DO_SPACES_ENDPOINT'),
-            forcePathStyle: true,
-        });
-    }
+    constructor(private readonly config: ConfigService) {
+        const isDev = this.config.get<string>('NODE_ENV') === 'development';
 
-    async uploadFile(file: Express.Multer.File, imgType: "pb" | "banner"): Promise<string> {
-        const newFilename = `${Date.now()}-${file.originalname}`;
-        const env: string = this.configService.get<string>('NODE_ENV');
-        let changeBucketWhenLocal = "dev-";
-        if (env !== "development") {
-            changeBucketWhenLocal = "";
-        }
-        const command = new PutObjectCommand({
-            Bucket: changeBucketWhenLocal+imgType,
-            Key: newFilename,
-            Body: file.buffer,
-            ACL: 'public-read',
-        });
+        this.token = isDev
+            ? this.config.getOrThrow<string>('BLOB_TOKEN_DEV')
+            : this.config.getOrThrow<string>('BLOB_TOKEN_PROD');
 
-        try {
-            await this.s3Client.send(command);
-            return this.configService.get<string>('DO_SPACES_CDN_ENDPOINT') + "/" + changeBucketWhenLocal+imgType + "/" + encodeURI(newFilename);
-        } catch (error) {
-            console.error('Error uploading file to DigitalOcean Spaces: ', error);
-            throw new HttpException('Error uploading file', HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!this.token) {
+            throw new Error('Missing Vercel Blob token');
         }
     }
 
-    async deleteFile(oldUrl: string, imgType: string): Promise<void> {
-        const url = new URL(oldUrl);
-        const key = decodeURI(url.pathname.split('/').pop());
-    
-        if (!key) {
-            console.error('Error extracting key from URL:', oldUrl);
-            return;
-        }
+    async uploadFile(file: Express.Multer.File, type: ImageType): Promise<string> {
+        const filename = this.generateFileName(file.originalname);
+        const path = `${type}/${filename}`;
 
-        const env: string = this.configService.get<string>('NODE_ENV');
-        let changeBucketWhenLocal = "dev-";
-        if (env !== "development") {
-            changeBucketWhenLocal = "";
-        }
-    
-        const command = new DeleteObjectCommand({
-            Bucket: changeBucketWhenLocal+imgType,
-            Key: key,
-        });
-    
         try {
-            await this.s3Client.send(command);
+            const blob = await put(path, file.buffer, {
+                access: 'public',
+                token: this.token,
+                contentType: file.mimetype,
+            });
+
+            return blob.url;
         } catch (error) {
-            console.error('Error deleting old file from DigitalOcean Spaces:', error);
+            console.error('Upload error:', error);
+            throw new HttpException('File upload failed', HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    async deleteFile(fileUrl: string): Promise<void> {
+        if (!fileUrl) return;
+
+        try {
+            await del(fileUrl, {
+                token: this.token,
+            });
+        } catch (error) {
+            console.error('Delete error:', error);
+        }
+    }
+
+    private generateFileName(originalName: string): string {
+        const timestamp = Date.now();
+        const safeName = originalName.replace(/\s+/g, '-');
+        return `${timestamp}-${safeName}`;
     }
 }

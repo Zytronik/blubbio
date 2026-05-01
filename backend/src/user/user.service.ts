@@ -152,10 +152,10 @@ export class UserService {
             },
         });
 
-        if(!user) {
+        if (!user) {
             throw new NotFoundException('User not found');
         }
-        
+
         const percentile = await this.getPercentile(userId);
         let rankInfos = await this.ranksService.getRankInfo(user.id);
         if (user.ratingDeviation >= unrankedRatingDeviation) {
@@ -231,18 +231,18 @@ export class UserService {
             isRanked: rankInfos.isRanked,
             totalGameTime: this.msToHMS(totalGameTime),
             sprintStats: {
-                averageBubblesCleared: Math.round(sprintStats._avg.bubblesCleared * 100) /100,
-                averageBubblesPerSecond: Math.round(sprintStats._avg.bubblesPerSecond * 100) /100,
-                averageBubblesShot: Math.round(sprintStats._avg.bubblesShot * 100) /100,
-                averageSprintTime: Math.round(sprintStats._avg.gameDuration * 100) /100,
+                averageBubblesCleared: Math.round(sprintStats._avg.bubblesCleared * 100) / 100,
+                averageBubblesPerSecond: Math.round(sprintStats._avg.bubblesPerSecond * 100) / 100,
+                averageBubblesShot: Math.round(sprintStats._avg.bubblesShot * 100) / 100,
+                averageSprintTime: Math.round(sprintStats._avg.gameDuration * 100) / 100,
                 sprintGamesPlayed: sprintGamesPlayed,
                 globalRank: globalSprintRank,
                 nationalRank: nationalSprintRank,
             },
             rankedStats: {
-                averageBubblesPerSecond: Math.round(rankedStats.averageBubblesPerSecond * 100) /100,
-                averageAttackPerMinute: Math.round(rankedStats.averageAttackPerMinute * 100) /100,
-                averageDefensePerMinute: Math.round(rankedStats.averageDefensePerMinute * 100) /100,
+                averageBubblesPerSecond: Math.round(rankedStats.averageBubblesPerSecond * 100) / 100,
+                averageAttackPerMinute: Math.round(rankedStats.averageAttackPerMinute * 100) / 100,
+                averageDefensePerMinute: Math.round(rankedStats.averageDefensePerMinute * 100) / 100,
                 rankedGamesPlayed: rankedGamesPlayed.length,
                 globalRank: globalRank,
                 nationalRank: nationalRank,
@@ -289,7 +289,7 @@ export class UserService {
 
         // Delete the old file from DigitalOcean Spaces if it's different from the new one
         if (oldFilename && oldFilename !== fileUrl) {
-            await this.fileStorageService.deleteFile(oldFilename, imgType);
+            await this.fileStorageService.deleteFile(oldFilename);
         }
     }
 
