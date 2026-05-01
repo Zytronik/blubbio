@@ -10,9 +10,9 @@
     "db:dev:up": "docker compose up dev-db -d",
     "prisma:types": "npx prisma generate",
     "db:dev:restart": "npm run db:dev:rm & npm run db:dev:up & timeout /t 2 /nobreak & npm run prisma:deploy",
-    "build": "npm run prisma:types && npx nest build",
+    "build": "npm run prisma:types && nest build && ls -la dist",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "npx nest start",
+    "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main.js",
@@ -60,7 +60,7 @@
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
-    "@nestjs/cli": "^10.3.0",
+    "@nestjs/cli": "^10.4.9",
     "@nestjs/schematics": "^10.0.1",
     "@nestjs/testing": "^10.0.0",
     "@swc/cli": "^0.1.62",
