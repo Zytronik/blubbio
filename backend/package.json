@@ -10,7 +10,7 @@
     "db:dev:up": "docker compose up dev-db -d",
     "prisma:types": "npx prisma generate",
     "db:dev:restart": "npm run db:dev:rm & npm run db:dev:up & timeout /t 2 /nobreak & npm run prisma:deploy",
-    "build": "npm run prisma:types && npx nest build && ls -la dist",
+    "build": "npx nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
