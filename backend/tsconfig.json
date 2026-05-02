@@ -12,7 +12,6 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "typeRoots": ["./node_modules/@types", "./src/types"],
-    "types": ["express-session"],
+    "types": ["node"]
   }
 }
