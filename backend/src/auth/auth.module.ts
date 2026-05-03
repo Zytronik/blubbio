@@ -8,10 +8,11 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PasswordResetToken } from 'src/user/entities/pw-reset-token.entity';
 import { MailModule } from 'src/mail/mail.module';
+import { UserRating } from 'src/ranked/entities/user-rating.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, PasswordResetToken]),
+    TypeOrmModule.forFeature([User, PasswordResetToken, UserRating]),
     MailModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

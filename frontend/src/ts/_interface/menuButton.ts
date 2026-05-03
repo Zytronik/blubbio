@@ -6,5 +6,5 @@ export interface MenuButton {
   desc: string;
   page: PAGE;
   bigButton: boolean;
-  authIds?: number[];
+  authIds?: string[];
 }

@@ -12,7 +12,7 @@ import { ChangePasswordRequestDto } from './dto/change-password-request.dto';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @Post('register')
   @ApiOperation({ summary: 'Register new user' })

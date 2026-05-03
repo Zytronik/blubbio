@@ -8,7 +8,7 @@ export class RanksService {
   constructor(
     @Inject(forwardRef(() => UserService))
     private userService: UserService,
-  ) {}
+  ) { }
 
   async getRanksOfUsers(userIds: number[]) {
     const userPercentiles = await this.userService.getPercentiles(userIds);

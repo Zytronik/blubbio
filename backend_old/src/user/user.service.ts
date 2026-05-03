@@ -22,7 +22,7 @@ export class UserService {
     @Inject(forwardRef(() => RanksService))
     private ranksService: RanksService,
     private fileStorageService: FileStorageService,
-  ) {}
+  ) { }
 
   async createUser(
     createUserDto: CreateUserDto,

@@ -4,12 +4,14 @@ import { httpClient } from './httpClient';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { usePageStore } from '@/stores/pageStore';
 import { useSocketStore } from '@/stores/socketStore';
-import { UserSession } from '../_interface/userSession';
+import { Session } from '../_interface/session';
 import { transitionPageBackwardsAnimation } from '../animationCSS/transitionPageBackwards';
 import { PAGE } from '../_enum/page';
+import { LoginResponseDto } from '../_dto/login-response.dto';
+
 export async function checkIfUsernameIsTakenAndValid(username: string): Promise<AuthResponse> {
     try {
-        const resp = await httpClient.get('/users/usernameIsValid', {
+        const resp = await httpClient.get('/users/username-available', {
             params: { username },
         });
         return { success: resp.data, errorMsg: '' };
@@ -17,7 +19,7 @@ export async function checkIfUsernameIsTakenAndValid(username: string): Promise<
         if (axios.isAxiosError(error)) {
             return {
                 success: false,
-                errorMsg: error.response?.data?.message[0] || 'Registration failed',
+                errorMsg: error.response?.data?.message || 'Registration failed',
             };
         } else {
             return { success: false, errorMsg: 'An unknown error occurred' };
@@ -56,7 +58,7 @@ export async function register(username: string, email: string, password: string
         if (axios.isAxiosError(error)) {
             return {
                 success: false,
-                errorMsg: error.response?.data?.message[0] || 'Registration failed',
+                errorMsg: error.response?.data?.message || 'Registration failed',
             };
         } else {
             return { success: false, errorMsg: 'An unknown error occurred' };
@@ -66,11 +68,11 @@ export async function register(username: string, email: string, password: string
 
 export async function login(username: string, password: string): Promise<AuthResponse> {
     try {
-        const response = await httpClient.post('/auth/login', {
+        const response = await httpClient.post<LoginResponseDto>('/auth/login', {
             username,
             password,
         });
-        const token = response.data.access_token;
+        const token = response.data.accessToken;
         if (token) {
             localStorage.setItem('authToken', token);
             const socketStore = useSocketStore();
@@ -83,7 +85,7 @@ export async function login(username: string, password: string): Promise<AuthRes
         if (axios.isAxiosError(error)) {
             return {
                 success: false,
-                errorMsg: error.response?.data?.message[0] || 'Login failed',
+                errorMsg: error.response?.data?.message || 'Login failed',
             };
         } else {
             return { success: false, errorMsg: 'An unknown error occurred' };
@@ -99,7 +101,7 @@ export async function forgotPw(email: string): Promise<AuthResponse> {
         if (axios.isAxiosError(error)) {
             return {
                 success: false,
-                errorMsg: error.response?.data?.message[0] || 'Request failed',
+                errorMsg: error.response?.data?.message || 'Request failed',
             };
         } else {
             return { success: false, errorMsg: 'An unknown error occurred' };
@@ -121,7 +123,7 @@ export async function changePw(token: string, password: string, passwordAgain: s
         if (axios.isAxiosError(error)) {
             return {
                 success: false,
-                errorMsg: error.response?.data?.message[0] || 'Request failed',
+                errorMsg: error.response?.data?.message || 'Request failed',
             };
         } else {
             return { success: false, errorMsg: 'An unknown error occurred' };
@@ -138,7 +140,7 @@ export async function verifyResetToken(token: string): Promise<AuthResponse> {
         if (axios.isAxiosError(error)) {
             return {
                 success: false,
-                errorMsg: error.response?.data?.message[0] || 'Request failed',
+                errorMsg: error.response?.data?.message || 'Request failed',
             };
         } else {
             return { success: false, errorMsg: 'An unknown error occurred' };
@@ -207,14 +209,14 @@ export async function logUserOut() {
     socketStore.reconnectSocket();
 }
 
-export function isGuestOrLoggedIn(userSession: UserSession): boolean {
+export function isGuestOrLoggedIn(userSession: Session): boolean {
     if (userSession.role === 'guest' || userSession.role === 'user') {
         return true;
     }
     return false;
 }
 
-export function isLoggedIn(userSession: UserSession): boolean {
+export function isLoggedIn(userSession: Session): boolean {
     if (userSession.role === 'user') {
         return true;
     }

@@ -1,11 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UpdateProfileImageResponseDto } from './dto/update-profile-image-response.dto';
 import { BlobService } from 'src/blob/blob.service';
 import { SettingsDto } from './dto/settings.dto';
 import { SaveSettingsResponseDto } from './dto/save-settings-response.dto';
+import { GetUserRatingResponseDto } from './dto/get-user-rating.response.dto';
+import { RankedService } from 'src/ranked/ranked.service';
+import { GetUserProfileResponseDto } from './dto/get-user-profile.response.dto';
 
 @Injectable()
 export class UserService {
@@ -13,10 +16,16 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly blobService: BlobService,
-  ) {}
+    private readonly rankedService: RankedService,
+  ) { }
 
   async isUsernameAvailable(username: string): Promise<boolean> {
-    const user = await this.userRepository.findOne({ where: { username } });
+    const user = await this.userRepository.findOne({
+      where: {
+        username: ILike(username),
+      },
+    });
+
     return !user;
   }
 
@@ -75,5 +84,32 @@ export class UserService {
     }
 
     return JSON.parse(user.settings);
+  }
+
+  async getUserRating(userId: string): Promise<GetUserRatingResponseDto> {
+    return this.rankedService.buildUserRatingDto(userId);
+  }
+
+  async getUserProfile(userId: string): Promise<GetUserProfileResponseDto> {
+    const user = await this.userRepository.findOne({
+      where: { uid: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return {
+      uid: user.uid,
+      username: user.username,
+      email: user.email,
+      countryCode: user.countryCode,
+      country: user.country,
+      pbUrl: user.pbUrl,
+      bannerUrl: user.bannerUrl,
+      lastDisconnectedAt: user.lastDisconnectedAt,
+      settings: user.settings,
+      createdAt: user.createdAt,
+    };
   }
 }

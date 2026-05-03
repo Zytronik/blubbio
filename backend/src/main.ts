@@ -22,6 +22,15 @@ async function bootstrap() {
     }),
   );
 
+  const isDev = process.env.ENV === 'dev';
+
+  app.enableCors({
+    origin: isDev
+      ? ['http://localhost:8080']
+      : ['https://blubb.io'],
+    credentials: true,
+  });
+
   await app.listen(3000);
 }
 void bootstrap();

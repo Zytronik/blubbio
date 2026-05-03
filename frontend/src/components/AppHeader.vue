@@ -1,19 +1,19 @@
 <template>
   <div class="topbar">
     <div class="profile-wrapper" v-if="isGuestOrLoggedIn(userSession)" @click="openCommunityOverlay()">
-      <img class="profile-pic" :src="getUserPbUrl(userSession)" alt="Profile Picture">
+      <img class="profile-pic" v-if="userProfile" :src="getUserPbUrl(userProfile)" alt="Profile Picture">
       <div class="profile-content">
         <h3>{{ userSession.username }}</h3>
         <div class="ratingDetails">
-          <p v-if="userSession && userSession.isRanked" class="rating">{{ userSession.rating
+          <p v-if="userRating && userRating.isRanked" class="rating">{{ userRating.rating
           }}<span>±{{
-              userSession.ratingDeviation }}</span>
+              userRating.ratingDeviation }}</span>
           </p>
-          <img v-if="userSession && userSession.isRanked" class="rank-img"
-            :src="getUserRankImgUrl(userSession.rank.iconName)" :alt="userSession.rank.name">
+          <img v-if="userRating && userRating.isRanked" class="rank-img"
+            :src="getUserRankImgUrl(userRating.rank.iconName)" :alt="userRating.rank.name">
           <p v-else class="unranked">Unranked</p>
         </div>
-        <div v-if="userSession && userSession.isRanked" class="progressBar-wrapper">
+        <div v-if="userRating && userRating.isRanked" class="progressBar-wrapper">
           <div class="progressBar">
             <div class="progressBarFill" :style="{
               'width': getProgressBarFillWidth(),
@@ -38,16 +38,23 @@ export default {
   setup() {
     const userStore = useUserStore();
     const userSession = computed(() => userStore.userSession);
+    const userRating = computed(() => userStore.userRating);
+    const userProfile = computed(() => userStore.userProfile);
 
     function getProgressBarFillWidth() {
-      if (!userSession.value) {
+      const rating = userRating.value;
+
+      if (!rating || !rating.isRanked) {
         return '0%';
       }
-      const rank = userSession.value.rank;
+
+      const rank = rating.rank;
+
       if (!rank.nextRank) {
         return '0%';
       }
-      return (100 - (100 / (rank.percentile - rank.nextRank.percentile) * (rank.percentile - userSession.value.percentile))) + '%';
+
+      return (100 - (100 / (rank.percentile - rank.nextRank.percentile) * (rank.percentile - rating.percentile))) + '%';
     }
 
     return {
@@ -58,6 +65,8 @@ export default {
       isGuestOrLoggedIn,
       getProgressBarFillWidth,
       openCommunityOverlay,
+      userRating,
+      userProfile
     };
   },
 };

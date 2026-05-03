@@ -18,6 +18,7 @@ import { ForgotPwResponseDto } from './dto/forgot-pw-response.dto';
 import { ChangePasswordRequestDto } from './dto/change-password-request.dto';
 import { PasswordResetToken } from 'src/user/entities/pw-reset-token.entity';
 import { MailService } from 'src/mail/mail.service';
+import { UserRating } from 'src/ranked/entities/user-rating.entity';
 
 @Injectable()
 export class AuthService {
@@ -28,7 +29,9 @@ export class AuthService {
     private passwordResetTokenRepository: Repository<PasswordResetToken>,
     private jwtService: JwtService,
     private mailService: MailService,
-  ) {}
+    @InjectRepository(UserRating)
+    private userRatingRepository: Repository<UserRating>,
+  ) { }
 
   async register(userDto: RegisterRequestDto): Promise<void> {
     const existing = await this.usersRepository.findOne({
@@ -47,6 +50,12 @@ export class AuthService {
     });
 
     await this.usersRepository.save(user);
+
+    const rating = this.userRatingRepository.create({
+      user,
+    });
+
+    await this.userRatingRepository.save(rating);
   }
 
   async login(loginDto: LoginRequestDto): Promise<LoginResponseDto> {

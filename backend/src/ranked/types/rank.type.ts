@@ -1,4 +1,4 @@
-export interface Rank {
+export type Rank = {
   ascii: string;
   name: string;
   iconName: string;

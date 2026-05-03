@@ -7,6 +7,8 @@ import { MailModule } from './mail/mail.module';
 import { BlobModule } from './blob/blob.module';
 import { SessionModule } from './session/session.module';
 import { LobbyModule } from './lobby/lobby.module';
+import { RankedModule } from './ranked/ranked.module';
+import { GlickoModule } from './glicko/glicko.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { LobbyModule } from './lobby/lobby.module';
     BlobModule,
     SessionModule,
     LobbyModule,
+    RankedModule,
+    GlickoModule,
   ],
   providers: [],
   controllers: [],
