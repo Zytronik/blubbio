@@ -1,27 +1,27 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
-
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { EventEmitter } from 'events';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  EventEmitter.setMaxListeners(20);
+  const config = new DocumentBuilder()
+    .setTitle('Blubbio API')
+    .setVersion('1.0')
+    .build();
 
-  app.enableCors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true,
-  });
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 
   await app.listen(3000);
 }
-bootstrap();
+void bootstrap();

@@ -2,162 +2,153 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Socket, Server } from 'socket.io';
-import { UserSession } from 'src/_interface/session.userSession';
-import { UserService } from 'src/user/user.service';
+import { Session } from './types/session.type';
+import { JwtPayload } from 'src/auth/types/jwt-payload.type';
+import { UpdateUserPageRequestDto } from './dto/update-user-page-request.dto';
+import { UserConnectedResponseDto } from './dto/user-connected-response.dto';
+import { UsersOnlineResponseDto } from './dto/users-online.response.dto';
+import { UpdateUserResponseDto } from './dto/update-user.response.dto';
 
 @Injectable()
 export class SessionService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private readonly userService: UserService,
   ) {}
 
-  isValidToken(token: string): boolean {
-    return token && token !== 'null';
+  handleConnection(
+    client: Socket,
+    server: Server,
+    activeUsers: Map<string, Session>,
+  ): void {
+    const token = client.handshake.query.token as string;
+    const isGuest = client.handshake.query.isGuest === 'true';
+    const guestUsername = client.handshake.query.guestUsername as string;
+
+    let session: Session;
+
+    if (this.isValidToken(token)) {
+      session = this.createUserSession(client, token);
+    } else if (isGuest && guestUsername) {
+      session = this.createGuestSession(client, guestUsername);
+    } else {
+      session = this.createSpectatorSession(client);
+    }
+
+    activeUsers.set(client.id, session);
+    this.emitUsers(server, activeUsers);
+    this.logConnection(client, session, activeUsers);
+
+    const responseDto: UserConnectedResponseDto = {
+      session,
+    };
+    client.emit('userConnected', responseDto);
   }
 
-  async handleUserConnection(
+  handleDisconnect(
     client: Socket,
-    token: string,
-    activeUsers: Map<string, UserSession>,
     server: Server,
-  ): Promise<UserSession> {
+    activeUsers: Map<string, Session>,
+  ): void {
+    activeUsers.delete(client.id);
+    this.emitUsers(server, activeUsers);
+  }
+
+  updateUserPage(
+    client: Socket,
+    payload: UpdateUserPageRequestDto,
+    activeUsers: Map<string, Session>,
+  ) {
+    const session = activeUsers.get(client.id);
+    if (!session) return;
+
+    session.currentPage = payload.currentPage;
+    activeUsers.set(client.id, session);
+  }
+
+  updateUser(client: Socket): void {
+    const token = client.handshake.query.token as string;
+    const decoded = this.decodeToken(token);
+
+    const session: Session = {
+      role: 'user',
+      username: decoded.username.toUpperCase(),
+      currentPage: '/',
+      clientId: client.id,
+      userId: decoded.userId,
+    };
+
+    const responseDto: UpdateUserResponseDto = {
+      session,
+    };
+    client.emit('updateUser', responseDto);
+  }
+
+  private createUserSession(client: Socket, token: string): Session {
     try {
-      const decodedToken = this.decodeToken(token);
-      const userId = decodedToken.userId;
-      const username = decodedToken.username.toUpperCase();
-      const isRanked = await this.userService.isRanked(userId);
-      const incompleteSession: UserSession = {
+      const decoded = this.decodeToken(token);
+
+      return {
         role: 'user',
-        username,
+        username: decoded.username.toUpperCase(),
         currentPage: '/',
         clientId: client.id,
-        isRanked,
-        userId,
-        email: '',
-        LastDisconnectedAt: undefined,
-        rating: 0,
-        ratingDeviation: 0,
-        volatility: 0,
-        createdAt: undefined,
-        rank: undefined,
-        globalRank: 0,
-        percentile: 0,
-        probablyAroundRank: undefined,
+        userId: decoded.userId,
       };
-      const userSession =
-        await this.userService.fillUserSessionWithDBInfo(incompleteSession);
-
-      activeUsers.set(client.id, userSession);
-      server.emit('usersOnline', this.getActiveUsers(activeUsers));
-
-      return userSession;
-    } catch (error) {
-      console.error('Unauthorized access attempt', error);
+    } catch {
       client.disconnect();
       throw new UnauthorizedException('Invalid token');
     }
   }
 
-  handleGuestConnection(
-    client: Socket,
-    guestUsername: string,
-    activeUsers: Map<string, UserSession>,
-    server: Server,
-  ): UserSession {
-    const username = 'Guest-' + guestUsername;
-
-    const guestSession: UserSession = {
+  private createGuestSession(client: Socket, guestUsername: string): Session {
+    return {
       role: 'guest',
-      username: username,
+      username: `Guest-${guestUsername}`,
       currentPage: '/',
       clientId: client.id,
-      isRanked: false,
-      userId: 0,
-      email: '',
-      LastDisconnectedAt: undefined,
-      rating: 0,
-      ratingDeviation: 0,
-      volatility: 0,
-      createdAt: undefined,
-      rank: undefined,
-      globalRank: 0,
-      percentile: 0,
-      probablyAroundRank: undefined,
+      userId: null,
     };
-
-    activeUsers.set(client.id, guestSession);
-    server.emit('usersOnline', this.getActiveUsers(activeUsers));
-
-    return guestSession;
   }
 
-  handleSpectatorConnection(
-    client: Socket,
-    activeUsers: Map<string, UserSession>,
-    server: Server,
-  ): UserSession {
-    const username = `Spectator-${client.id}`;
-
-    const spectatorSession: UserSession = {
+  private createSpectatorSession(client: Socket): Session {
+    return {
       role: 'spectator',
-      username: username,
+      username: `Spectator-${client.id}`,
       currentPage: '/',
       clientId: client.id,
-      isRanked: false,
-      userId: 0,
-      email: '',
-      LastDisconnectedAt: undefined,
-      rating: 0,
-      ratingDeviation: 0,
-      volatility: 0,
-      createdAt: undefined,
-      rank: undefined,
-      globalRank: 0,
-      percentile: 0,
-      probablyAroundRank: undefined,
+      userId: null,
     };
-
-    activeUsers.set(client.id, spectatorSession);
-    server.emit('usersOnline', this.getActiveUsers(activeUsers));
-
-    return spectatorSession;
   }
 
-  getActiveUsers(activeUsers: Map<string, UserSession>) {
-    return Array.from(activeUsers.values());
+  private emitUsers(server: Server, activeUsers: Map<string, Session>): void {
+    const responseDto: UsersOnlineResponseDto = {
+      users: Array.from(activeUsers.values()),
+    };
+    server.emit('usersOnline', responseDto);
   }
 
-  logConnectionStatus(
+  private logConnection(
     client: Socket,
-    userSession: UserSession,
-    activeUsers: Map<string, UserSession>,
-  ) {
+    session: Session,
+    activeUsers: Map<string, Session>,
+  ): void {
     console.log('------------------------------');
-    if (client.recovered) {
-      console.log(`${userSession.username} reconnected.`);
-    } else {
-      console.log(`${userSession.username} connected.`);
-    }
-    console.log('Currently active users:', activeUsers.size);
-    activeUsers.forEach(value => {
-      console.log(value.username, value.clientId);
-    });
-    console.log('------------------------------');
+    console.log(
+      client.recovered
+        ? `${session.username} reconnected`
+        : `${session.username} connected`,
+    );
+    console.log('Active users:', activeUsers.size);
   }
 
-  decodeToken(token: string) {
+  isValidToken(token: string): boolean {
+    return !!token && token !== 'null';
+  }
+
+  decodeToken(token: string): JwtPayload {
     return this.jwtService.verify(token, {
       secret: this.configService.get<string>('JWT_SECRET'),
     });
-  }
-
-  getUsernameByClientId(
-    clientId: string,
-    activeUsers: Map<string, UserSession>,
-  ): string | null {
-    const userSession = activeUsers.get(clientId);
-    return userSession ? userSession.username : null;
   }
 }

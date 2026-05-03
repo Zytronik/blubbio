@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { LobbyGateway } from './lobby.gateway';
 import { LobbyService } from './lobby.service';
+import { LobbyGateway } from './lobby.gateway';
 import { SessionModule } from 'src/session/session.module';
 
 @Module({
+  providers: [LobbyService, LobbyGateway],
   imports: [SessionModule],
-  providers: [LobbyGateway, LobbyService],
-  exports: [],
 })
 export class LobbyModule {}

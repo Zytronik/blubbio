@@ -1,78 +1,60 @@
-import { UserService } from './user.service';
-import { CheckUsernameDto } from 'src/_dto/auth.checkUsername';
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Query,
-  Req,
   UploadedFile,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { UserService } from './user.service';
+import { UsernameAvailabilityRequestDto } from './dto/username-availability-request.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { AuthenticatedRequest } from 'src/_interface/authRequest';
-import { JwtAuthGuard } from 'src/auth/jwt/auth.jwt.guard';
-import { ValidateImagePipe } from './validateImgPipeline';
-import { SaveSettingsDto } from 'src/_dto/user.saveSettings';
+import { UpdateProfileImageResponseDto } from './dto/update-profile-image-response.dto';
+import { SaveSettingsResponseDto } from './dto/save-settings-response.dto';
+import { SettingsDto } from './dto/settings.dto';
+import { ValidateImagePipe } from './pipes/validate-image.pipe';
 
 @Controller('users')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
-  @Get('usernameIsValid')
-  async checkUsernameIsValid(@Query() checkUsernameDto: CheckUsernameDto) {
-    return await this.userService.userExists(checkUsernameDto.username);
+  @Get('username-available')
+  async isUsernameAvailable(
+    @Query() query: UsernameAvailabilityRequestDto,
+  ): Promise<boolean> {
+    return await this.userService.isUsernameAvailable(query.username);
   }
 
-  @Post('updateProfilePic')
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('profile_picture'))
+  @Post(':id/profile-picture')
+  @UseInterceptors(FileInterceptor('file'))
   async updateProfilePicture(
+    @Param('id') userId: string,
     @UploadedFile(new ValidateImagePipe()) file: Express.Multer.File,
-    @Req() req: AuthenticatedRequest,
-  ) {
-    if (!file) {
-      throw new BadRequestException('No file uploaded.');
-    }
-    const userId = req.user.userId;
-    await this.userService.updateProfileImgs(userId, file, 'pb');
-    return { message: 'Profile picture updated successfully.' };
+  ): Promise<UpdateProfileImageResponseDto> {
+    return this.userService.updateProfilePicture(userId, file);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Post('updateProfileBanner')
-  @UseInterceptors(FileInterceptor('profile_banner'))
+  @Post(':id/profile-banner')
+  @UseInterceptors(FileInterceptor('file'))
   async updateProfileBanner(
+    @Param('id') userId: string,
     @UploadedFile(new ValidateImagePipe()) file: Express.Multer.File,
-    @Req() req: AuthenticatedRequest,
-  ) {
-    if (!file) {
-      throw new BadRequestException('No file uploaded.');
-    }
-    const userId = req.user.userId;
-    await this.userService.updateProfileImgs(userId, file, 'banner');
-    return { message: 'Banner updated successfully.' };
+  ): Promise<UpdateProfileImageResponseDto> {
+    return this.userService.updateProfileBanner(userId, file);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Post('settings/save')
-  async updateSettings(
-    @Req() req: AuthenticatedRequest,
-    @Body() settings: SaveSettingsDto,
-  ) {
-    const userId = req.user.userId;
-    const stringifySettings = JSON.stringify(settings);
-
-    await this.userService.updateUserSettings(userId, stringifySettings);
+  @Post(':id/settings')
+  async saveSettings(
+    @Param('id') userId: string,
+    @Body() dto: SettingsDto,
+  ): Promise<SaveSettingsResponseDto> {
+    return this.userService.saveSettings(userId, dto);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('settings/save')
-  async getSettings(@Req() req: AuthenticatedRequest) {
-    const userId = req.user.userId;
-    return await this.userService.getUserSettings(userId);
+  @Get(':id/settings')
+  async getSettings(@Param('id') userId: string): Promise<SettingsDto> {
+    return this.userService.getSettings(userId);
   }
 }

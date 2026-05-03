@@ -1,14 +1,13 @@
-import { forwardRef, Module } from '@nestjs/common';
-import { UserController } from './user.controller';
+import { Module } from '@nestjs/common';
 import { UserService } from './user.service';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { FileStorageService } from './file-storage.service';
-import { RankedModule } from 'src/ranked/ranked.module';
+import { UserController } from './user.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
+import { BlobModule } from 'src/blob/blob.module';
 
 @Module({
-  imports: [forwardRef(() => RankedModule)],
-  providers: [UserService, PrismaService, FileStorageService],
+  imports: [TypeOrmModule.forFeature([User]), BlobModule],
+  providers: [UserService],
   controllers: [UserController],
-  exports: [UserService],
 })
-export class UsersModule {}
+export class UserModule {}

@@ -1,33 +1,29 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from './jwt/auth.jwt.strategy';
-import { JwtAuthGuard } from './jwt/auth.jwt.guard';
+import { User } from '../user/entities/user.entity';
+import { JwtStrategy } from './strategy/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TokensCleanupService } from './auth.tokens-cleanup-service';
-import { PrismaModule } from 'src/prisma/prisma.module';
-import { UsersModule } from 'src/user/user.module';
+import { PasswordResetToken } from 'src/user/entities/pw-reset-token.entity';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
-    UsersModule,
-    PrismaModule,
-    PassportModule,
+    TypeOrmModule.forFeature([User, PasswordResetToken]),
+    MailModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: {
-          expiresIn: configService.get<string>('JWT_EXI'),
-        },
-      }),
       inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1h' },
+      }),
     }),
   ],
-  providers: [AuthService, JwtStrategy, JwtAuthGuard, TokensCleanupService],
+  exports: [JwtModule],
+  providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
-  exports: [AuthService, JwtModule],
 })
 export class AuthModule {}
