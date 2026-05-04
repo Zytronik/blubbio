@@ -131,7 +131,3 @@ export const ranks: Rank[] = [
   p_plus,
 ];
 
-ranks.forEach((rank, i) => {
-  rank.prevRank = ranks[i - 1];
-  rank.nextRank = ranks[i + 1];
-});

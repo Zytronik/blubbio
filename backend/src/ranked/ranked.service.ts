@@ -34,12 +34,21 @@ export class RankedService {
     const percentile = await this.getPercentile(userId);
     const rank = this.getRankFromPercentile(percentile);
 
+    const allRanks = ranks;
+
+    const currentIndex = allRanks.findIndex(r => r.name === rank.name);
+
+    const prevRank = currentIndex > 0 ? allRanks[currentIndex - 1] : undefined;
+    const nextRank = currentIndex < allRanks.length - 1 ? allRanks[currentIndex + 1] : undefined;
+
     return {
       rating: rating.rating,
       ratingDeviation: rating.ratingDeviation,
       volatility: rating.volatility,
       isRanked,
       rank,
+      prevRank,
+      nextRank,
       probablyAroundRank,
       globalRank,
       nationalRank,
@@ -148,7 +157,7 @@ export class RankedService {
     return index + 1;
   }
 
-  async getNationalRank(userId: string): Promise<number> {
+  async getNationalRank(userId: string): Promise<number | null> {
     const user = await this.userRatingRepository
       .createQueryBuilder('rating')
       .leftJoinAndSelect('rating.user', 'user')
@@ -156,7 +165,7 @@ export class RankedService {
       .getOne();
 
     if (!user?.user.countryCode) {
-      throw new NotFoundException('User not found or missing country');
+      return null;
     }
 
     const users = await this.userRatingRepository

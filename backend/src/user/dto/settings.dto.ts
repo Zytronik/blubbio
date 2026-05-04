@@ -1,8 +1,12 @@
+import { Type } from 'class-transformer';
 import { ValidateNested, IsOptional, IsArray, IsString } from 'class-validator';
+import { AudioSettingsDto } from './audio-settings.dto';
+import { InputDto } from 'src/game/dto/input.dto';
 
 export class SettingsDto {
   @ValidateNested({ each: true })
-  inputs!: any[];
+  @Type(() => InputDto)
+  inputs!: InputDto[];
 
   @IsOptional()
   @IsArray()
@@ -15,5 +19,6 @@ export class SettingsDto {
   graphics!: string[] | null;
 
   @ValidateNested()
-  audio!: any;
+  @Type(() => AudioSettingsDto)
+  audio!: AudioSettingsDto;
 }

@@ -6,6 +6,8 @@ export class GetUserRatingResponseDto {
     volatility!: number;
     isRanked!: boolean;
     rank!: Rank;
+    prevRank?: Rank;
+    nextRank?: Rank;
     probablyAroundRank!: Rank;
     globalRank!: number;
     nationalRank!: number;

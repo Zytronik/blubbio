@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { UploadFileType } from '@/ts/_enum/uploadFileType';
-import { uploadFile } from '@/ts/page/fileUploads';
+import { uploadFile } from '@/ts/network/fileUploads';
 import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({

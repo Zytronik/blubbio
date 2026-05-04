@@ -92,19 +92,19 @@ export class UserController {
   @Post(':id/settings')
   @ApiOperation({ summary: 'Save user settings' })
   @ApiParam({ name: 'id', type: String })
-  @ApiOkResponse({ type: SaveSettingsResponseDto })
+  @ApiOkResponse()
   async saveSettings(
     @Param('id') userId: string,
     @Body() dto: SettingsDto,
-  ): Promise<SaveSettingsResponseDto> {
+  ): Promise<void> {
     return this.userService.saveSettings(userId, dto);
   }
 
   @Get(':id/settings')
   @ApiOperation({ summary: 'Get user settings' })
   @ApiParam({ name: 'id', type: String })
-  @ApiOkResponse({ type: SettingsDto })
-  async getSettings(@Param('id') userId: string): Promise<SettingsDto> {
+  @ApiOkResponse({ type: String })
+  async getSettings(@Param('id') userId: string): Promise<string> {
     return this.userService.getSettings(userId);
   }
 

@@ -3,6 +3,4 @@ export type Rank = {
   name: string;
   iconName: string;
   percentile: number;
-  prevRank?: Rank;
-  nextRank?: Rank;
 };

@@ -13,11 +13,15 @@ export class GetUserRatingResponseDto {
   @ApiProperty()
   rank!: Rank;
   @ApiProperty()
+  prevRank?: Rank;
+  @ApiProperty()
+  nextRank?: Rank;
+  @ApiProperty()
   probablyAroundRank!: Rank;
   @ApiProperty()
   globalRank!: number;
   @ApiProperty()
-  nationalRank!: number;
+  nationalRank!: number | null;
   @ApiProperty()
   percentile!: number;
 }

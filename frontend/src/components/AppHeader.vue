@@ -50,11 +50,11 @@ export default {
 
       const rank = rating.rank;
 
-      if (!rank.nextRank) {
+      if (!rating.nextRank) {
         return '0%';
       }
 
-      return (100 - (100 / (rank.percentile - rank.nextRank.percentile) * (rank.percentile - rating.percentile))) + '%';
+      return (100 - (100 / (rank.percentile - rating.nextRank.percentile) * (rank.percentile - rating.percentile))) + '%';
     }
 
     return {

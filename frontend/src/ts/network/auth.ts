@@ -8,6 +8,7 @@ import { Session } from '../_interface/session';
 import { transitionPageBackwardsAnimation } from '../animationCSS/transitionPageBackwards';
 import { PAGE } from '../_enum/page';
 import { LoginResponseDto } from '../_dto/login-response.dto';
+import { useUserStore } from '@/stores/userStore';
 
 export async function checkIfUsernameIsTakenAndValid(username: string): Promise<AuthResponse> {
     try {
@@ -187,21 +188,9 @@ export function clearClientState() {
 }
 
 export async function logUserOut() {
-    const authToken = localStorage.getItem('authToken');
+    const userStore = useUserStore();
+    userStore.clearUser();
     const pageStore = usePageStore();
-    if (authToken) {
-        try {
-            await httpClient.post(
-                '/auth/logout',
-                {},
-                {
-                    headers: { Authorization: `Bearer ${authToken}` },
-                },
-            );
-        } catch (error) {
-            console.error('Error during logout:', error);
-        }
-    }
     clearClientState();
     transitionPageBackwardsAnimation(PAGE.startMenu);
     pageStore.setLoginStatus(false);

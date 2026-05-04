@@ -34,9 +34,16 @@ export class AuthService {
   ) { }
 
   async register(userDto: RegisterRequestDto): Promise<void> {
+    const username = userDto.username.toLowerCase();
+    const email = userDto.email.toLowerCase();
+
     const existing = await this.usersRepository.findOne({
-      where: [{ email: userDto.email }, { username: userDto.username }],
+      where: [
+        { email },
+        { username },
+      ],
     });
+
     if (existing) {
       throw new UnauthorizedException('Email or username already exists');
     }
@@ -44,8 +51,8 @@ export class AuthService {
     const passwordHash = await bcrypt.hash(userDto.password, 10);
 
     const user = this.usersRepository.create({
-      username: userDto.username,
-      email: userDto.email,
+      username,
+      email,
       passwordHash,
     });
 
@@ -59,8 +66,10 @@ export class AuthService {
   }
 
   async login(loginDto: LoginRequestDto): Promise<LoginResponseDto> {
+    const username = loginDto.username.toLowerCase();
+
     const user = await this.usersRepository.findOne({
-      where: { username: loginDto.username },
+      where: { username },
     });
 
     if (
@@ -75,6 +84,7 @@ export class AuthService {
       username: user.username,
       userId: user.uid,
     };
+
     const accessToken = this.jwtService.sign(payload);
 
     return { accessToken };

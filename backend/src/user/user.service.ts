@@ -1,6 +1,6 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UpdateProfileImageResponseDto } from './dto/update-profile-image-response.dto';
 import { BlobService } from 'src/blob/blob.service';
@@ -21,9 +21,7 @@ export class UserService {
 
   async isUsernameAvailable(username: string): Promise<boolean> {
     const user = await this.userRepository.findOne({
-      where: {
-        username: ILike(username),
-      },
+      where: { username: username.toLowerCase() },
     });
 
     return !user;
@@ -33,11 +31,28 @@ export class UserService {
     userId: string,
     file: Express.Multer.File,
   ): Promise<UpdateProfileImageResponseDto> {
-    const url = await this.blobService.uploadFile(file, 'pb');
+
+    const user = await this.userRepository.findOne({
+      where: { uid: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const oldUrl = user.pbUrl;
+
+    const newUrl = await this.blobService.uploadFile(file, 'pb');
 
     await this.userRepository.update(userId, {
-      pbUrl: url,
+      pbUrl: newUrl,
     });
+
+    if (oldUrl) {
+      await this.blobService.deleteFile(oldUrl).catch(err => {
+        console.warn('Failed to delete old profile picture:', err);
+      });
+    }
 
     return {
       message: 'Profile picture updated successfully',
@@ -48,42 +63,52 @@ export class UserService {
     userId: string,
     file: Express.Multer.File,
   ): Promise<UpdateProfileImageResponseDto> {
-    const url = await this.blobService.uploadFile(file, 'banner');
+
+    const user = await this.userRepository.findOne({
+      where: { uid: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const oldUrl = user.bannerUrl;
+
+    const newUrl = await this.blobService.uploadFile(file, 'banner');
 
     await this.userRepository.update(userId, {
-      bannerUrl: url,
+      bannerUrl: newUrl,
     });
+
+    if (oldUrl) {
+      await this.blobService.deleteFile(oldUrl).catch(err => {
+        console.warn('Failed to delete old banner:', err);
+      });
+    }
 
     return {
       message: 'Profile banner updated successfully',
     };
   }
 
-  async saveSettings(
-    userId: string,
-    dto: SettingsDto,
-  ): Promise<SaveSettingsResponseDto> {
+  async saveSettings(userId: string, dto: SettingsDto): Promise<void> {
     const json = JSON.stringify(dto);
 
     await this.userRepository.update(userId, {
       settings: json,
     });
-
-    return {
-      message: 'Settings saved successfully',
-    };
   }
 
-  async getSettings(userId: string): Promise<SettingsDto> {
+  async getSettings(userId: string): Promise<string> {
     const user = await this.userRepository.findOne({
       where: { uid: userId },
     });
 
     if (!user?.settings) {
-      throw new BadRequestException('No settings found for this user.');
+      return '';
     }
 
-    return JSON.parse(user.settings);
+    return user.settings;
   }
 
   async getUserRating(userId: string): Promise<GetUserRatingResponseDto> {
