@@ -36,7 +36,7 @@ export class LobbyService {
     void client.join(lobby.id);
 
     const responseDto: LobbyCreatedResponseDto = {
-      lobbyId: lobby.id,
+      lobby,
     };
     client.emit('lobbyCreated', responseDto);
     this.emitLobbyList(server);
@@ -94,9 +94,10 @@ export class LobbyService {
   }
 
   fetchLobbies(client: Socket): void {
-    client.emit('lobbyList', {
+    const responseDto: LobbyListResponseDto = {
       lobbies: Array.from(this.lobbies.values()),
-    });
+    };
+    client.emit('lobbyList', responseDto);
   }
 
   startLobby(
@@ -157,12 +158,15 @@ export class LobbyService {
   private buildLobbyUser(client: Socket, isHost: boolean): LobbyUser {
     const token = client.handshake.query.token as string;
     const isGuest = client.handshake.query.isGuest === 'true';
-    const decoded = this.sessionService.decodeToken(token);
     const guestUsername = client.handshake.query.guestUsername as string;
-    const username = isGuest
-      ? `Guest-${guestUsername}`
-      : decoded.username.toUpperCase();
-    const userId = isGuest ? null : decoded.userId;
+    let username = `Guest-${guestUsername}`;
+    let userId: string | null = null;
+
+    if (!isGuest) {
+      const decoded = this.sessionService.decodeToken(token);
+      username = decoded.username.toUpperCase();
+      userId = decoded.userId;
+    }
 
     return {
       clientId: client.id,
@@ -210,5 +214,15 @@ export class LobbyService {
 
   private getClientRooms(client: Socket): string[] {
     return Array.from(this.clientRooms.get(client.id) || []);
+  }
+
+  getUsernameByClientId(lobbyId: string, clientId: string): string | undefined {
+    const lobby = this.lobbies.get(lobbyId);
+
+    if (!lobby) {
+      return undefined;
+    }
+
+    return lobby.users.find((u) => u.clientId === clientId)?.username;
   }
 }

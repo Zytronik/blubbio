@@ -21,7 +21,6 @@ import {
 import { UserService } from './user.service';
 import { UsernameAvailabilityRequestDto } from './dto/username-availability-request.dto';
 import { UpdateProfileImageResponseDto } from './dto/update-profile-image-response.dto';
-import { SaveSettingsResponseDto } from './dto/save-settings-response.dto';
 import { SettingsDto } from './dto/settings.dto';
 import { ValidateImagePipe } from './pipes/validate-image.pipe';
 import { GetUserRatingResponseDto } from './dto/get-user-rating.response.dto';
@@ -30,7 +29,7 @@ import { GetUserProfileResponseDto } from './dto/get-user-profile.response.dto';
 @ApiTags('Users')
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Get('username-available')
   @ApiOperation({ summary: 'Check if username is available' })

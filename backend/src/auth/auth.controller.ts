@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Req } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterRequestDto } from './dto/register-request.dto';
@@ -8,17 +8,21 @@ import { ForgotPwRequestDto } from './dto/forgot-pw-request.dto';
 import { ForgotPwResponseDto } from './dto/forgot-pw-response.dto';
 import { VerifyResetTokenRequestDto } from './dto/verify-reset-token-request.dto';
 import { ChangePasswordRequestDto } from './dto/change-password-request.dto';
+import type { Request } from 'express';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
   @Post('register')
   @ApiOperation({ summary: 'Register new user' })
   @ApiResponse({ status: 201 })
-  async register(@Body() dto: RegisterRequestDto): Promise<void> {
-    return this.authService.register(dto);
+  async register(
+    @Body() dto: RegisterRequestDto,
+    @Req() req: Request,
+  ): Promise<void> {
+    return this.authService.register(dto, req);
   }
 
   @Post('login')

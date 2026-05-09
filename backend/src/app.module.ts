@@ -9,6 +9,7 @@ import { SessionModule } from './session/session.module';
 import { LobbyModule } from './lobby/lobby.module';
 import { RankedModule } from './ranked/ranked.module';
 import { GlickoModule } from './glicko/glicko.module';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { GlickoModule } from './glicko/glicko.module';
     LobbyModule,
     RankedModule,
     GlickoModule,
+    GameModule,
   ],
   providers: [],
   controllers: [],

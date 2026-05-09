@@ -6,5 +6,6 @@ import { SessionModule } from 'src/session/session.module';
 @Module({
   providers: [LobbyService, LobbyGateway],
   imports: [SessionModule],
+  exports: [LobbyService],
 })
 export class LobbyModule {}

@@ -1,4 +1,4 @@
-import { Lobby } from '../types/lobby.type';
+import { Lobby } from "../_interface/lobby";
 
 export class LobbyCreatedResponseDto {
   lobby!: Lobby;

@@ -12,7 +12,7 @@
                 <button v-for="tab in leaderboardTabs" :key="tab" :class="{ active: activeLeaderboard === tab }"
                     @click="activeLeaderboard = tab">
                     <span>{{ tab }}</span>
-                    <span v-if="tab === 'National' && userSession.countryCode"> ({{ userSession.countryCode }}) </span>
+                    <span v-if="tab === 'National' && userProfile"> ({{ userProfile.countryCode }}) </span>
                 </button>
             </div>
             <div v-if="activeLeaderboard === 'Global'" class="tab-content">
@@ -49,6 +49,7 @@ export default {
         const activeLeaderboard = ref<string>('Global');
         const userStore = useUserStore();
         const userSession = computed(() => userStore.userSession);
+        const userProfile = computed(() => userStore.userProfile);
 
         function startSprint(): void {
             transitionIntoGame(GAME_MODE.SPRINT);
@@ -61,6 +62,7 @@ export default {
             activeLeaderboard,
             userSession,
             isLoggedIn,
+            userProfile
         };
     },
 };

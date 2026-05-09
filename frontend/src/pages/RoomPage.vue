@@ -2,7 +2,7 @@
   <h1>{{ room?.name || 'Room' }}</h1>
   <p>{{ room?.lobbyStarted ? 'Lobby is in progress' : 'Waiting for Host to start the lobby' }}</p>
   <ul>
-    <li v-for="user in room?.users" :key="user.socketId">
+    <li v-for="user in room?.users" :key="user.clientId">
       {{ user.username }} <span v-if="user.isHost">(Host)</span>
     </li>
   </ul>

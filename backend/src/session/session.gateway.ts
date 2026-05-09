@@ -31,7 +31,7 @@ export class SessionGateway
   }
 
   handleDisconnect(client: Socket): void {
-    this.sessionService.handleDisconnect(client, this.server, this.activeUsers);
+    this.sessionService.handleDisconnect(client, this.activeUsers);
   }
 
   @SubscribeMessage('updateUserPage')

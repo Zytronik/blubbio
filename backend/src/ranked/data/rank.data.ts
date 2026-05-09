@@ -130,4 +130,3 @@ export const ranks: Rank[] = [
   p_minus,
   p_plus,
 ];
-

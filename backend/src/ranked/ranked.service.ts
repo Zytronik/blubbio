@@ -12,7 +12,7 @@ export class RankedService {
   constructor(
     @InjectRepository(UserRating)
     private readonly userRatingRepository: Repository<UserRating>,
-  ) { }
+  ) {}
 
   async buildUserRatingDto(userId: string): Promise<GetUserRatingResponseDto> {
     const rating = await this.userRatingRepository.findOne({
@@ -36,10 +36,13 @@ export class RankedService {
 
     const allRanks = ranks;
 
-    const currentIndex = allRanks.findIndex(r => r.name === rank.name);
+    const currentIndex = allRanks.findIndex((r) => r.name === rank.name);
 
     const prevRank = currentIndex > 0 ? allRanks[currentIndex - 1] : undefined;
-    const nextRank = currentIndex < allRanks.length - 1 ? allRanks[currentIndex + 1] : undefined;
+    const nextRank =
+      currentIndex < allRanks.length - 1
+        ? allRanks[currentIndex + 1]
+        : undefined;
 
     return {
       rating: rating.rating,
@@ -52,15 +55,14 @@ export class RankedService {
       probablyAroundRank,
       globalRank,
       nationalRank,
-      percentile
+      percentile,
     };
   }
-
 
   async getPercentile(userId: string): Promise<number> {
     const rank = await this.getGlobalRank(userId);
     const totalUsers = await this.getNumberOfRankedPlayers();
-    return Math.round((rank / totalUsers * 100 + Number.EPSILON) * 100) / 100;
+    return Math.round(((rank / totalUsers) * 100 + Number.EPSILON) * 100) / 100;
   }
 
   async getProbablyAroundRank(userId: string): Promise<Rank> {

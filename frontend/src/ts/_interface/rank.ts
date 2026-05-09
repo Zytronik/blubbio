@@ -3,4 +3,4 @@ export interface Rank {
   name: string;
   iconName: string;
   percentile: number;
-};
+}

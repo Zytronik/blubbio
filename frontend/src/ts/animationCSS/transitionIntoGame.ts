@@ -68,7 +68,7 @@ export function transitionIntoGame(gameMode: GAME_MODE) {
             const otherPlayersUsernames = lobbyStore.currentLobby?.users
                 .filter(user => {
                     const socketStore = useSocketStore();
-                    return user.socketId !== socketStore.webSocket?.id;
+                    return user.clientId !== socketStore.webSocket?.id;
                 })
                 .map(user => user.username);
 

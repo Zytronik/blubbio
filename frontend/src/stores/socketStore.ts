@@ -12,6 +12,7 @@ import { Session } from '@/ts/_interface/session';
 import { loadSettings } from '@/ts/page/settings';
 import { useLobbyStore } from './lobbyStore';
 import { UserConnectedResponseDto } from '@/ts/_dto/user-connected-response.dto';
+import { logUserOut } from '@/ts/network/auth';
 
 export const useSocketStore = defineStore('socket', {
   state: () => ({
@@ -79,6 +80,11 @@ export const useSocketStore = defineStore('socket', {
         this.webSocket.on('connect_error', err => {
           console.error('Connection error:', err.message);
           reject(err); // Reject the Promise on connection error
+        });
+
+        this.webSocket.on('unauthorized', () => {
+          console.error('Unauthorized access attempt');
+          logUserOut();
         });
 
         this.webSocket.on('userConnected', (dto: UserConnectedResponseDto) => {

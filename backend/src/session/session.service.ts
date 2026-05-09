@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Socket, Server } from 'socket.io';
@@ -6,7 +6,6 @@ import { Session } from './types/session.type';
 import { JwtPayload } from 'src/auth/types/jwt-payload.type';
 import { UpdateUserPageRequestDto } from './dto/update-user-page-request.dto';
 import { UserConnectedResponseDto } from './dto/user-connected-response.dto';
-import { UsersOnlineResponseDto } from './dto/users-online.response.dto';
 import { UpdateUserResponseDto } from './dto/update-user.response.dto';
 
 @Injectable()
@@ -25,7 +24,7 @@ export class SessionService {
     const isGuest = client.handshake.query.isGuest === 'true';
     const guestUsername = client.handshake.query.guestUsername as string;
 
-    let session: Session;
+    let session: Session | undefined;
 
     if (this.isValidToken(token)) {
       session = this.createUserSession(client, token);
@@ -35,8 +34,11 @@ export class SessionService {
       session = this.createSpectatorSession(client);
     }
 
+    if (!session) {
+      return;
+    }
+
     activeUsers.set(client.id, session);
-    this.emitUsers(server, activeUsers);
     this.logConnection(client, session, activeUsers);
 
     const responseDto: UserConnectedResponseDto = {
@@ -45,13 +47,8 @@ export class SessionService {
     client.emit('userConnected', responseDto);
   }
 
-  handleDisconnect(
-    client: Socket,
-    server: Server,
-    activeUsers: Map<string, Session>,
-  ): void {
+  handleDisconnect(client: Socket, activeUsers: Map<string, Session>): void {
     activeUsers.delete(client.id);
-    this.emitUsers(server, activeUsers);
   }
 
   updateUserPage(
@@ -84,7 +81,10 @@ export class SessionService {
     client.emit('updateUser', responseDto);
   }
 
-  private createUserSession(client: Socket, token: string): Session {
+  private createUserSession(
+    client: Socket,
+    token: string,
+  ): Session | undefined {
     try {
       const decoded = this.decodeToken(token);
 
@@ -97,7 +97,9 @@ export class SessionService {
       };
     } catch {
       client.disconnect();
-      throw new UnauthorizedException('Invalid token');
+      console.error('Invalid token, disconnecting client:', client.id);
+
+      client.emit('unauthorized');
     }
   }
 
@@ -119,13 +121,6 @@ export class SessionService {
       clientId: client.id,
       userId: null,
     };
-  }
-
-  private emitUsers(server: Server, activeUsers: Map<string, Session>): void {
-    const responseDto: UsersOnlineResponseDto = {
-      users: Array.from(activeUsers.values()),
-    };
-    server.emit('usersOnline', responseDto);
   }
 
   private logConnection(

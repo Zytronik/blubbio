@@ -5,7 +5,6 @@ import { User } from './entities/user.entity';
 import { UpdateProfileImageResponseDto } from './dto/update-profile-image-response.dto';
 import { BlobService } from 'src/blob/blob.service';
 import { SettingsDto } from './dto/settings.dto';
-import { SaveSettingsResponseDto } from './dto/save-settings-response.dto';
 import { GetUserRatingResponseDto } from './dto/get-user-rating.response.dto';
 import { RankedService } from 'src/ranked/ranked.service';
 import { GetUserProfileResponseDto } from './dto/get-user-profile.response.dto';
@@ -17,7 +16,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     private readonly blobService: BlobService,
     private readonly rankedService: RankedService,
-  ) { }
+  ) {}
 
   async isUsernameAvailable(username: string): Promise<boolean> {
     const user = await this.userRepository.findOne({
@@ -31,7 +30,6 @@ export class UserService {
     userId: string,
     file: Express.Multer.File,
   ): Promise<UpdateProfileImageResponseDto> {
-
     const user = await this.userRepository.findOne({
       where: { uid: userId },
     });
@@ -49,7 +47,7 @@ export class UserService {
     });
 
     if (oldUrl) {
-      await this.blobService.deleteFile(oldUrl).catch(err => {
+      await this.blobService.deleteFile(oldUrl).catch((err) => {
         console.warn('Failed to delete old profile picture:', err);
       });
     }
@@ -63,7 +61,6 @@ export class UserService {
     userId: string,
     file: Express.Multer.File,
   ): Promise<UpdateProfileImageResponseDto> {
-
     const user = await this.userRepository.findOne({
       where: { uid: userId },
     });
@@ -81,7 +78,7 @@ export class UserService {
     });
 
     if (oldUrl) {
-      await this.blobService.deleteFile(oldUrl).catch(err => {
+      await this.blobService.deleteFile(oldUrl).catch((err) => {
         console.warn('Failed to delete old banner:', err);
       });
     }

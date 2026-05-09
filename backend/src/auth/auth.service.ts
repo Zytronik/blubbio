@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
 import { LoginResponseDto } from './dto/login-response.dto';
@@ -19,6 +19,9 @@ import { ChangePasswordRequestDto } from './dto/change-password-request.dto';
 import { PasswordResetToken } from 'src/user/entities/pw-reset-token.entity';
 import { MailService } from 'src/mail/mail.service';
 import { UserRating } from 'src/ranked/entities/user-rating.entity';
+import axios from 'axios';
+import { Request } from 'express';
+import { IpApiResponse } from './dto/ip-api-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -31,17 +34,14 @@ export class AuthService {
     private mailService: MailService,
     @InjectRepository(UserRating)
     private userRatingRepository: Repository<UserRating>,
-  ) { }
+  ) {}
 
-  async register(userDto: RegisterRequestDto): Promise<void> {
+  async register(userDto: RegisterRequestDto, req: Request): Promise<void> {
     const username = userDto.username.toLowerCase();
     const email = userDto.email.toLowerCase();
 
     const existing = await this.usersRepository.findOne({
-      where: [
-        { email },
-        { username },
-      ],
+      where: [{ email }, { username }],
     });
 
     if (existing) {
@@ -50,18 +50,36 @@ export class AuthService {
 
     const passwordHash = await bcrypt.hash(userDto.password, 10);
 
+    // --- IP extraction
+    const clientIp = this.getClientIp(req);
+
+    let countryCode: string | null = null;
+    let country: string | null = null;
+
+    try {
+      if (clientIp && clientIp !== '::1' && clientIp !== '127.0.0.1') {
+        const { data } = await axios.get<IpApiResponse>(
+          `http://ip-api.com/json/${clientIp}`,
+        );
+
+        countryCode = data.countryCode;
+        country = data.country;
+      }
+    } catch (err) {
+      console.error('IP geo lookup failed:', err);
+    }
+
     const user = this.usersRepository.create({
       username,
       email,
       passwordHash,
-    });
+      countryCode,
+      country,
+    } as DeepPartial<User>);
 
     await this.usersRepository.save(user);
 
-    const rating = this.userRatingRepository.create({
-      user,
-    });
-
+    const rating = this.userRatingRepository.create({ user });
     await this.userRatingRepository.save(rating);
   }
 
@@ -181,5 +199,15 @@ export class AuthService {
     await this.passwordResetTokenRepository.delete({
       uid: resetToken.uid,
     });
+  }
+
+  private getClientIp(req: Request): string {
+    const forwarded = req.headers['x-forwarded-for'];
+
+    if (typeof forwarded === 'string') {
+      return forwarded.split(',')[0].trim();
+    }
+
+    return req.socket?.remoteAddress || req.ip || '';
   }
 }
