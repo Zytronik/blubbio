@@ -1,7 +1,7 @@
 <template>
   <div class="leaderboard">
     <LeaderboardRow v-for="i in 10" :key="i" :rank="i"
-      :profilePicture="'https://blubbio-space.fra1.cdn.digitaloceanspaces.com/dev-pb/1736629053429-Screenshot%202024-05-30%20225224.png'"
+      :profilePicture="'https://9svghmex86z5bzh4.public.blob.vercel-storage.com/pb/1777928663326-208350.jpg'"
       :name="'Player ' + i" :duration="getRandomTimeString()" :bps="(Math.random() * 2).toFixed(2)" :isMe="i === 4" />
   </div>
 </template>

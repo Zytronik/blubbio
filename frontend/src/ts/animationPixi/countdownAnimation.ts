@@ -40,10 +40,10 @@ export function renderCountdown(duration: number, afterCountdown: () => void) {
     [go, one, two, three].forEach(text => {
         text.visible = false;
         text.anchor.set(0.5);
-        text.x = useContainerStore().getCountdownContainer().width / 2;
-        text.y = useContainerStore().getCountdownContainer().height / 2;
+        text.x = useContainerStore().getOverlayContainer().width / 2;
+        text.y = useContainerStore().getOverlayContainer().height / 2;
 
-        useContainerStore().getCountdownContainer().addChild(text);
+        useContainerStore().getOverlayContainer().addChild(text);
     });
     three.y = -(three.height / 2);
     const threeTravelDistance = three.height / 2 + usePixiStore().getCanvasHeight() / 2;
@@ -52,7 +52,7 @@ export function renderCountdown(duration: number, afterCountdown: () => void) {
         startMS: now,
         endMS: now + duration * segmentPercentages[0],
         onStart: function (): void {
-            useContainerStore().getCountdownContainer().visible = true;
+            useContainerStore().getOverlayContainer().visible = true;
             three.visible = true;
         },
         renderFrame: function (currentTime: number): void {
@@ -137,7 +137,7 @@ export function renderCountdown(duration: number, afterCountdown: () => void) {
         },
         onEnd: function (): void {
             [go, one, two, three].forEach(text => {
-                useContainerStore().getCountdownContainer().removeChild(text);
+                useContainerStore().getOverlayContainer().removeChild(text);
             });
         },
         onCancel: function (): void {

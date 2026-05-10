@@ -1,15 +1,15 @@
+import { useAnimationStore } from "@/stores/animationStore";
 import { useGameStore } from "@/stores/gameStore";
+import { backAnimiation } from "@/ts/animationPixi/backAnimiation";
 
 let isHoldingBack = false;
 let startedHoldingAt = Infinity;
 const holdDuration = 1000;
+
 export function holdBackToQuitGame(): void {
     if (isHoldingBack) {
-        //TODO show animation
         if (performance.now() - startedHoldingAt > holdDuration) {
             useGameStore().cancelGame()
-            console.log("triggered")
-            //TODO go back 
             isHoldingBack = false;
             startedHoldingAt = Infinity;
         }
@@ -17,15 +17,15 @@ export function holdBackToQuitGame(): void {
 }
 
 export function buttonBackDown(): void {
-    console.log("button down")
     isHoldingBack = true;
     startedHoldingAt = performance.now();
+    backAnimiation(holdDuration);
 }
 
 export function buttonBackUp(): void {
-    console.log("button up")
     isHoldingBack = false;
     startedHoldingAt = Infinity;
+    useAnimationStore().stopGlobalAnimation('backAnimiation');
 }
 
 /*

@@ -150,7 +150,7 @@ export default {
       if (authResponse.errorMsg) {
         errorMessage.value = authResponse.errorMsg;
       } else {
-        if (authResponse.success) {
+        if (!authResponse.success) {
           toLoginForm();
         } else {
           toRegisterForm();

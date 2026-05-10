@@ -48,7 +48,6 @@ export default {
         iconSrc: require(`@/assets/img/icons/score.png`),
         page: PAGE.scorePage,
         bigButton: false,
-        authIds: [1, 2, 3],
       }
     ]);
 

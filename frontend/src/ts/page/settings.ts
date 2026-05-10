@@ -22,13 +22,17 @@ export function saveSettings() {
   }
 
   if (userStore.isUser()) {
-    httpClient.post('users/settings/save', settings);
+    const userId = userStore.userSession.userId;
+    if (!userId) return;
+
+    httpClient.post(`/users/${userId}/settings`, settings);
   }
 }
 
 export async function loadSettings() {
   const soundStore = useSoundStore();
   const userStore = useUserStore();
+
   let settings: Settings | null = null;
 
   if (userStore.isGuest()) {
@@ -39,19 +43,34 @@ export async function loadSettings() {
   }
 
   if (userStore.isUser()) {
-    const response = await httpClient.get('users/settings/save');
-    settings = response.data;
-  }
+    const userId = userStore.userSession.userId;
+    if (!userId) return;
 
-  if (settings) {
-    soundStore.setMusicVolume(settings.audio.musicVolume);
-    soundStore.setSfxVolume(settings.audio.sfxVolume);
-
-    settings.inputs.forEach(inputSetting => {
-      const input = allInputs.find(input => input.name === inputSetting.name);
-      if (input && inputSetting.customKeyMap) {
-        input.customKeyMap = inputSetting.customKeyMap;
+    const response = await httpClient.get<string>(
+      `/users/${userId}/settings`,
+      {
+        responseType: 'text',
       }
-    });
+    );
+
+    settings = response.data
+      ? JSON.parse(response.data)
+      : null;
+
+    if (response.data && response.data !== '') {
+      settings = JSON.parse(response.data) as Settings;
+    }
   }
+
+  if (!settings) return;
+
+  soundStore.setMusicVolume(settings.audio.musicVolume);
+  soundStore.setSfxVolume(settings.audio.sfxVolume);
+
+  settings.inputs.forEach(inputSetting => {
+    const input = allInputs.find(i => i.name === inputSetting.name);
+    if (input) {
+      input.customKeyMap = inputSetting.customKeyMap;
+    }
+  });
 }

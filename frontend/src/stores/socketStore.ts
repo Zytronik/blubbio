@@ -7,17 +7,19 @@ import {
 } from 'socket.io-client';
 import { useUserStore } from '@/stores/userStore';
 import { usePageStore } from '@/stores/pageStore';
-import { isLocal, socketIoHost } from '@/ts/page/paths';
-import { UserSession } from '@/ts/_interface/userSession';
+import { isLocal, socketIoHost, socketIoPath } from '@/ts/page/paths';
+import { Session } from '@/ts/_interface/session';
 import { loadSettings } from '@/ts/page/settings';
 import { useLobbyStore } from './lobbyStore';
+import { UserConnectedResponseDto } from '@/ts/_dto/user-connected-response.dto';
+import { logUserOut } from '@/ts/network/auth';
 
 export const useSocketStore = defineStore('socket', {
   state: () => ({
     webSocket: null as Socket | null,
   }),
   actions: {
-    initSocket(): Promise<UserSession> {
+    initSocket(): Promise<Session> {
       return new Promise((resolve, reject) => {
         // Check if already initialized and disconnect if necessary
         if (this.webSocket) {
@@ -34,7 +36,7 @@ export const useSocketStore = defineStore('socket', {
 
         const ioOptions: Partial<ManagerOptions & SocketOptions> = {
           transports: ['websocket'],
-          path: '/blubbio-backend/socket.io',
+          path: socketIoPath,
           query: {
             token,
             isGuest,
@@ -80,14 +82,24 @@ export const useSocketStore = defineStore('socket', {
           reject(err); // Reject the Promise on connection error
         });
 
-        this.webSocket.on('userConnected', (userSession: UserSession) => {
-          userStore.setUser(userSession);
+        this.webSocket.on('unauthorized', () => {
+          console.error('Unauthorized access attempt');
+          logUserOut();
+        });
+
+        this.webSocket.on('userConnected', (dto: UserConnectedResponseDto) => {
+          const userSession = dto.session;
+          userStore.setUserSession(userSession);
+          if (userSession.userId) {
+            userStore.fetchUserProfile();
+            userStore.fetchUserRating();
+          }
           console.log('User connected:', userSession);
           resolve(userSession); // Resolve the Promise with UserSession
           loadSettings();
         });
 
-        this.webSocket.on('updateUser', (userSession: UserSession) => {
+        this.webSocket.on('updateUser', (userSession: Session) => {
           userStore.updateUserSession(userSession);
           console.log('User updated:', userSession);
         });

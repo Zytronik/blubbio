@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { Socket } from 'socket.io';
-import {
-  JoinLobbyPayload,
-  LeaveLobbyPayload,
-  Lobby,
-} from 'src/_interface/lobby';
+import { Server, Socket } from 'socket.io';
 import { SessionService } from 'src/session/session.service';
+import { Lobby } from './types/lobby.type';
+import { JoinLobbyRequestDto } from './dto/join-lobby-request.dto';
+import { LeaveLobbyRequestDto } from './dto/leave-lobby-request.dto';
+import { StartLobbyRequestDto } from './dto/start-lobby-request.dto';
+import { FailureResponseDto } from './dto/failure-response.dto';
+import { LobbyStartedResponseDto } from './dto/lobby-started-response.dto';
+import { LobbyCreatedResponseDto } from './dto/lobby-created-response.dto';
+import { LobbyJoinedResponseDto } from './dto/lobby-joined-response.dto';
+import { LobbyListResponseDto } from './dto/lobby-list-response-dto';
+import { LobbyUpdateResponseDto } from './dto/lobby-update-response-dto';
+import { LobbyUser } from './types/lobby-user.type';
 
 @Injectable()
 export class LobbyService {
@@ -14,120 +20,209 @@ export class LobbyService {
   private lobbies: Map<string, Lobby> = new Map();
   private clientRooms: Map<string, Set<string>> = new Map();
 
-  createLobby(client: Socket): Lobby {
+  createLobby(client: Socket, server: Server): void {
     if (this.isClientInLobby(client)) {
-      console.error('Client is already in a lobby');
+      const failureDto: FailureResponseDto = {
+        message: 'Already in lobby',
+      };
+      client.emit('lobbyCreateFailed', failureDto);
+      return;
     }
-    const lobbyId = this.generateLobbyId();
-    const { userId, username, isGuest } = this.getClientData(client);
-    const newLobby: Lobby = {
-      id: lobbyId,
-      name: 'Lobby ' + lobbyId,
-      lobbyStarted: false,
-      users: [
-        {
-          socketId: client.id,
-          username: username,
-          isHost: true,
-          isGuest: isGuest,
-          userId: parseInt(userId),
-        },
-      ],
+
+    const lobby = this.buildLobby(client);
+
+    this.lobbies.set(lobby.id, lobby);
+    this.addClientToRoom(client, lobby.id);
+    void client.join(lobby.id);
+
+    const responseDto: LobbyCreatedResponseDto = {
+      lobby,
     };
-
-    this.lobbies.set(lobbyId, newLobby);
-    this.addClientToRoom(client, lobbyId);
-    return newLobby;
+    client.emit('lobbyCreated', responseDto);
+    this.emitLobbyList(server);
   }
 
-  joinLobby(client: Socket, payload: JoinLobbyPayload): Lobby | null {
-    const lobby = this.lobbies.get(payload.lobbyId);
-    const { userId, username, isGuest } = this.getClientData(client);
-    if (lobby) {
-      lobby.users.push({
-        socketId: client.id,
-        username: username,
-        isHost: false,
-        isGuest: isGuest,
-        userId: parseInt(userId),
-      });
-      this.addClientToRoom(client, payload.lobbyId);
-      return lobby;
+  joinLobby(
+    client: Socket,
+    requestDto: JoinLobbyRequestDto,
+    server: Server,
+  ): void {
+    const lobby = this.lobbies.get(requestDto.lobbyId);
+
+    if (!lobby) {
+      const failureDto: FailureResponseDto = {
+        message: 'Lobby not found',
+      };
+      client.emit('lobbyJoinFailed', failureDto);
+      return;
     }
-    return null;
+
+    const user = this.buildLobbyUser(client, false);
+    lobby.users.push(user);
+
+    this.addClientToRoom(client, requestDto.lobbyId);
+    void client.join(requestDto.lobbyId);
+
+    const responseDto: LobbyJoinedResponseDto = {
+      lobby,
+    };
+    client.emit('lobbyJoined', responseDto);
+    this.emitLobbyUpdate(server, requestDto.lobbyId);
+    this.emitLobbyList(server);
   }
 
-  leaveLobby(client: Socket, payload: LeaveLobbyPayload): Lobby | null {
-    const lobby = this.lobbies.get(payload.lobbyId);
-    if (lobby) {
-      lobby.users = lobby.users.filter(user => user.socketId !== client.id);
-      this.removeClientFromRoom(client, payload.lobbyId);
+  leaveLobby(
+    client: Socket,
+    requestDto: LeaveLobbyRequestDto,
+    server: Server,
+  ): void {
+    const lobby = this.lobbies.get(requestDto.lobbyId);
+    if (!lobby) return;
 
-      if (lobby.users.length === 0) {
-        this.lobbies.delete(payload.lobbyId);
-        return null;
-      } else {
-        const owner = lobby.users.find(user => user.isHost);
-        if (!owner && lobby.users.length > 0) {
-          lobby.users[0].isHost = true;
-        }
-        return lobby;
-      }
+    lobby.users = lobby.users.filter((u) => u.clientId !== client.id);
+    this.removeClientFromRoom(client, requestDto.lobbyId);
+    void client.leave(requestDto.lobbyId);
+
+    if (lobby.users.length === 0) {
+      this.lobbies.delete(requestDto.lobbyId);
+    } else {
+      this.ensureHost(lobby);
+      this.emitLobbyUpdate(server, requestDto.lobbyId);
     }
-    return null;
+
+    this.emitLobbyList(server);
   }
 
-  fetchLobbies(): Lobby[] {
-    return Array.from(this.lobbies.values());
+  fetchLobbies(client: Socket): void {
+    const responseDto: LobbyListResponseDto = {
+      lobbies: Array.from(this.lobbies.values()),
+    };
+    client.emit('lobbyList', responseDto);
   }
 
-  getClientRooms(client: Socket): string[] {
-    return Array.from(this.clientRooms.get(client.id) || []);
-  }
+  startLobby(
+    client: Socket,
+    requestDto: StartLobbyRequestDto,
+    server: Server,
+  ): void {
+    const lobby = this.lobbies.get(requestDto.lobbyId);
+    if (!lobby) return;
 
-  isClientInLobby(client: Socket): boolean {
-    return (
-      this.clientRooms.has(client.id) &&
-      this.clientRooms.get(client.id).size > 0
+    const isHost = lobby.users.some(
+      (u) => u.clientId === client.id && u.isHost,
     );
+
+    if (!isHost) {
+      const failureDto: FailureResponseDto = {
+        message: 'Not host',
+      };
+      client.emit('lobbyStartFailed', failureDto);
+      return;
+    }
+
+    lobby.lobbyStarted = true;
+
+    const responseDto: LobbyStartedResponseDto = {
+      lobbyId: requestDto.lobbyId,
+    };
+    server.to(requestDto.lobbyId).emit('lobbyStarted', responseDto);
+
+    this.emitLobbyUpdate(server, requestDto.lobbyId);
   }
 
-  getLobbyById(lobbyId: string): Lobby | undefined {
-    return this.lobbies.get(lobbyId);
+  handleDisconnect(client: Socket, server: Server): void {
+    const rooms = this.getClientRooms(client);
+
+    rooms.forEach((roomId) => {
+      this.leaveLobby(client, { lobbyId: roomId }, server);
+    });
+  }
+
+  private isClientInLobby(client: Socket): boolean {
+    return (this.clientRooms.get(client.id)?.size ?? 0) > 0;
+  }
+
+  private buildLobby(client: Socket): Lobby {
+    return {
+      id: this.generateLobbyId(),
+      name: 'Lobby',
+      lobbyStarted: false,
+      users: [this.buildLobbyUser(client, true)],
+    };
   }
 
   private generateLobbyId(): string {
-    return Math.random().toString(36).substring(2, 15);
+    return Math.random().toString(36).substring(2, 10);
   }
 
-  private getClientData(client: Socket): {
-    userId: string;
-    username: string;
-    isGuest: boolean;
-  } {
-    const isGuest = client.handshake.query.isGuest === 'true';
-    if (isGuest) {
-      return {
-        userId: '0',
-        username: ('Guest-' + client.handshake.query.guestUsername) as string,
-        isGuest: true,
-      };
-    }
+  private buildLobbyUser(client: Socket, isHost: boolean): LobbyUser {
     const token = client.handshake.query.token as string;
-    const decodedToken = this.sessionService.decodeToken(token);
-    const userId = decodedToken.userId;
-    const username = decodedToken.username.toUpperCase();
-    return { userId, username, isGuest: false };
+    const isGuest = client.handshake.query.isGuest === 'true';
+    const guestUsername = client.handshake.query.guestUsername as string;
+    let username = `Guest-${guestUsername}`;
+    let userId: string | null = null;
+
+    if (!isGuest) {
+      const decoded = this.sessionService.decodeToken(token);
+      username = decoded.username.toUpperCase();
+      userId = decoded.userId;
+    }
+
+    return {
+      clientId: client.id,
+      username,
+      isHost,
+      isGuest,
+      userId,
+    };
   }
 
   private addClientToRoom(client: Socket, roomId: string): void {
     if (!this.clientRooms.has(client.id)) {
       this.clientRooms.set(client.id, new Set());
     }
-    this.clientRooms.get(client.id).add(roomId);
+    this.clientRooms.get(client.id)!.add(roomId);
   }
 
   private removeClientFromRoom(client: Socket, roomId: string): void {
     this.clientRooms.get(client.id)?.delete(roomId);
+  }
+
+  private emitLobbyList(server: Server): void {
+    const responseDto: LobbyListResponseDto = {
+      lobbies: Array.from(this.lobbies.values()),
+    };
+    server.emit('lobbyList', responseDto);
+  }
+
+  private emitLobbyUpdate(server: Server, lobbyId: string): void {
+    const lobby = this.lobbies.get(lobbyId);
+    if (!lobby) return;
+
+    const responseDto: LobbyUpdateResponseDto = {
+      lobby,
+    };
+    server.to(lobbyId).emit('lobbyUpdate', responseDto);
+  }
+
+  private ensureHost(lobby: Lobby): void {
+    const hasHost = lobby.users.some((u) => u.isHost);
+    if (!hasHost && lobby.users.length > 0) {
+      lobby.users[0].isHost = true;
+    }
+  }
+
+  private getClientRooms(client: Socket): string[] {
+    return Array.from(this.clientRooms.get(client.id) || []);
+  }
+
+  getUsernameByClientId(lobbyId: string, clientId: string): string | undefined {
+    const lobby = this.lobbies.get(lobbyId);
+
+    if (!lobby) {
+      return undefined;
+    }
+
+    return lobby.users.find((u) => u.clientId === clientId)?.username;
   }
 }

@@ -4,21 +4,21 @@ import { Container, Graphics } from 'pixi.js';
 
 export function getGlobalContainer(): AllContainers {
     const main = new Container();
-    const game = new Container({visible: false});
-    const countDown = new Container({visible: false});
+    const game = new Container({ visible: false });
+    const overlay = new Container({ visible: false });
 
     usePixiStore().getPixiApp().stage.addChild(main);
     main.addChild(game);
-    main.addChild(countDown);
+    main.addChild(overlay);
 
     drawMainContainerLayoutRect(main);
     drawGameContainerLayoutRect(game);
-    drawCountDownContainerLayoutRect(countDown);
+    drawOverlayContainerLayoutRect(overlay);
 
     return {
         mainContainer: main,
         gameContainer: game,
-        countDownContainer: countDown,
+        overlayContainer: overlay,
     };
 }
 
@@ -53,16 +53,16 @@ export function drawGameContainerLayoutRect(gameContainer: Container): void {
     gameContainer.addChildAt(background, 0);
 }
 
-function drawCountDownContainerLayoutRect(countDownContainer: Container): void {
-    countDownContainer.zIndex = 1;
+function drawOverlayContainerLayoutRect(overlayContainer: Container): void {
+    overlayContainer.zIndex = 1;
 
-    countDownContainer.x = 0;
-    countDownContainer.y = 0;
+    overlayContainer.x = 0;
+    overlayContainer.y = 0;
 
-    const parent = countDownContainer.parent;
+    const parent = overlayContainer.parent;
 
     const width = parent.width;
     const height = parent.height;
     const background = new Graphics().rect(0, 0, width, height).fill({ color: 0x000000, alpha: 0 });
-    countDownContainer.addChild(background);
+    overlayContainer.addChild(background);
 }

@@ -1,17 +1,20 @@
 import { defineStore } from 'pinia';
 import { useSocketStore } from '@/stores/socketStore';
-import {
-  FailedJoinLobbyResponse,
-  JoinLobbyPayload,
-  LeaveLobbyPayload,
-  Lobby,
-  LobbyListResponse,
-  StartLobbyPayload,
-} from '@/ts/_interface/lobby';
+import { Lobby } from '@/ts/_interface/lobby';
 import { transitionPageForwardsAnimation } from '@/ts/animationCSS/transitionPageForwards';
 import { PAGE } from '@/ts/_enum/page';
 import { transitionIntoGame } from '@/ts/animationCSS/transitionIntoGame';
 import { GAME_MODE } from '@/ts/_enum/gameMode';
+import { useToastStore } from './toastStore';
+import { LobbyUpdateResponseDto } from '@/ts/_dto/lobby-update-response-dto';
+import { LobbyCreatedResponseDto } from '@/ts/_dto/lobby-created-response.dto';
+import { LobbyJoinedResponseDto } from '@/ts/_dto/lobby-joined-response.dto';
+import { LobbyStartedResponseDto } from '@/ts/_dto/lobby-started-response.dto';
+import { LobbyListResponseDto } from '@/ts/_dto/lobby-list-response-dto';
+import { JoinLobbyRequestDto } from '@/ts/_dto/join-lobby-request.dto';
+import { LeaveLobbyRequestDto } from '@/ts/_dto/leave-lobby-request.dto';
+import { StartLobbyRequestDto } from '@/ts/_dto/start-lobby-request.dto';
+import { FailureResponseDto } from '@/ts/_dto/failure-response.dto';
 
 export const useLobbyStore = defineStore('lobby', {
   state: () => ({
@@ -22,6 +25,7 @@ export const useLobbyStore = defineStore('lobby', {
   actions: {
     initLobbyListeners(): void {
       const socketStore = useSocketStore();
+      const toastStore = useToastStore();
 
       if (!socketStore.webSocket) {
         console.error('WebSocket not initialized!');
@@ -30,43 +34,95 @@ export const useLobbyStore = defineStore('lobby', {
 
       const webSocket = socketStore.webSocket;
 
-      webSocket.on('lobbyList', (response: LobbyListResponse) => {
+      webSocket.on('lobbyList', (response: LobbyListResponseDto) => {
         this.lobbies = response.lobbies;
       });
 
-      webSocket.on('lobbyUpdate', (updatedLobby: Lobby) => {
-        let lobby = this.lobbies.find(l => l.id === updatedLobby.id);
-        if (lobby) {
-          lobby = updatedLobby;
-        }
-        if (this.currentLobby?.id === updatedLobby.id) {
-          this.currentLobby.users = updatedLobby.users;
-        }
-      });
+      webSocket.on(
+        'lobbyUpdate',
+        (response: LobbyUpdateResponseDto) => {
+          const updatedLobby = response.lobby;
 
-      webSocket.on('lobbyCreated', (lobby: Lobby) => {
-        this.currentLobby = lobby;
-        this.modifyUrlOnJoin(lobby.id);
-        transitionPageForwardsAnimation(PAGE.roomPage);
-      });
+          const index = this.lobbies.findIndex(
+            l => l.id === updatedLobby.id
+          );
 
-      webSocket.on('lobbyJoined', (lobby: Lobby) => {
-        this.currentLobby = lobby;
-        this.modifyUrlOnJoin(lobby.id);
-        transitionPageForwardsAnimation(PAGE.roomPage);
-      });
+          if (index !== -1) {
+            this.lobbies[index] = updatedLobby;
+          }
 
-      webSocket.on('lobbyJoinFailed', (response: FailedJoinLobbyResponse) => {
-        console.error(`Failed to join lobby ${response.lobbyId}`);
-        this.modifyUrlOnLeave();
-      });
+          if (this.currentLobby?.id === updatedLobby.id) {
+            this.currentLobby = updatedLobby;
+          }
+        },
+      );
 
-      webSocket.on('lobbyStarted', (payload: { lobbyId: string }) => {
-        if (this.currentLobby && this.currentLobby.id === payload.lobbyId) {
-          this.currentLobby.lobbyStarted = true;
-          transitionIntoGame(GAME_MODE.MULTI_PLAYER);
-        }
-      });
+      webSocket.on(
+        'lobbyCreated',
+        (response: LobbyCreatedResponseDto) => {
+          const lobby = response.lobby;
+
+          if (!lobby) {
+            toastStore.showMessage('Lobby created but not found', 'error');
+            return;
+          }
+
+          this.currentLobby = lobby;
+
+          this.modifyUrlOnJoin(lobby.id);
+          transitionPageForwardsAnimation(PAGE.roomPage);
+        },
+      );
+
+      webSocket.on(
+        'lobbyJoined',
+        (response: LobbyJoinedResponseDto) => {
+          this.currentLobby = response.lobby;
+
+          this.modifyUrlOnJoin(response.lobby.id);
+
+          transitionPageForwardsAnimation(PAGE.roomPage);
+        },
+      );
+
+      webSocket.on(
+        'lobbyCreateFailed',
+        (response: FailureResponseDto) => {
+          toastStore.showMessage(response.message, 'error');
+        },
+      );
+
+      webSocket.on(
+        'lobbyJoinFailed',
+        (response: FailureResponseDto) => {
+          toastStore.showMessage(response.message, 'error');
+
+          console.error('Failed to join lobby');
+
+          this.modifyUrlOnLeave();
+        },
+      );
+
+      webSocket.on(
+        'lobbyStartFailed',
+        (response: FailureResponseDto) => {
+          toastStore.showMessage(response.message, 'error');
+        },
+      );
+
+      webSocket.on(
+        'lobbyStarted',
+        (response: LobbyStartedResponseDto) => {
+          if (
+            this.currentLobby &&
+            this.currentLobby.id === response.lobbyId
+          ) {
+            this.currentLobby.lobbyStarted = true;
+
+            transitionIntoGame(GAME_MODE.MULTI_PLAYER);
+          }
+        },
+      );
     },
 
     createLobby(): void {
@@ -81,7 +137,7 @@ export const useLobbyStore = defineStore('lobby', {
     joinLobby(lobbyId: string): void {
       const socketStore = useSocketStore();
       if (socketStore.webSocket) {
-        const payload: JoinLobbyPayload = { lobbyId };
+        const payload: JoinLobbyRequestDto = { lobbyId };
         socketStore.webSocket.emit('joinLobby', payload);
       } else {
         console.error('WebSocket not initialized!');
@@ -91,7 +147,7 @@ export const useLobbyStore = defineStore('lobby', {
     leaveLobby(lobbyId: string): void {
       const socketStore = useSocketStore();
       if (socketStore.webSocket) {
-        const payload: LeaveLobbyPayload = { lobbyId };
+        const payload: LeaveLobbyRequestDto = { lobbyId };
         socketStore.webSocket.emit('leaveLobby', payload);
         this.currentLobby = null;
         this.modifyUrlOnLeave();
@@ -101,25 +157,6 @@ export const useLobbyStore = defineStore('lobby', {
     },
 
     fetchLobbies(): void {
-      /* const socketStore = useSocketStore();
-      if (!socketStore.webSocket) {
-        console.error('WebSocket not initialized!');
-        return Promise.reject('WebSocket not initialized!');
-      }
-
-      return new Promise(resolve => {
-        const webSocket = socketStore.webSocket;
-
-        const onLobbyList = (response: LobbyListResponse) => {
-          this.lobbies = response.lobbies;
-          webSocket?.off('lobbyList', onLobbyList);
-          resolve();
-        };
-
-        webSocket?.on('lobbyList', onLobbyList);
-        webSocket?.emit('fetchLobbies');
-      }); */ //this can be deleted if nothing brakes xD
-
       const socketStore = useSocketStore();
       if (socketStore.webSocket) {
         socketStore.webSocket.emit('fetchLobbies');
@@ -131,7 +168,7 @@ export const useLobbyStore = defineStore('lobby', {
     startLobby(): void {
       const socketStore = useSocketStore();
       if (socketStore.webSocket) {
-        const payload: StartLobbyPayload = { lobbyId: this.currentLobby?.id || '' };
+        const payload: StartLobbyRequestDto = { lobbyId: this.currentLobby?.id || '' };
         socketStore.webSocket.emit('startLobby', payload);
       } else {
         console.error('WebSocket not initialized!');
@@ -158,7 +195,15 @@ export const useLobbyStore = defineStore('lobby', {
       const socketStore = useSocketStore();
       const mySocketId = socketStore.webSocket?.id;
       const currentLobby = state.currentLobby;
-      return currentLobby?.users.some(user => user.socketId === mySocketId && user.isHost) || false;
+
+      const isHost =
+        currentLobby?.users.some(user => {
+          return (
+            user.clientId === mySocketId &&
+            user.isHost
+          );
+        }) || false;
+      return isHost;
     },
   },
 });

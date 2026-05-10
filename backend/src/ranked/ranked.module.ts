@@ -1,16 +1,11 @@
-import { Module, forwardRef } from '@nestjs/common';
-import { GlickoService } from './glicko.service';
-import { RanksService } from './ranks.service';
-import { UsersModule } from 'src/user/user.module';
+import { Module } from '@nestjs/common';
 import { RankedService } from './ranked.service';
-import { PrismaModule } from 'src/prisma/prisma.module';
-import { RankedController } from './ranked.controller';
-import { RdUpdateService } from './ranked.rd-update.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserRating } from 'src/ranked/entities/user-rating.entity';
 
 @Module({
-  imports: [forwardRef(() => UsersModule), PrismaModule],
-  providers: [GlickoService, RanksService, RankedService, RdUpdateService],
-  exports: [RanksService, GlickoService, RankedService],
-  controllers: [RankedController],
+  providers: [RankedService],
+  imports: [TypeOrmModule.forFeature([UserRating])],
+  exports: [RankedService],
 })
 export class RankedModule {}

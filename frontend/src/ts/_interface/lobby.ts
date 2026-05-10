@@ -6,30 +6,9 @@ export interface Lobby {
 }
 
 export interface LobbyUser {
-  socketId: string;
+  clientId: string;
   username: string;
   isHost: boolean;
   isGuest: boolean;
   userId: number;
-}
-
-// Payloads
-export interface JoinLobbyPayload {
-  lobbyId: string;
-}
-
-export interface LeaveLobbyPayload {
-  lobbyId: string;
-}
-
-export interface LobbyListResponse {
-  lobbies: Lobby[];
-}
-
-export interface FailedJoinLobbyResponse {
-  lobbyId: string;
-}
-
-export interface StartLobbyPayload {
-  lobbyId: string;
 }

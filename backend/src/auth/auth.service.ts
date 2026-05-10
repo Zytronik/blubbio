@@ -1,188 +1,151 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import * as crypto from 'crypto';
+import * as bcrypt from 'bcrypt';
+import { DeepPartial, Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../user/entities/user.entity';
+import { LoginResponseDto } from './dto/login-response.dto';
+import { JwtPayload } from './types/jwt-payload.type';
+import { RegisterRequestDto } from './dto/register-request.dto';
+import { LoginRequestDto } from './dto/login-request.dto';
+import { ForgotPwRequestDto } from './dto/forgot-pw-request.dto';
+import { createHash, randomBytes } from 'crypto';
+import { ForgotPwResponseDto } from './dto/forgot-pw-response.dto';
+import { ChangePasswordRequestDto } from './dto/change-password-request.dto';
+import { PasswordResetToken } from 'src/user/entities/pw-reset-token.entity';
+import { MailService } from 'src/mail/mail.service';
+import { UserRating } from 'src/ranked/entities/user-rating.entity';
+import axios from 'axios';
 import { Request } from 'express';
-import { LoginDto } from 'src/_dto/auth.login';
-import { RegisterDto } from 'src/_dto/auth.register';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { MailerService } from '@nestjs-modules/mailer';
-import { UserService } from 'src/user/user.service';
+import { IpApiResponse } from './dto/ip-api-response.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: PrismaService,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+    @InjectRepository(PasswordResetToken)
+    private passwordResetTokenRepository: Repository<PasswordResetToken>,
     private jwtService: JwtService,
-    private configService: ConfigService,
-    private userService: UserService,
-    private mailerService: MailerService,
+    private mailService: MailService,
+    @InjectRepository(UserRating)
+    private userRatingRepository: Repository<UserRating>,
   ) {}
 
-  async register(registerDto: RegisterDto, clientIp: string): Promise<any> {
-    return this.userService.createUser(registerDto, clientIp);
-  }
+  async register(userDto: RegisterRequestDto, req: Request): Promise<void> {
+    const username = userDto.username.toLowerCase();
+    const email = userDto.email.toLowerCase();
 
-  getClientIp(req: Request): string {
-    const forwarded = req.headers['x-forwarded-for'];
-    let ip;
-    if (typeof forwarded === 'string') {
-      ip = forwarded.split(',')[0].trim();
-    } else if (req.socket && req.socket.remoteAddress) {
-      // Fallback to the direct IP address of the request.
-      ip = req.socket.remoteAddress;
-    }
-    return ip;
-  }
-
-  async login(loginDto: LoginDto): Promise<any> {
-    const user = await this.userService.getUserByUsername(loginDto.username);
-
-    if (!user) {
-      throw new BadRequestException({
-        message: ['Invalid credentials'],
-        error: 'Bad Request',
-        statusCode: 400,
-      });
-    }
-
-    const isPasswordValid = await bcrypt.compare(
-      loginDto.password,
-      user.password,
-    );
-    if (!isPasswordValid) {
-      throw new BadRequestException({
-        message: ['Invalid credentials'],
-        error: 'Bad Request',
-        statusCode: 400,
-      });
-    }
-
-    const jti = crypto.randomBytes(16).toString('hex');
-
-    const payload = {
-      username: user.username,
-      userId: user.id,
-      jti: jti,
-    };
-    const secret = this.configService.get<string>('JWT_SECRET');
-    const expi = this.configService.get<string>('JWT_EXI');
-    return {
-      access_token: this.jwtService.sign(payload, {
-        secret,
-        expiresIn: expi,
-      }),
-    };
-  }
-
-  async logout(token: string, userId: number): Promise<void> {
-    const decodedToken = this.jwtService.decode(token) as any;
-
-    if (!decodedToken || !decodedToken.jti) {
-      throw new BadRequestException({
-        message: ['Invalid Logout Token'],
-        error: 'Bad Request',
-        statusCode: 400,
-      });
-    }
-
-    const expiresAt = decodedToken.exp
-      ? new Date(decodedToken.exp * 1000)
-      : new Date();
-    if (isNaN(expiresAt.getTime())) {
-      throw new BadRequestException({
-        message: ['Invalid expiration date'],
-        error: 'Bad Request',
-        statusCode: 400,
-      });
-    }
-
-    // Check if the tokenJTI is already in the blacklist
-    const existingToken = await this.prisma.tokenBlacklist.findUnique({
-      where: { tokenJTI: decodedToken.jti },
+    const existing = await this.usersRepository.findOne({
+      where: [{ email }, { username }],
     });
 
-    if (!existingToken) {
-      // If not, blacklist the token
-      await this.prisma.tokenBlacklist.create({
-        data: {
-          token: token, // The actual token string
-          tokenJTI: decodedToken.jti, // The unique identifier of the token
-          expiresAt: expiresAt, // Token expiry date
-          userId: userId,
-        },
-      });
-    } else {
-      throw new BadRequestException({
-        message: ['User already logged out'],
-        error: 'Bad Request',
-        statusCode: 400,
-      });
-    }
-  }
-
-  async forgotPassword(email: string): Promise<void> {
-    const user = await this.userService.findByEmail(email);
-    if (!user) {
-      throw new BadRequestException({
-        message: ['Email does not exist'],
-        error: 'Bad Request',
-        statusCode: 400,
-      });
+    if (existing) {
+      throw new UnauthorizedException('Email or username already exists');
     }
 
-    const resetToken = this.generateResetToken();
+    const passwordHash = await bcrypt.hash(userDto.password, 10);
 
-    await this.saveResetToken(user.id, resetToken);
+    // --- IP extraction
+    const clientIp = this.getClientIp(req);
+
+    let countryCode: string | null = null;
+    let country: string | null = null;
 
     try {
-      await this.sendResetEmail(email, resetToken);
-    } catch (error) {
-      console.error('Error sending reset email:', error);
+      if (clientIp && clientIp !== '::1' && clientIp !== '127.0.0.1') {
+        const { data } = await axios.get<IpApiResponse>(
+          `http://ip-api.com/json/${clientIp}`,
+        );
 
-      throw new BadRequestException({
-        message: [
-          'Unable to send reset email at this time. Please try again later.',
-        ],
-        error: 'Service Unavailable',
-        statusCode: 503,
-      });
+        countryCode = data.countryCode;
+        country = data.country;
+      }
+    } catch (err) {
+      console.error('IP geo lookup failed:', err);
     }
+
+    const user = this.usersRepository.create({
+      username,
+      email,
+      passwordHash,
+      countryCode,
+      country,
+    } as DeepPartial<User>);
+
+    await this.usersRepository.save(user);
+
+    const rating = this.userRatingRepository.create({ user });
+    await this.userRatingRepository.save(rating);
   }
 
-  async sendResetEmail(email: string, token: string): Promise<void> {
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
-    await this.mailerService.sendMail({
-      to: email,
-      subject: 'blubb.io | Password Reset',
-      template: 'password-reset',
-      context: {
-        resetLink,
-      },
+  async login(loginDto: LoginRequestDto): Promise<LoginResponseDto> {
+    const username = loginDto.username.toLowerCase();
+
+    const user = await this.usersRepository.findOne({
+      where: { username },
     });
+
+    if (
+      !user ||
+      !(await bcrypt.compare(loginDto.password, user.passwordHash))
+    ) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const payload: JwtPayload = {
+      sub: user.uid,
+      username: user.username,
+      userId: user.uid,
+    };
+
+    const accessToken = this.jwtService.sign(payload);
+
+    return { accessToken };
   }
 
-  private generateResetToken(): string {
-    return crypto.randomBytes(20).toString('hex');
-  }
-
-  private async saveResetToken(userId: number, token: string): Promise<void> {
-    const expirationTime = new Date();
-    expirationTime.setHours(expirationTime.getHours() + 1); // Token expires in 1 hour
-
-    await this.prisma.passwordResetToken.create({
-      data: {
-        userId: userId,
-        token: token,
-        expiresAt: expirationTime,
-      },
+  async forgotPassword(dto: ForgotPwRequestDto): Promise<ForgotPwResponseDto> {
+    const user = await this.usersRepository.findOne({
+      where: { email: dto.email },
     });
+
+    const genericMessage = 'If the email exists, a reset link has been sent.';
+
+    if (!user) {
+      return { message: genericMessage };
+    }
+
+    const rawToken = randomBytes(32).toString('hex');
+    const tokenHash = createHash('sha256').update(rawToken).digest('hex');
+
+    const expiresAt = new Date();
+    expiresAt.setHours(expiresAt.getHours() + 1);
+
+    const resetToken = this.passwordResetTokenRepository.create({
+      token: tokenHash,
+      user,
+      expiresAt,
+    });
+
+    await this.passwordResetTokenRepository.save(resetToken);
+
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${rawToken}`;
+
+    await this.mailService.sendPasswordResetEmail(user.email, resetLink);
+
+    return { message: genericMessage };
   }
 
-  async verifyToken(token: string): Promise<any> {
-    const resetToken = await this.prisma.passwordResetToken.findUnique({
-      where: { token },
+  async verifyResetToken(token: string): Promise<void> {
+    const tokenHash = createHash('sha256').update(token).digest('hex');
+
+    const resetToken = await this.passwordResetTokenRepository.findOne({
+      where: { token: tokenHash },
+      relations: ['user'],
     });
 
     if (!resetToken) {
@@ -194,6 +157,7 @@ export class AuthService {
     }
 
     const now = new Date();
+
     if (resetToken.expiresAt < now) {
       throw new BadRequestException({
         message: ['Token has expired'],
@@ -201,41 +165,49 @@ export class AuthService {
         statusCode: 400,
       });
     }
-
-    return { message: 'Token is valid', userId: resetToken.userId };
   }
 
-  async changePassword(token: string, newPassword: string): Promise<void> {
-    const passwordResetEntry = await this.prisma.passwordResetToken.findUnique({
-      where: { token },
+  async changePassword(dto: ChangePasswordRequestDto): Promise<void> {
+    const tokenHash = createHash('sha256').update(dto.token).digest('hex');
+
+    const resetToken = await this.passwordResetTokenRepository.findOne({
+      where: { token: tokenHash },
+      relations: ['user'],
     });
 
-    if (!passwordResetEntry) {
-      throw new BadRequestException({
-        message: ['Invalid or expired token'],
-        error: 'Bad Request',
-        statusCode: 400,
-      });
+    if (!resetToken) {
+      throw new BadRequestException(['Invalid Token']);
     }
 
     const now = new Date();
-    if (passwordResetEntry.expiresAt < now) {
-      throw new BadRequestException({
-        message: ['Token has expired'],
-        error: 'Bad Request',
-        statusCode: 400,
-      });
+
+    if (resetToken.expiresAt < now) {
+      throw new BadRequestException(['Token has expired']);
     }
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const user = resetToken.user;
 
-    await this.prisma.user.update({
-      where: { id: passwordResetEntry.userId },
-      data: { password: hashedPassword },
-    });
+    if (!user) {
+      throw new BadRequestException(['Invalid Token']);
+    }
 
-    await this.prisma.passwordResetToken.delete({
-      where: { token },
+    const passwordHash = await bcrypt.hash(dto.password, 10);
+
+    user.passwordHash = passwordHash;
+    await this.usersRepository.save(user);
+
+    await this.passwordResetTokenRepository.delete({
+      uid: resetToken.uid,
     });
+  }
+
+  private getClientIp(req: Request): string {
+    const forwarded = req.headers['x-forwarded-for'];
+
+    if (typeof forwarded === 'string') {
+      return forwarded.split(',')[0].trim();
+    }
+
+    return req.socket?.remoteAddress || req.ip || '';
   }
 }
