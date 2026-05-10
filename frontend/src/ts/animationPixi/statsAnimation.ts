@@ -84,6 +84,8 @@ export function statsAnimation(instance: GameInstance): void {
         },
 
         renderFrame: function (): void {
+            timerText.text = instance.stats.gameDuration;
+            bpsText.text = instance.stats.bubblesPerSecond;
             // console.log('render frame');
         },
         onEnd: function (): void {

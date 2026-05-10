@@ -69,7 +69,7 @@ export const useGameStore = defineStore('game', () => {
         useInputStore().setInputContext(INPUT_CONTEXT.DISABLED);
         game.instancesMap.clear();
         useContainerStore().cleanUpGameContainer();
-        //TODO has to respect game mode at some point
+        //TODO has to consider game mode at some point
         setupSprint();
         startGame();
     }

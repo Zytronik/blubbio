@@ -135,7 +135,7 @@ export const resetInput: Input = {
 };
 
 export const backInput: Input = {
-    name: 'Leave Game',
+    name: 'Back',
     description: 'Go back one menu',
     customKeyMap: ['Escape', '', ''],
     defaultKeyCode: 'Escape',
