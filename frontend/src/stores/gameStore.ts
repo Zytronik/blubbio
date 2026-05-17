@@ -80,7 +80,11 @@ export const useGameStore = defineStore('game', () => {
         startGame();
     }
     function showResultScreen(): void {
+        game.instancesMap.forEach((instance, playerName) => {
+            useAnimationStore().stopInstanceAnimations(instance);
+        })
         transitionOutOfGame(game.gameMode);
+        useInputStore().setInputContext(INPUT_CONTEXT.MENU);
     }
 
 
