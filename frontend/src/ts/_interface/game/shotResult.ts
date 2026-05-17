@@ -15,4 +15,5 @@ export interface ShotResult {
     hasDied: boolean,
     hasPerfectCleared: boolean,
     refillAmount: number,
+    hasPassedClearCondition: boolean,
 }

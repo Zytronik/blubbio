@@ -5,9 +5,9 @@ import { GARBAGE_MESSINESS, GARBAGE_STATS } from '@/ts/_enum/garbageMessiness';
 import { rngReference } from '@/ts/_interface/game/rngReference';
 import { GarbageInformation } from '@/ts/_interface/game/garbageInformation';
 import { allBubbles } from './bubbleTypes';
-import { renderGarbagePreview } from '@/ts/animationPixi/garbagePreviewAnimation';
 import { RowInformation } from '@/ts/_interface/game/rowInformation';
 import { Field } from '@/ts/_interface/game/field';
+import { useAnimationStore } from '@/stores/animationStore';
 
 export function prefillBoard(instance: GameInstance): void {
     const totalHeight = instance.gameSettings.gridHeight + instance.gameSettings.gridExtraHeight - 1;
@@ -48,7 +48,7 @@ export function prepareGarbage(instance: GameInstance, messiness: GARBAGE_MESSIN
             pairLocations: garbageResult.pairLocations,
         };
     }
-    renderGarbagePreview(instance);
+    useAnimationStore().garbagePreview(instance);
 }
 
 export function pushOneGarbageRow(instance: GameInstance): void {

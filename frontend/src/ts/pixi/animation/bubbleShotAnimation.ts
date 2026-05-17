@@ -1,10 +1,9 @@
-import { useAnimationStore } from '@/stores/animationStore';
-import { Field } from '../_interface/game/field';
-import { GameInstance } from '../_interface/game/gameInstance';
-import { Row } from '../_interface/game/row';
-import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
+import { Field } from '../../_interface/game/field';
+import { GameInstance } from '../../_interface/game/gameInstance';
+import { Row } from '../../_interface/game/row';
+import { PixiAnimation } from '../../_interface/pixi/pixiAnimation';
 
-export function renderBubbleShot(instance: GameInstance): void {
+export function getBubbleShotAnimation(instance: GameInstance): PixiAnimation {
     const now = performance.now();
     const travelTime = instance.handlingSettings.bubbleTravelDurationMS;
     const animation: PixiAnimation = {
@@ -31,5 +30,5 @@ export function renderBubbleShot(instance: GameInstance): void {
             // console.log('cancel');
         },
     };
-    useAnimationStore().playInstanceAnimation(animation, instance);
+    return animation;
 }

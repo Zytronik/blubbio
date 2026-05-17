@@ -9,14 +9,8 @@ import { nextBubble } from '../bubble/queue';
 import { XORRandom } from '../rng';
 import { getEmptyGarbagePreview } from './garbageSetup';
 import { prefillBoard } from '../bubble/garbage';
-import { PixiAnimation } from '@/ts/_interface/pixi/pixiAnimation';
 import { getGameSubContainers } from '@/ts/pixi/assetFactory/gameContainersBuilder';
-import { renderQueueBubbles } from '@/ts/animationPixi/queueBubblesAnimation';
-import { renderHoldBubble } from '@/ts/animationPixi/holdBubbleAnimation';
-import { renderBoard } from '@/ts/animationPixi/boardAnimation';
-import { renderArrowUpdate } from '@/ts/animationPixi/arrowAnimation';
-import { addUsernameAnimation } from '@/ts/animationPixi/addUsernameAnimation';
-import { statsAnimation } from '@/ts/animationPixi/statsAnimation';
+import { useAnimationStore } from '@/stores/animationStore';
 
 export function newSprintInstance(playerName: string): GameInstance {
     const startBubbleSeed = { value: Date.now() };
@@ -38,28 +32,20 @@ export function newSprintInstance(playerName: string): GameInstance {
         bubbleQueue: [],
         playGrid: getEmptyGrid(SPRINT_SETTINGS),
         garbagePreview: getEmptyGarbagePreview(SPRINT_SETTINGS),
-        stats: getEmptyStats(),
+        stats: getEmptyStats(SPRINT_SETTINGS),
         left: false,
         right: false,
         aps: HANDLING_SETTINGS.defaultAPS,
+        backPressed: false,
+        backPressedAt: Infinity,
         gameSprites: sprites,
         gameSubContainers: getGameSubContainers(),
-        instanceAnimations: new Map<string, PixiAnimation>(),
+        ongoingAnimations: new Set<string>(),
     };
     XORRandom(0, 0, instance.bubbleSeed);
     XORRandom(0, 0, instance.garbageSeed);
     nextBubble(instance);
     prefillBoard(instance);
-    startGameplayAnimations(instance);
-
+    useAnimationStore().displayInstance(instance);
     return instance;
-}
-
-function startGameplayAnimations(instance: GameInstance): void {
-    renderQueueBubbles(instance);
-    renderHoldBubble(instance);
-    renderBoard(instance);
-    renderArrowUpdate(instance);
-    addUsernameAnimation(instance);
-    statsAnimation(instance);
 }

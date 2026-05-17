@@ -1,10 +1,10 @@
 import { useAnimationStore } from '@/stores/animationStore';
-import { GameInstance } from '../_interface/game/gameInstance';
-import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
-import { allBubbles } from '../gameLogic/bubble/bubbleTypes';
-import { pushOneGarbageRow } from '../gameLogic/bubble/garbage';
+import { GameInstance } from '../../_interface/game/gameInstance';
+import { PixiAnimation } from '../../_interface/pixi/pixiAnimation';
+import { allBubbles } from '../../gameLogic/bubble/bubbleTypes';
+import { pushOneGarbageRow } from '../../gameLogic/bubble/garbage';
 
-export function renderGarbagePreview(instance: GameInstance): void {
+export function getGarbagePreviewAnimation(instance: GameInstance): PixiAnimation {
     const preview = instance.garbagePreview;
     if (!preview.isPreviewRunning) {
         preview.isPreviewRunning = true;
@@ -24,7 +24,7 @@ export function renderGarbagePreview(instance: GameInstance): void {
         const delayPerBubble = fadeInDuration / garbageRow.length;
 
         const animation: PixiAnimation = {
-            name: 'garbagePreview',
+            name: instance.playerName + '-garbagePreview',
             startMS: now,
             endMS: now + totalDuration,
             onStart: function (): void {
@@ -62,13 +62,34 @@ export function renderGarbagePreview(instance: GameInstance): void {
                     sprite.visible = false;
                 });
                 if (preview.generatedGarbage.length > 0) {
-                    renderGarbagePreview(instance);
+                    useAnimationStore().garbagePreview(instance);
                 }
             },
             onCancel: function (): void {
-                // console.log('cancel');
+                instance.gameSprites.garbageBubbles.forEach(sprite => {
+                    sprite.destroy();
+                });
             },
         };
-        useAnimationStore().playInstanceAnimation(animation, instance);
+
+        return animation;
+    }
+    
+    return {
+        name: '',
+        startMS: 0,
+        endMS: 0,
+        onStart: function (): void {
+            // nothing
+        },
+        renderFrame: function (currentTime: number): void {
+            // nothing
+        },
+        onEnd: function (): void {
+            // nothing
+        },
+        onCancel: function (): void {
+            // nothing
+        }
     }
 }

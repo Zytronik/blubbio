@@ -5,7 +5,7 @@ import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { usePageStore } from '@/stores/pageStore';
 import { useSocketStore } from '@/stores/socketStore';
 import { Session } from '../_interface/session';
-import { transitionPageBackwardsAnimation } from '../animationCSS/transitionPageBackwards';
+import { transitionPageBackwardsAnimation } from '../cssAnimation/transitionPageBackwards';
 import { PAGE } from '../_enum/page';
 import { LoginResponseDto } from '../_dto/login-response.dto';
 import { useUserStore } from '@/stores/userStore';

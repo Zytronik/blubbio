@@ -1,6 +1,6 @@
 import { PAGE } from '@/ts/_enum/page';
-import { closeCommunityOverlay } from '@/ts/animationCSS/closeCommunityOverlay';
-import { openCommunityOverlay } from '@/ts/animationCSS/openCommunityOverlay';
+import { closeCommunityOverlay } from '@/ts/cssAnimation/closeCommunityOverlay';
+import { openCommunityOverlay } from '@/ts/cssAnimation/openCommunityOverlay';
 import { defineStore } from 'pinia';
 
 export const usePageStore = defineStore('page', {

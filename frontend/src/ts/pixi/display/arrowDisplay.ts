@@ -1,8 +1,7 @@
-import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
-import { GameInstance } from '../_interface/game/gameInstance';
-import { useAnimationStore } from '@/stores/animationStore';
+import { PixiAnimation } from '../../_interface/pixi/pixiAnimation';
+import { GameInstance } from '../../_interface/game/gameInstance';
 
-export function renderArrowUpdate(instance: GameInstance): void {
+export function getArrowDisplay(instance: GameInstance): PixiAnimation {
     const arrowContainer = instance.gameSubContainers.arrowContainer;
     const arrowSprite = instance.gameSprites.arrow;
     const currentBubble = instance.gameSprites.currentBubble;
@@ -17,8 +16,8 @@ export function renderArrowUpdate(instance: GameInstance): void {
     const bubbleWidth = (bubbleFullRadius / precisionWidth) * gridBackground.width * 2;
     const bubbleHeight = bubbleWidth;
 
-    const animation: PixiAnimation = {
-        name: 'arrow',
+    const display: PixiAnimation = {
+        name: instance.playerName + '-arrow',
         startMS: 0,
         endMS: Infinity,
         onStart: function (): void {
@@ -48,9 +47,9 @@ export function renderArrowUpdate(instance: GameInstance): void {
             // console.log('end');
         },
         onCancel: function (): void {
-            // console.log('cancel');
+            instance.gameSprites.arrow.destroy();
+            instance.gameSprites.currentBubble.destroy();
         },
     };
-
-    useAnimationStore().playInstanceAnimation(animation, instance);
+    return display;
 }

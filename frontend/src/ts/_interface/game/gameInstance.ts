@@ -30,7 +30,11 @@ export interface GameInstance {
     right: boolean;
     aps: number;
 
+    backPressed: boolean;
+    backPressedAt: number;
+
     gameSprites: GameSprites;
     gameSubContainers: GameSubContainers;
-    instanceAnimations: Map<string, PixiAnimation>;
+
+    ongoingAnimations: Set<string>;
 }

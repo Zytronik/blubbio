@@ -1,27 +1,26 @@
+import { Game } from "../_interface/game/game";
 import { angleUpdate } from "./actions/aiming";
-import { holdBackToQuitGame } from "./actions/back";
 import { timeStatsUpdate } from "./timeStats";
 
 let gameLoopRunning = false;
-export function startGameLogicLoop(): void {
+export function startGameLogicLoop(game: Game): void {
     if (!gameLoopRunning) {
-        gameLoop();
+        gameLoop(game);
         gameLoopRunning = true;
     }
 }
 
 let lastTick = 0;
-function gameLoop(): void {
+function gameLoop(game: Game): void {
     const now = performance.now()
     if (lastTick === 0) {
         lastTick = now;
     } 
     const deltaTimeMS = now - lastTick;
 
-    angleUpdate(deltaTimeMS);
-    holdBackToQuitGame();
-    timeStatsUpdate(now);
+    angleUpdate(game, deltaTimeMS);
+    timeStatsUpdate(game, now);
 
-    requestAnimationFrame(() => gameLoop());
+    requestAnimationFrame(() => gameLoop(game));
     lastTick = performance.now()
 }

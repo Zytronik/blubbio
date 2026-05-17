@@ -1,8 +1,7 @@
-import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
-import { GameInstance } from '../_interface/game/gameInstance';
-import { useAnimationStore } from '@/stores/animationStore';
+import { PixiAnimation } from '../../_interface/pixi/pixiAnimation';
+import { GameInstance } from '../../_interface/game/gameInstance';
 
-export function renderHoldBubble(instance: GameInstance): void {
+export function getHeldBubbleDisplay(instance: GameInstance): PixiAnimation {
     const holdSprite = instance.gameSprites.holdBubble;
     const precisionWidth = instance.playGrid.precisionWidth;
     const holdContainer = instance.gameSubContainers.holdContainer;
@@ -11,8 +10,8 @@ export function renderHoldBubble(instance: GameInstance): void {
     const spriteWidth = (bubbleFullRadius / precisionWidth) * gridBackground.width * 2;
     const spriteHeight = spriteWidth;
 
-    const animation: PixiAnimation = {
-        name: 'holdBubble',
+    const display: PixiAnimation = {
+        name: instance.playerName + '-holdBubble',
         startMS: 0,
         endMS: Infinity,
         onStart: function (): void {
@@ -34,8 +33,8 @@ export function renderHoldBubble(instance: GameInstance): void {
             // console.log('end');
         },
         onCancel: function (): void {
-            // console.log('cancel');
+            instance.gameSprites.holdBubble.destroy();
         },
     };
-    useAnimationStore().playInstanceAnimation(animation, instance);
+    return display;
 }

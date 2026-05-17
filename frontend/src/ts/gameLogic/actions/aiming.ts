@@ -1,9 +1,9 @@
-import { useGameStore } from "@/stores/gameStore";
 import { Coordinates } from "../../_interface/game/coordinates";
 import { GameInstance } from "../../_interface/game/gameInstance";
+import { Game } from "@/ts/_interface/game/game";
 
-export function angleUpdate(deltaTimeMS: number): void {
-    useGameStore().getAllInstances().forEach(gameInstance => {
+export function angleUpdate(game: Game, deltaTimeMS: number): void {
+    game.instancesMap.forEach((gameInstance, playername) => {
         const previousAngle = gameInstance.angle;
         const angleChange = gameInstance.aps * deltaTimeMS / 1000;
         if (gameInstance.left && !gameInstance.right) {

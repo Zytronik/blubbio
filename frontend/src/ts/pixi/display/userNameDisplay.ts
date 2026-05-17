@@ -1,10 +1,9 @@
-import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
-import { GameInstance } from '../_interface/game/gameInstance';
-import { useAnimationStore } from '@/stores/animationStore';
+import { PixiAnimation } from '../../_interface/pixi/pixiAnimation';
+import { GameInstance } from '../../_interface/game/gameInstance';
 import { Text } from 'pixi.js';
-import { defaultFont } from '../pixi/data/allFonts';
+import { defaultFont } from '../data/allFonts';
 
-export function addUsernameAnimation(instance: GameInstance): void {
+export function getUsernameDisplay(instance: GameInstance): PixiAnimation {
     const nameContainer = instance.gameSubContainers.nameContainer;
     const nameText = new Text({
         text: instance.playerName,
@@ -15,8 +14,8 @@ export function addUsernameAnimation(instance: GameInstance): void {
         },
     });
 
-    const animation: PixiAnimation = {
-        name: 'addUsername',
+    const display: PixiAnimation = {
+        name: instance.playerName + '-username',
         startMS: 0,
         endMS: Infinity,
         onStart: function (): void {
@@ -31,8 +30,8 @@ export function addUsernameAnimation(instance: GameInstance): void {
             // console.log('end');
         },
         onCancel: function (): void {
-            // console.log('cancel');
+            nameText.destroy();
         },
     };
-    useAnimationStore().playInstanceAnimation(animation, instance);
+    return display
 }

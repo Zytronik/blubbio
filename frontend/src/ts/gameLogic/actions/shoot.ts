@@ -29,6 +29,7 @@ export function shootBubble(instance: GameInstance): ShotResult {
     const hasDied: boolean = checkHasDied();
     const hasPerfectCleared = checkHasPerfectCleared();
     const refillAmount = checkRefillAmount();
+    const hasPassedClearCondition = applyBubbleStats();
 
     return {
         bubbleShot: instance.currentBubble,
@@ -42,6 +43,7 @@ export function shootBubble(instance: GameInstance): ShotResult {
         hasDied,
         hasPerfectCleared,
         refillAmount: refillAmount,
+        hasPassedClearCondition,
     };
 
     function getAllBubbleCoordinatesInGrid(grid: Grid): Coordinates[] {
@@ -295,6 +297,13 @@ export function shootBubble(instance: GameInstance): ShotResult {
             }
         }
         return 0;
+    }
+
+    function applyBubbleStats(): boolean {
+        console.log(instance.stats.bubbleClearToWin, instance.stats.bubblesCleared)
+        instance.stats.bubblesShot++;
+        instance.stats.bubblesCleared += clearedBubbleFields.length;
+        return instance.stats.bubbleClearToWin <= instance.stats.bubblesCleared;
     }
 }
 

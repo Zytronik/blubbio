@@ -1,10 +1,10 @@
-import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
-import { GameInstance } from '../_interface/game/gameInstance';
+import { PixiAnimation } from '../../_interface/pixi/pixiAnimation';
+import { GameInstance } from '../../_interface/game/gameInstance';
 import { useAnimationStore } from '@/stores/animationStore';
 import { Text } from 'pixi.js';
-import { defaultFont } from '../pixi/data/allFonts';
+import { defaultFont } from '../data/allFonts';
 
-export function statsAnimation(instance: GameInstance): void {
+export function getStatsDisplay(instance: GameInstance): PixiAnimation {
     const statsContainer = instance.gameSubContainers.statsContainer;
     const timerLabel = new Text({
         text: "TIME",
@@ -58,6 +58,7 @@ export function statsAnimation(instance: GameInstance): void {
 
     const statOffset = 15;
     const labelOffset = 2;
+    const graphics = [timerLabel, timerText, bpsLabel, bpsText, apmLabel, apmText];
 
     function placeStat(label: Text, value: Text, bottomY: number, containerWidth: number) {
         value.y = bottomY - value.height;
@@ -69,8 +70,8 @@ export function statsAnimation(instance: GameInstance): void {
         return label.y; // gibt die neue obere Grenze zurück
     }
 
-    const animation: PixiAnimation = {
-        name: 'statsAnimation',
+    const display: PixiAnimation = {
+        name: instance.playerName + '-stats',
         startMS: 0,
         endMS: Infinity,
         onStart: function (): void {
@@ -92,8 +93,10 @@ export function statsAnimation(instance: GameInstance): void {
             // console.log('end');
         },
         onCancel: function (): void {
-            // console.log('cancel');
+            graphics.forEach(text => {
+                text.destroy();
+            })
         },
     };
-    useAnimationStore().playInstanceAnimation(animation, instance);
+    return display
 }

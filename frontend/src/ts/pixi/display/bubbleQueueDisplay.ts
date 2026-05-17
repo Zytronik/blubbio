@@ -1,8 +1,7 @@
-import { PixiAnimation } from '../_interface/pixi/pixiAnimation';
-import { GameInstance } from '../_interface/game/gameInstance';
-import { useAnimationStore } from '@/stores/animationStore';
+import { PixiAnimation } from '../../_interface/pixi/pixiAnimation';
+import { GameInstance } from '../../_interface/game/gameInstance';
 
-export function renderQueueBubbles(instance: GameInstance): void {
+export function getBubbleQueueDisplay(instance: GameInstance): PixiAnimation {
     const queueSprites = instance.gameSprites.bubbleQueue;
     const precisionWidth = instance.playGrid.precisionWidth;
     const queueContainer = instance.gameSubContainers.queueContainer;
@@ -11,8 +10,8 @@ export function renderQueueBubbles(instance: GameInstance): void {
     const spriteWidth = (bubbleFullRadius / precisionWidth) * gridBackground.width * 2;
     const spriteHeight = spriteWidth;
 
-    const animation: PixiAnimation = {
-        name: 'queueAnimation',
+    const display: PixiAnimation = {
+        name: instance.playerName + '-queueAnimation',
         startMS: 0,
         endMS: Infinity,
         onStart: function (): void {
@@ -40,9 +39,11 @@ export function renderQueueBubbles(instance: GameInstance): void {
             // console.log('end');
         },
         onCancel: function (): void {
-            // console.log('cancel');
+            instance.gameSprites.bubbleQueue.forEach(sprite => {
+                sprite.destroy();
+            });
         },
     };
-    
-    useAnimationStore().playInstanceAnimation(animation, instance);
+
+    return display;
 }

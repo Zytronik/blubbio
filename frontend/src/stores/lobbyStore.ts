@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
 import { useSocketStore } from '@/stores/socketStore';
 import { Lobby } from '@/ts/_interface/lobby';
-import { transitionPageForwardsAnimation } from '@/ts/animationCSS/transitionPageForwards';
+import { transitionPageForwardsAnimation } from '@/ts/cssAnimation/transitionPageForwards';
 import { PAGE } from '@/ts/_enum/page';
-import { transitionIntoGame } from '@/ts/animationCSS/transitionIntoGame';
+import { transitionIntoGame } from '@/ts/cssAnimation/transitionIntoGame';
 import { GAME_MODE } from '@/ts/_enum/gameMode';
 import { useToastStore } from './toastStore';
 import { LobbyUpdateResponseDto } from '@/ts/_dto/lobby-update-response-dto';

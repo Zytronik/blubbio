@@ -14,7 +14,7 @@
 <script lang="ts">
 import { useSoundStore } from '@/stores/soundStore';
 import { BackButton } from '@/ts/_interface/backButton';
-import { transitionPageBackwardsAnimation } from '@/ts/animationCSS/transitionPageBackwards';
+import { transitionPageBackwardsAnimation } from '@/ts/cssAnimation/transitionPageBackwards';
 import { defineComponent, PropType } from 'vue';
 
 

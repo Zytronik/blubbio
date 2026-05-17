@@ -6,8 +6,7 @@ import { useUserStore } from '@/stores/userStore';
 import { useMultiplayerStore } from '@/stores/multiplayerStore';
 import { NETWORK_COMMAND } from '../_enum/networkCommand';
 import { useContainerStore } from '@/stores/containerStore';
-import { buttonBackDown, buttonBackUp } from '../gameLogic/actions/back';
-import { transitionPageBackwardsAnimation } from '../animationCSS/transitionPageBackwards';
+import { transitionPageBackwardsAnimation } from '../cssAnimation/transitionPageBackwards';
 import { useInputStore } from '@/stores/inputStore';
 
 export const angleLeftInput: Input = {
@@ -142,13 +141,14 @@ export const backInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
+        const localPlayer = useUserStore().getUserName();
         const context = useInputStore().getInputContext();
         switch (context) {
             case INPUT_CONTEXT.MENU:
                 transitionPageBackwardsAnimation();
                 break;
             case INPUT_CONTEXT.GAME_WITH_RESET:
-                buttonBackDown();
+                useGameStore().pressedBack(localPlayer);
                 break;
             case INPUT_CONTEXT.COUNTDOWN:
                 useGameStore().cancelGame();
@@ -158,7 +158,10 @@ export const backInput: Input = {
         }
     },
     release: () => {
-        buttonBackUp();
+        if (INPUT_CONTEXT.GAME_WITH_RESET) {
+            const localPlayer = useUserStore().getUserName();
+            useGameStore().releasedBack(localPlayer);
+        }
     },
     inputContext: [INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.COUNTDOWN, INPUT_CONTEXT.MENU],
 };

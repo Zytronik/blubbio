@@ -14,7 +14,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useLobbyStore } from '@/stores/lobbyStore';
 import { PAGE } from '@/ts/_enum/page';
-import { transitionPageBackwardsAnimation } from '@/ts/animationCSS/transitionPageBackwards';
+import { transitionPageBackwardsAnimation } from '@/ts/cssAnimation/transitionPageBackwards';
 
 export default {
   name: 'RoomPage',
