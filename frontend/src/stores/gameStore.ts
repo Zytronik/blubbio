@@ -29,7 +29,6 @@ export const useGameStore = defineStore('game', () => {
     function setupSprint(): void {
         const userName = useUserStore().getUserName();
         game.gameMode = GAME_MODE.SPRINT;
-        game.inputContext = INPUT_CONTEXT.GAME_WITH_RESET;
         game.spectating = false;
         game.instancesMap.set(userName, newSprintInstance(userName));
         applyGameLayout([...game.instancesMap.values()]);
@@ -37,7 +36,6 @@ export const useGameStore = defineStore('game', () => {
     function setupMultiplayer(gameSettings: GameSettings, otherPlayersUsernames: string[]): void {
         const playerUserName = useUserStore().getUserName();
         game.gameMode = GAME_MODE.SPRINT;
-        game.inputContext = INPUT_CONTEXT.GAME_WITH_RESET;
         game.spectating = false;
         game.instancesMap.set(playerUserName, newSprintInstance(playerUserName));
         otherPlayersUsernames.forEach(userName => {
@@ -47,32 +45,36 @@ export const useGameStore = defineStore('game', () => {
         useMultiplayerStore().listenToOtherPlayers();
     }
 
-
     function startGame(): void {
         const countDownDuration = game.instancesMap.values().next().value!.gameSettings.countDownDuration;
-        useInputStore().setInputContext(INPUT_CONTEXT.COUNTDOWN);
+        useInputStore().countdownInputs();
         useAnimationStore().playCountdown(countDownDuration, afterCountdown);
         function afterCountdown(): void {
             startGameLogicLoop(game);
-            useInputStore().setInputContext(game.inputContext);
+            if (game.gameMode === GAME_MODE.SPRINT) {
+                useInputStore().gameWithResetInputs();
+            }
+            if (game.gameMode === GAME_MODE.MULTI_PLAYER) {
+                useInputStore().gameNoResetInputs();
+            }
         }
     }
     function cancelGame(): void {
         useAnimationStore().cancelCountdown();
         game.instancesMap.forEach((instance, playerName) => {
             useAnimationStore().stopInstanceAnimations(instance);
-        })
-        useInputStore().setInputContext(INPUT_CONTEXT.DISABLED);
+        });
+        useInputStore().disableInput();
         game.instancesMap.clear();
         transitionOutOfGame(game.gameMode);
-        useInputStore().setInputContext(INPUT_CONTEXT.MENU);
+        useInputStore().menuInputs();
     }
     function resetGame(): void {
         useAnimationStore().cancelCountdown();
         game.instancesMap.forEach((instance, playerName) => {
             useAnimationStore().stopInstanceAnimations(instance);
-        })
-        useInputStore().setInputContext(INPUT_CONTEXT.DISABLED);
+        });
+        useInputStore().disableInput();
         game.instancesMap.clear();
         useContainerStore().cleanUpGameContainer();
         //TODO has to consider game mode at some point
@@ -82,11 +84,10 @@ export const useGameStore = defineStore('game', () => {
     function showResultScreen(): void {
         game.instancesMap.forEach((instance, playerName) => {
             useAnimationStore().stopInstanceAnimations(instance);
-        })
+        });
         transitionOutOfGame(game.gameMode);
-        useInputStore().setInputContext(INPUT_CONTEXT.MENU);
+        useInputStore().menuInputs();
     }
-
 
     function refreshLayout(): void {
         applyGameLayout([...game.instancesMap.values()]);
@@ -97,7 +98,6 @@ export const useGameStore = defineStore('game', () => {
         }
         return calculateLayoutProperties(SPRINT_SETTINGS);
     }
-
 
     function pressedBack(userName: string): void {
         const instance = game.instancesMap.get(userName);
@@ -186,12 +186,11 @@ export const useGameStore = defineStore('game', () => {
 
     function createMonkeyTesting(monkeyAmount: number): void {
         game.gameMode = GAME_MODE.SPRINT;
-        game.inputContext = INPUT_CONTEXT.GAME_NO_RESET;
         game.spectating = true;
         for (let i = 1; i <= monkeyAmount; i++) {
             const name = 'Monkey-' + i;
             const instance = newSprintInstance(name);
-            useAnimationStore().addMonkeyTesting(instance, name)
+            useAnimationStore().addMonkeyTesting(instance, name);
             game.instancesMap.set(name, instance);
         }
     }

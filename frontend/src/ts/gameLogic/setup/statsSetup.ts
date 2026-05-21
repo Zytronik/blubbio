@@ -10,6 +10,5 @@ export function getEmptyStats(settings: GameSettings): GameStats {
         bubblesPerSecond: 0,
         bubbleClearToWin: settings.sprintVictoryCondition,
         bubblesCleared: 0,
-        bubblesLeftToClear: 0
     };
 }

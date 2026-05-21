@@ -74,8 +74,5 @@ function handleHeldDownKeys(): void {
 }
 
 function checkInputContext(input: Input) : boolean {
-    if (input.inputContext.includes(INPUT_CONTEXT.DEBUG)) {
-        return true;
-    }
     return input.inputContext.includes(useInputStore().context);
 }

@@ -1,15 +1,8 @@
-import { useGameStore } from '@/stores/gameStore';
 import { INPUT_CONTEXT } from '../_enum/inputContext';
 import { Input } from '../_interface/input';
-import { usePageStore } from '@/stores/pageStore';
-import { useUserStore } from '@/stores/userStore';
-import { useMultiplayerStore } from '@/stores/multiplayerStore';
-import { NETWORK_COMMAND } from '../_enum/networkCommand';
-import { useContainerStore } from '@/stores/containerStore';
-import { transitionPageBackwardsAnimation } from '../cssAnimation/transitionPageBackwards';
 import { useInputStore } from '@/stores/inputStore';
 
-export const angleLeftInput: Input = {
+const angleLeftInput: Input = {
     name: 'Angle Left',
     description: 'Move the angle of the cannon to the left',
     customKeyMap: ['ArrowLeft', '', ''],
@@ -17,17 +10,15 @@ export const angleLeftInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        const localPlayer = useUserStore().getUserName();
-        useGameStore().pressedLeft(localPlayer);
+        useInputStore().leftPressed();
     },
     release: () => {
-        const localPlayer = useUserStore().getUserName();
-        useGameStore().releasedLeft(localPlayer);
+        useInputStore().leftReleased();
     },
     inputContext: [INPUT_CONTEXT.GAME_NO_RESET, INPUT_CONTEXT.GAME_WITH_RESET],
 };
 
-export const angleRightInput: Input = {
+const angleRightInput: Input = {
     name: 'Angle Right',
     description: 'Move the angle of the cannon to the right',
     customKeyMap: ['ArrowRight', '', ''],
@@ -35,17 +26,15 @@ export const angleRightInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        const localPlayer = useUserStore().getUserName();
-        useGameStore().pressedRight(localPlayer);
+        useInputStore().rightPressed();
     },
     release: () => {
-        const localPlayer = useUserStore().getUserName();
-        useGameStore().releasedRight(localPlayer);
+        useInputStore().rightReleased();
     },
     inputContext: [INPUT_CONTEXT.GAME_NO_RESET, INPUT_CONTEXT.GAME_WITH_RESET],
 };
 
-export const changeAPSInput: Input = {
+const changeAPSInput: Input = {
     name: 'Change APS',
     description: 'Change the angle per second of the cannon',
     customKeyMap: ['ShiftLeft', '', ''],
@@ -53,17 +42,15 @@ export const changeAPSInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        const localPlayer = useUserStore().getUserName();
-        useGameStore().toggleAPS(localPlayer);
+        useInputStore().changeApsPressed();
     },
     release: () => {
-        const localPlayer = useUserStore().getUserName();
-        useGameStore().toggleAPS(localPlayer);
+        useInputStore().changeApsReleased();
     },
     inputContext: [INPUT_CONTEXT.GAME_NO_RESET, INPUT_CONTEXT.GAME_WITH_RESET],
 };
 
-export const centerCursorInput: Input = {
+const centerCursorInput: Input = {
     name: 'Set angle to 90°',
     description: 'Set the angle of the cannon to 90°',
     customKeyMap: ['ArrowUp', '', ''],
@@ -71,13 +58,12 @@ export const centerCursorInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        const localPlayer = useUserStore().getUserName();
-        useGameStore().pressedCenter(localPlayer);
+        useInputStore().centerCursorPressed();
     },
     inputContext: [INPUT_CONTEXT.GAME_NO_RESET, INPUT_CONTEXT.GAME_WITH_RESET],
 };
 
-export const mirrorCursorInput: Input = {
+const mirrorCursorInput: Input = {
     name: 'Mirror current Angle',
     description: 'Mirror the angle to the other side.',
     customKeyMap: ['ArrowDown', '', ''],
@@ -85,13 +71,12 @@ export const mirrorCursorInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        const localPlayer = useUserStore().getUserName();
-        useGameStore().pressedMirror(localPlayer);
+        useInputStore().mirrorCursorPressed();
     },
     inputContext: [INPUT_CONTEXT.GAME_NO_RESET, INPUT_CONTEXT.GAME_WITH_RESET],
 };
 
-export const shootInput: Input = {
+const shootInput: Input = {
     name: 'Shoot',
     description: 'Shoot a bubble',
     customKeyMap: ['Space', '', ''],
@@ -99,28 +84,25 @@ export const shootInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        const localPlayer = useUserStore().getUserName();
-        useGameStore().pressedShoot(localPlayer);
-        useMultiplayerStore().notifyEnemies(NETWORK_COMMAND.SHOOT);
+        useInputStore().shootPressed();
     },
     inputContext: [INPUT_CONTEXT.GAME_NO_RESET, INPUT_CONTEXT.GAME_WITH_RESET],
 };
 
-export const holdInput: Input = {
+const holdInput: Input = {
     name: 'Switch Bubble',
     description: 'Switch a bubble',
     customKeyMap: ['ControlLeft', '', ''],
     defaultKeyCode: 'ControlLeft',
     isSingleTriggerAction: true,
     pressed: false,
-    fire: () => {
-        const localPlayer = useUserStore().getUserName();
-        useGameStore().pressedHold(localPlayer);
+    fire: () => {        
+        useInputStore().holdPressed();
     },
     inputContext: [INPUT_CONTEXT.GAME_NO_RESET, INPUT_CONTEXT.GAME_WITH_RESET],
 };
 
-export const resetInput: Input = {
+const resetInput: Input = {
     name: 'Restart Game',
     description: 'Restart the game',
     customKeyMap: ['KeyR', '', ''],
@@ -128,12 +110,12 @@ export const resetInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        useGameStore().resetGame();
+        useInputStore().resetPressed();
     },
     inputContext: [INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.COUNTDOWN],
 };
 
-export const backInput: Input = {
+const backInput: Input = {
     name: 'Back',
     description: 'Go back one menu',
     customKeyMap: ['Escape', '', ''],
@@ -141,32 +123,15 @@ export const backInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        const localPlayer = useUserStore().getUserName();
-        const context = useInputStore().getInputContext();
-        switch (context) {
-            case INPUT_CONTEXT.MENU:
-                transitionPageBackwardsAnimation();
-                break;
-            case INPUT_CONTEXT.GAME_WITH_RESET:
-                useGameStore().pressedBack(localPlayer);
-                break;
-            case INPUT_CONTEXT.COUNTDOWN:
-                useGameStore().cancelGame();
-                break;
-            default:
-                break;
-        }
+        useInputStore().backPressed();
     },
     release: () => {
-        if (INPUT_CONTEXT.GAME_WITH_RESET) {
-            const localPlayer = useUserStore().getUserName();
-            useGameStore().releasedBack(localPlayer);
-        }
+        useInputStore().backReleased();
     },
     inputContext: [INPUT_CONTEXT.GAME_WITH_RESET, INPUT_CONTEXT.COUNTDOWN, INPUT_CONTEXT.MENU],
 };
 
-export const channelInput: Input = {
+const channelInput: Input = {
     name: 'Open Channel',
     description: 'Open the channel',
     customKeyMap: ['F9', '', ''],
@@ -174,91 +139,12 @@ export const channelInput: Input = {
     isSingleTriggerAction: true,
     pressed: false,
     fire: () => {
-        usePageStore().toggleCommunityOverlayAnimation();
+        useInputStore().channelPressed();
     },
     inputContext: [INPUT_CONTEXT.MENU],
 };
 
-export const pixiDebug1: Input = {
-    name: 'debug1',
-    description: 'asdf',
-    customKeyMap: ['Numpad1', 'KeyI', ''],
-    defaultKeyCode: 'Numpad1',
-    isSingleTriggerAction: true,
-    pressed: false,
-    fire: () => {
-        console.log('pressed debug 1');
-        // useGameStore().setupSprint();
-        useGameStore().createMonkeyTesting(5);
-    },
-    inputContext: [INPUT_CONTEXT.DEBUG],
-};
-export const pixiDebug2: Input = {
-    name: 'debug2',
-    description: 'asdf',
-    customKeyMap: ['Numpad2', 'KeyO', ''],
-    defaultKeyCode: 'Numpad2',
-    isSingleTriggerAction: true,
-    pressed: false,
-    fire: () => {
-        console.log('pressed debug 2');
-        useGameStore().startGame();
-    },
-    inputContext: [INPUT_CONTEXT.DEBUG],
-};
-export const pixiDebug3: Input = {
-    name: 'debug3',
-    description: 'asdf',
-    customKeyMap: ['Numpad3', 'KeyP', ''],
-    defaultKeyCode: 'Numpad3',
-    isSingleTriggerAction: true,
-    pressed: false,
-    fire: () => {
-        console.log('pressed debug 3');
-        useGameStore().refreshLayout();
-    },
-    inputContext: [INPUT_CONTEXT.DEBUG],
-};
-export const pixiDebug4: Input = {
-    name: 'debug4',
-    description: 'asdf',
-    customKeyMap: ['Numpad4', 'KeyF', ''],
-    defaultKeyCode: 'Numpad4',
-    isSingleTriggerAction: true,
-    pressed: false,
-    fire: () => {
-        console.log('pressed debug 4');
-        // renderCountdown(() => {true});
-        useContainerStore().cleanUpGameContainer();
-    },
-    inputContext: [INPUT_CONTEXT.DEBUG],
-};
-export const pixiDebug5: Input = {
-    name: 'debug5',
-    description: 'asdf',
-    customKeyMap: ['Numpad5', '', ''],
-    defaultKeyCode: 'Numpad5',
-    isSingleTriggerAction: true,
-    pressed: false,
-    fire: () => {
-        console.log('pressed debug 5');
-        useGameStore().debugLogGameField();
-    },
-    inputContext: [INPUT_CONTEXT.DEBUG],
-};
-export const pixiDebug6: Input = {
-    name: 'debug6',
-    description: 'asdf',
-    customKeyMap: ['Numpad6', '', ''],
-    defaultKeyCode: 'Numpad6',
-    isSingleTriggerAction: true,
-    pressed: false,
-    fire: () => {
-        console.log('pressed debug 6');
-        useGameStore().addGarbageToAllInstances();
-    },
-    inputContext: [INPUT_CONTEXT.DEBUG],
-};
+
 
 export const allInputs: Input[] = [
     angleLeftInput,
@@ -271,15 +157,9 @@ export const allInputs: Input[] = [
     resetInput,
     backInput,
     channelInput,
-    pixiDebug1,
-    pixiDebug2,
-    pixiDebug3,
-    pixiDebug4,
-    pixiDebug5,
-    pixiDebug6,
 ];
 
-const allKeyCodes = [
+export const allKeyCodes = [
     // Alphanumeric keys
     'KeyA',
     'KeyB',

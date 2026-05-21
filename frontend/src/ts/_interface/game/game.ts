@@ -6,7 +6,6 @@ import { GameSettings } from './gameSettings';
 
 export interface Game {
     gameMode: GAME_MODE;
-    inputContext: INPUT_CONTEXT;
     spectating: boolean;
     spectatorTarget: string;
     rounds: RoundData[];

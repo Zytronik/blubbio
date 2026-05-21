@@ -300,7 +300,6 @@ export function shootBubble(instance: GameInstance): ShotResult {
     }
 
     function applyBubbleStats(): boolean {
-        console.log(instance.stats.bubbleClearToWin, instance.stats.bubblesCleared)
         instance.stats.bubblesShot++;
         instance.stats.bubblesCleared += clearedBubbleFields.length;
         return instance.stats.bubbleClearToWin <= instance.stats.bubblesCleared;

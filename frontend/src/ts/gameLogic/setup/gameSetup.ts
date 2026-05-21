@@ -7,7 +7,6 @@ import { RoundData } from "@/ts/_interface/game/roundData";
 export function getEmptyGame(): Game {
     return {
         gameMode: GAME_MODE.NONE,
-        inputContext: INPUT_CONTEXT.DISABLED,
         spectating: false,
         spectatorTarget: "",
         rounds: [],

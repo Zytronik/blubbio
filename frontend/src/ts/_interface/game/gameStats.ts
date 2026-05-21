@@ -8,7 +8,6 @@ export interface GameStats {
 
     bubbleClearToWin: number;
     bubblesCleared: number;
-    bubblesLeftToClear: number;
 }
 
 // export interface GameStats {
