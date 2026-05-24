@@ -33,6 +33,12 @@ export const useAnimationStore = defineStore('animation', () => {
         animation?.onCancel();
         globalAnimations.delete(COUNTDOWN_ANIMATIONNAME);
     }
+    function garbagePreview(instance: GameInstance): void {
+        const animation = getGarbagePreviewAnimation(instance);
+        animation.onStart();
+        instanceAnimations.set(animation.name, animation);
+        instance.ongoingAnimations.add(animation.name);
+    }
     function displayInstance(instance: GameInstance): void {
         const instanceDisplayAnimations: PixiAnimation[] = [
             getBoardDisplay(instance),
@@ -51,12 +57,6 @@ export const useAnimationStore = defineStore('animation', () => {
             instance.ongoingAnimations.add(display.name);
         });
     }
-    function garbagePreview(instance: GameInstance): void {
-        const animation = getGarbagePreviewAnimation(instance);
-        animation.onStart();
-        instanceAnimations.set(animation.name, animation);
-        instance.ongoingAnimations.add(animation.name);
-    }
     function stopInstanceAnimations(instance: GameInstance): void {
         instance.ongoingAnimations.forEach(animationName => {
             instanceAnimations.get(animationName)?.onCancel();
@@ -67,7 +67,6 @@ export const useAnimationStore = defineStore('animation', () => {
             sprite.destroy();
         });
         instance.gameSprites.currentBubble.destroy();
-
         instance.gameSprites.previewBubble.destroy();
         instance.gameSprites.fieldBubbles.forEach(spriteArray => {
             spriteArray.forEach(sprite => {
@@ -79,13 +78,13 @@ export const useAnimationStore = defineStore('animation', () => {
         });
     }
 
-    function addMonkeyTesting(instance: GameInstance, monkeyName: string): void {
+    function DEBUG_addMonkeyPlayer(instance: GameInstance, monkeyName: string): void {
         const animation = getMonkeyAnimation(instance, monkeyName);
         animation.onStart();
         instanceAnimations.set(animation.name, animation);
     }
 
-    return { startAnimationLoop, playCountdown, cancelCountdown, displayInstance, garbagePreview, stopInstanceAnimations, addMonkeyTesting };
+    return { startAnimationLoop, playCountdown, cancelCountdown, displayInstance, garbagePreview, stopInstanceAnimations, DEBUG_addMonkeyPlayer };
 });
 
 function animationLoop(): void {

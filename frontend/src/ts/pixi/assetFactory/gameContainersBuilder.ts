@@ -1,10 +1,9 @@
-import { useContainerStore } from '@/stores/containerStore';
 import { useGameStore } from '@/stores/gameStore';
 import { GameSubContainers } from '@/ts/_interface/pixi/boardVisuals';
 import { LayoutProperties } from '@/ts/_interface/pixi/layoutProperties';
 import { Container, Graphics } from 'pixi.js';
 
-export function getGameSubContainers(): GameSubContainers {
+export function createGameSubContainers(parentGameContainer: Container): GameSubContainers {
     const boardContainer = new Container();
     const gridContainer = new Container();
     const gridBackground = new Container();
@@ -15,8 +14,7 @@ export function getGameSubContainers(): GameSubContainers {
     const statsContainer = new Container();
     const nameContainer = new Container();
 
-    const gameContainer = useContainerStore().getGameContainer();
-    gameContainer.addChild(boardContainer);
+    parentGameContainer.addChild(boardContainer);
     boardContainer.addChild(statsContainer);
 
     boardContainer.addChild(gridContainer);
@@ -212,4 +210,3 @@ function getBoardPaddingRight(boardContainer: Container, layoutProperties: Layou
 function getBoardPaddingTop(boardContainer: Container, layoutProperties: LayoutProperties): number {
     return (boardContainer.height / (1 + layoutProperties.paddingBoardTop)) * layoutProperties.paddingBoardTop;
 }
-

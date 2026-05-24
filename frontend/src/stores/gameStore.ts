@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import { GAME_MODE } from '@/ts/_enum/gameMode';
 import { useUserStore } from './userStore';
 import { useInputStore } from './inputStore';
-import { INPUT_CONTEXT } from '@/ts/_enum/inputContext';
 import { startGameLogicLoop } from '@/ts/gameLogic/gameLogicLoop';
 import { centerAngle, changeAPS, mirrorAngle } from '@/ts/gameLogic/actions/aiming';
 import { shootBubble } from '@/ts/gameLogic/actions/shoot';
@@ -185,14 +184,14 @@ export const useGameStore = defineStore('game', () => {
     }
 
     function createMonkeyTesting(monkeyAmount: number): void {
-        game.gameMode = GAME_MODE.SPRINT;
-        game.spectating = true;
-        for (let i = 1; i <= monkeyAmount; i++) {
-            const name = 'Monkey-' + i;
-            const instance = newSprintInstance(name);
-            useAnimationStore().addMonkeyTesting(instance, name);
-            game.instancesMap.set(name, instance);
-        }
+        // game.gameMode = GAME_MODE.SPRINT;
+        // game.spectating = true;
+        // for (let i = 1; i <= monkeyAmount; i++) {
+        //     const name = 'Monkey-' + i;
+        //     const instance = newSprintInstance(name);
+        //     useAnimationStore().addMonkeyTesting(instance, name);
+        //     game.instancesMap.set(name, instance);
+        // }
     }
 
     function addGarbageToAllInstances(): void {

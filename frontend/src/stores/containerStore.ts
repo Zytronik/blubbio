@@ -1,12 +1,16 @@
 import { defineStore } from 'pinia';
 import { AllContainers } from '@/ts/_interface/pixi/allContainers';
-import { drawGameContainerLayoutRect, getGlobalContainer } from '@/ts/pixi/assetFactory/globalContainerBuilder';
-import { Container } from 'pixi.js';
+import { drawGameContainerLayoutRect, createGlobalContainer } from '@/ts/pixi/assetFactory/globalContainerBuilder';
+import { Container, Sprite } from 'pixi.js';
+import { GameSubContainers } from '@/ts/_interface/pixi/boardVisuals';
+import { createGameSubContainers } from '@/ts/pixi/assetFactory/gameContainersBuilder';
+import { bubbleTexture } from '@/ts/pixi/data/allTextures';
 
+//handles visibility of containers and sprite creation/destruction
 export const useContainerStore = defineStore('container', () => {
     let allContainers: AllContainers;
     function setupGlobalContainers(): void {
-        allContainers = getGlobalContainer();
+        allContainers = createGlobalContainer();
     }
     function showGame(): void {
         allContainers.gameContainer.visible = true;
@@ -18,18 +22,21 @@ export const useContainerStore = defineStore('container', () => {
         const length = allContainers.gameContainer.children.length - 1;
         for (let i = length; i >= 0; i--) {
             const child = allContainers.gameContainer.children[i];
-            child.destroy({ children: true })
+            child.destroy({ children: true });
         }
-        drawGameContainerLayoutRect(allContainers.gameContainer)
-        // allContainers.gameContainer.children[1].destroy({children: true})
+        drawGameContainerLayoutRect(allContainers.gameContainer);
     }
-    function getGameContainer(): Container {
-        return allContainers.gameContainer;
+    function newGameSubContainers(): GameSubContainers {
+        return createGameSubContainers(allContainers.gameContainer);
     }
     function getOverlayContainer(): Container {
         return allContainers.overlayContainer;
     }
-    //handles visibility and probably content clean up after finished game
-    //maybe aspect ratio and responsive
-    return { setupGlobalContainers, showGame, hideGame, cleanUpGameContainer, getGameContainer, getOverlayContainer };
+    function createBubbleSprite(): Container {
+        const container = new Container();
+        const sprite = new Sprite({ texture: bubbleTexture.texture });
+        container.addChild(sprite);
+        return container;
+    }
+    return { setupGlobalContainers, showGame, hideGame, cleanUpGameContainer, newGameSubContainers, getOverlayContainer, createBubbleSprite };
 });

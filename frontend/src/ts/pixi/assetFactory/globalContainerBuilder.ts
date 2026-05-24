@@ -2,7 +2,7 @@ import { usePixiStore } from '@/stores/pixiStore';
 import { AllContainers } from '@/ts/_interface/pixi/allContainers';
 import { Container, Graphics } from 'pixi.js';
 
-export function getGlobalContainer(): AllContainers {
+export function createGlobalContainer(): AllContainers {
     const main = new Container();
     const game = new Container({ visible: false });
     const overlay = new Container({ visible: false });
