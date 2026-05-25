@@ -1,13 +1,12 @@
 import { PixiAnimation } from '../../_interface/pixi/pixiAnimation';
-import { useContainerStore } from '@/stores/containerStore';
-import { Graphics, Text } from 'pixi.js';
+import { Container, Graphics, Text } from 'pixi.js';
 import { defaultFont } from '../data/allFonts';
 import { GameInstance } from '@/ts/_interface/game/gameInstance';
 import { useGameStore } from '@/stores/gameStore';
+import { ANIMATION_CONTEXT } from '@/ts/_enum/animationContext';
 
-export function getBackToQuitDisplay(gameInstance: GameInstance): PixiAnimation {
+export function getBackToQuitDisplay(overlayContainer: Container, gameInstance: GameInstance): PixiAnimation {
     const CONFIRMATION_DURATION = 1000;
-    const overlayContainer = useContainerStore().getOverlayContainer();
 
     let loaderCircle: Graphics;
     let circleRadius = 0;
@@ -23,6 +22,7 @@ export function getBackToQuitDisplay(gameInstance: GameInstance): PixiAnimation 
     });
 
     const display: PixiAnimation = {
+        context: ANIMATION_CONTEXT.GAME_OVERLAY,
         name: 'backAnimiation',
         startMS: 0,
         endMS: Infinity,
@@ -72,7 +72,7 @@ export function getBackToQuitDisplay(gameInstance: GameInstance): PixiAnimation 
             //maybe
         },
 
-        onCancel: function (): void {
+        cleanUp: function (): void {
             loaderCircle.destroy();
             loaderText.destroy();
         },

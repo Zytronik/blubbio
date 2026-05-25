@@ -3,7 +3,7 @@ import { useSoundStore } from '@/stores/soundStore';
 import gsap from 'gsap';
 import { PAGE } from '../_enum/page';
 import { GAME_MODE } from '../_enum/gameMode';
-import { useContainerStore } from '@/stores/containerStore';
+import { usePixiStore } from '@/stores/pixiStore';
 
 export function transitionOutOfGame(gameMode: GAME_MODE) {
     useSoundStore().playSound('menu_back');
@@ -29,8 +29,8 @@ export function transitionOutOfGame(gameMode: GAME_MODE) {
     tl.to(".gameTransitionOverlay", { duration: 0.15, x: '0' }, 0);
     tl.set('#pixiCanvas', { x: '0vw' });
     tl.call(() => {
-        useContainerStore().cleanUpGameContainer();
-        useContainerStore().hideGame();
+        usePixiStore().destroyAllGameContainers();
+        usePixiStore().hideGame();
         showTopAndBottomBars();
         if (gameMode === GAME_MODE.SPRINT) {
             setPage(PAGE.sprintPage);

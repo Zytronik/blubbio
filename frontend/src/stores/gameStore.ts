@@ -17,9 +17,8 @@ import { LayoutProperties } from '@/ts/_interface/pixi/layoutProperties';
 import { calculateLayoutProperties } from '@/ts/pixi/layouting/layoutProperties';
 import { applyGameLayout } from '@/ts/pixi/layouting/gameLayout';
 import { useMultiplayerStore } from './multiplayerStore';
-import { useContainerStore } from './containerStore';
 import { transitionOutOfGame } from '@/ts/cssAnimation/transitionOutOfGame';
-import { useAnimationStore } from './animationStore';
+import { usePixiStore } from './pixiStore';
 
 //game should keep track of layouting. its part of the games animation.
 //similarly, who is currently the main spectator target should also be tracked by the game
@@ -47,7 +46,7 @@ export const useGameStore = defineStore('game', () => {
     function startGame(): void {
         const countDownDuration = game.instancesMap.values().next().value!.gameSettings.countDownDuration;
         useInputStore().countdownInputs();
-        useAnimationStore().playCountdown(countDownDuration, afterCountdown);
+        usePixiStore().playCountdown(countDownDuration, afterCountdown);
         function afterCountdown(): void {
             startGameLogicLoop(game);
             if (game.gameMode === GAME_MODE.SPRINT) {
@@ -59,9 +58,9 @@ export const useGameStore = defineStore('game', () => {
         }
     }
     function cancelGame(): void {
-        useAnimationStore().cancelCountdown();
+        usePixiStore().cancelCountdown();
         game.instancesMap.forEach((instance, playerName) => {
-            useAnimationStore().stopInstanceAnimations(instance);
+            usePixiStore().stopInstanceAnimations(instance);
         });
         useInputStore().disableInput();
         game.instancesMap.clear();
@@ -69,20 +68,20 @@ export const useGameStore = defineStore('game', () => {
         useInputStore().menuInputs();
     }
     function resetGame(): void {
-        useAnimationStore().cancelCountdown();
+        usePixiStore().cancelCountdown();
         game.instancesMap.forEach((instance, playerName) => {
-            useAnimationStore().stopInstanceAnimations(instance);
+            usePixiStore().stopInstanceAnimations(instance);
         });
         useInputStore().disableInput();
         game.instancesMap.clear();
-        useContainerStore().cleanUpGameContainer();
+        usePixiStore().destroyAllGameContainers();
         //TODO has to consider game mode at some point
         setupSprint();
         startGame();
     }
     function showResultScreen(): void {
         game.instancesMap.forEach((instance, playerName) => {
-            useAnimationStore().stopInstanceAnimations(instance);
+            usePixiStore().stopInstanceAnimations(instance);
         });
         transitionOutOfGame(game.gameMode);
         useInputStore().menuInputs();
@@ -189,7 +188,7 @@ export const useGameStore = defineStore('game', () => {
         // for (let i = 1; i <= monkeyAmount; i++) {
         //     const name = 'Monkey-' + i;
         //     const instance = newSprintInstance(name);
-        //     useAnimationStore().addMonkeyTesting(instance, name);
+        //     usePixiStore().addMonkeyTesting(instance, name);
         //     game.instancesMap.set(name, instance);
         // }
     }

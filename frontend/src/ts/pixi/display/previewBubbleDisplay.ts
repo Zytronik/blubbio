@@ -13,7 +13,8 @@ export function getPreviewBubbleDisplay(instance: GameInstance): PixiAnimation {
     const spriteHeight = spriteWidth;
 
     const previewBubble: PixiAnimation = {
-        name: instance.playerName + '-previewBubble',
+        context: instance.playerName,
+        name: 'previewBubble',
         startMS: 0,
         endMS: Infinity,
         onStart: function (): void {
@@ -56,7 +57,7 @@ export function getPreviewBubbleDisplay(instance: GameInstance): PixiAnimation {
         onEnd: function (): void {
             // console.log('end');
         },
-        onCancel: function (): void {
+        cleanUp: function (): void {
             instance.gameSprites.previewBubble.destroy();
         },
     };

@@ -7,7 +7,7 @@ import { GarbageInformation } from '@/ts/_interface/game/garbageInformation';
 import { allBubbles } from './bubbleTypes';
 import { RowInformation } from '@/ts/_interface/game/rowInformation';
 import { Field } from '@/ts/_interface/game/field';
-import { useAnimationStore } from '@/stores/animationStore';
+import { usePixiStore } from '@/stores/pixiStore';
 
 export function prefillBoard(instance: GameInstance): void {
     const totalHeight = instance.gameSettings.gridHeight + instance.gameSettings.gridExtraHeight - 1;
@@ -48,7 +48,7 @@ export function prepareGarbage(instance: GameInstance, messiness: GARBAGE_MESSIN
             pairLocations: garbageResult.pairLocations,
         };
     }
-    useAnimationStore().garbagePreview(instance);
+    usePixiStore().garbagePreview(instance);
 }
 
 export function pushOneGarbageRow(instance: GameInstance): void {

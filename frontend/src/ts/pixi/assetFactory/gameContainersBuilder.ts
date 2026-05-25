@@ -3,7 +3,7 @@ import { GameSubContainers } from '@/ts/_interface/pixi/boardVisuals';
 import { LayoutProperties } from '@/ts/_interface/pixi/layoutProperties';
 import { Container, Graphics } from 'pixi.js';
 
-export function createGameSubContainers(parentGameContainer: Container): GameSubContainers {
+export function setupGameSubContainers(parentGameContainer: Container): GameSubContainers {
     const boardContainer = new Container();
     const gridContainer = new Container();
     const gridBackground = new Container();

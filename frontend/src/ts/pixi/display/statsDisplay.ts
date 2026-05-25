@@ -1,6 +1,5 @@
 import { PixiAnimation } from '../../_interface/pixi/pixiAnimation';
 import { GameInstance } from '../../_interface/game/gameInstance';
-import { useAnimationStore } from '@/stores/animationStore';
 import { Text } from 'pixi.js';
 import { defaultFont } from '../data/allFonts';
 
@@ -71,7 +70,8 @@ export function getStatsDisplay(instance: GameInstance): PixiAnimation {
     }
 
     const display: PixiAnimation = {
-        name: instance.playerName + '-stats',
+        context: instance.playerName,
+        name: 'stats',
         startMS: 0,
         endMS: Infinity,
         onStart: function (): void {
@@ -92,7 +92,7 @@ export function getStatsDisplay(instance: GameInstance): PixiAnimation {
         onEnd: function (): void {
             // console.log('end');
         },
-        onCancel: function (): void {
+        cleanUp: function (): void {
             graphics.forEach(text => {
                 text.destroy();
             })

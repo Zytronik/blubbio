@@ -9,8 +9,7 @@ import { nextBubble } from '../bubble/queue';
 import { XORRandom } from '../rng';
 import { getEmptyGarbagePreview } from './garbageSetup';
 import { prefillBoard } from '../bubble/garbage';
-import { useAnimationStore } from '@/stores/animationStore';
-import { useContainerStore } from '@/stores/containerStore';
+import { usePixiStore } from '@/stores/pixiStore';
 
 export function newSprintInstance(playerName: string): GameInstance {
     const startBubbleSeed = { value: Date.now() };
@@ -39,13 +38,12 @@ export function newSprintInstance(playerName: string): GameInstance {
         backPressed: false,
         backPressedAt: Infinity,
         gameSprites: sprites,
-        gameSubContainers: useContainerStore().newGameSubContainers(),
-        ongoingAnimations: new Set<string>(),
+        gameSubContainers: usePixiStore().createGameSubContainers(),
     };
     XORRandom(0, 0, instance.bubbleSeed);
     XORRandom(0, 0, instance.garbageSeed);
     nextBubble(instance);
     prefillBoard(instance);
-    useAnimationStore().displayInstance(instance);
+    usePixiStore().displayInstance(instance);
     return instance;
 }

@@ -13,7 +13,8 @@ export function getBoardDisplay(instance: GameInstance): PixiAnimation {
     const gridHeight = instance.gameSettings.gridHeight + instance.gameSettings.gridExtraHeight;
 
     const boardBubbles: PixiAnimation = {
-        name: instance.playerName + '-boardBubbles',
+        context: instance.playerName,
+        name: 'boardBubbles',
         startMS: 0,
         endMS: Infinity,
         onStart: function (): void {
@@ -66,7 +67,7 @@ export function getBoardDisplay(instance: GameInstance): PixiAnimation {
         onEnd: function (): void {
             // console.log('end');
         },
-        onCancel: function (): void {
+        cleanUp: function (): void {
             instance.gameSprites.fieldBubbles.forEach(spriteArray => {
                 spriteArray.forEach(sprite => {
                     sprite.destroy();

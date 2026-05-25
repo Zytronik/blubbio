@@ -17,7 +17,8 @@ export function getArrowDisplay(instance: GameInstance): PixiAnimation {
     const bubbleHeight = bubbleWidth;
 
     const display: PixiAnimation = {
-        name: instance.playerName + '-arrow',
+        context: instance.playerName,
+        name: 'arrow',
         startMS: 0,
         endMS: Infinity,
         onStart: function (): void {
@@ -46,7 +47,7 @@ export function getArrowDisplay(instance: GameInstance): PixiAnimation {
         onEnd: function (): void {
             // console.log('end');
         },
-        onCancel: function (): void {
+        cleanUp: function (): void {
             instance.gameSprites.arrow.destroy();
             instance.gameSprites.currentBubble.destroy();
         },

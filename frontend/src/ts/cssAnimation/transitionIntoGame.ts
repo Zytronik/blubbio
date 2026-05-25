@@ -8,7 +8,7 @@ import { GameSettings } from '../_interface/game/gameSettings';
 import { GARBAGE_MESSINESS } from '../_enum/garbageMessiness';
 import { useSocketStore } from '@/stores/socketStore';
 import { useLobbyStore } from '@/stores/lobbyStore';
-import { useContainerStore } from '@/stores/containerStore';
+import { usePixiStore } from '@/stores/pixiStore';
 
 export function transitionIntoGame(gameMode: GAME_MODE) {
     useSoundStore().playSound('menu_front');
@@ -74,7 +74,7 @@ export function transitionIntoGame(gameMode: GAME_MODE) {
 
             gameStore.setupMultiplayer(gameSettings, otherPlayersUsernames || []);
         }
-        useContainerStore().showGame()
+        usePixiStore().showGame()
     });
     tl.to(".gameTransitionOverlay", { duration: 0.5, opacity: 0, delay: 0.2 });
     tl.call(() => {

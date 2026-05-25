@@ -1,4 +1,4 @@
-import { useAnimationStore } from '@/stores/animationStore';
+import { usePixiStore } from '@/stores/pixiStore';
 import { GameInstance } from '../../_interface/game/gameInstance';
 import { PixiAnimation } from '../../_interface/pixi/pixiAnimation';
 import { allBubbles } from '../../gameLogic/bubble/bubbleTypes';
@@ -24,7 +24,8 @@ export function getGarbagePreviewAnimation(instance: GameInstance): PixiAnimatio
         const delayPerBubble = fadeInDuration / garbageRow.length;
 
         const animation: PixiAnimation = {
-            name: instance.playerName + '-garbagePreview',
+            context: instance.playerName,
+            name: 'garbagePreview',
             startMS: now,
             endMS: now + totalDuration,
             onStart: function (): void {
@@ -62,10 +63,10 @@ export function getGarbagePreviewAnimation(instance: GameInstance): PixiAnimatio
                     sprite.visible = false;
                 });
                 if (preview.generatedGarbage.length > 0) {
-                    useAnimationStore().garbagePreview(instance);
+                    usePixiStore().garbagePreview(instance);
                 }
             },
-            onCancel: function (): void {
+            cleanUp: function (): void {
                 instance.gameSprites.garbageBubbles.forEach(sprite => {
                     sprite.destroy();
                 });
@@ -76,6 +77,7 @@ export function getGarbagePreviewAnimation(instance: GameInstance): PixiAnimatio
     }
     
     return {
+        context: "null",
         name: '',
         startMS: 0,
         endMS: 0,
@@ -88,7 +90,7 @@ export function getGarbagePreviewAnimation(instance: GameInstance): PixiAnimatio
         onEnd: function (): void {
             // nothing
         },
-        onCancel: function (): void {
+        cleanUp: function (): void {
             // nothing
         }
     }

@@ -1,5 +1,4 @@
 import { GAME_MODE } from "@/ts/_enum/gameMode";
-import { INPUT_CONTEXT } from "@/ts/_enum/inputContext";
 import { Game } from "@/ts/_interface/game/game";
 import { GameInstance } from "@/ts/_interface/game/gameInstance";
 import { RoundData } from "@/ts/_interface/game/roundData";

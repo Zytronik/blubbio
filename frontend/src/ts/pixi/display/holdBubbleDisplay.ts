@@ -11,7 +11,8 @@ export function getHeldBubbleDisplay(instance: GameInstance): PixiAnimation {
     const spriteHeight = spriteWidth;
 
     const display: PixiAnimation = {
-        name: instance.playerName + '-holdBubble',
+        context: instance.playerName,
+        name: 'holdBubble',
         startMS: 0,
         endMS: Infinity,
         onStart: function (): void {
@@ -32,7 +33,7 @@ export function getHeldBubbleDisplay(instance: GameInstance): PixiAnimation {
         onEnd: function (): void {
             // console.log('end');
         },
-        onCancel: function (): void {
+        cleanUp: function (): void {
             instance.gameSprites.holdBubble.destroy();
         },
     };

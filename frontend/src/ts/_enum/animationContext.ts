@@ -1,0 +1,5 @@
+export enum ANIMATION_CONTEXT {
+    MENU = "MENU",
+    GAME_OVERLAY = "GAME_OVERLAY",
+    DEBUG = "DEBUG",
+}

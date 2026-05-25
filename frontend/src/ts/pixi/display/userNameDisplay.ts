@@ -15,7 +15,8 @@ export function getUsernameDisplay(instance: GameInstance): PixiAnimation {
     });
 
     const display: PixiAnimation = {
-        name: instance.playerName + '-username',
+        context: instance.playerName,
+        name: 'username',
         startMS: 0,
         endMS: Infinity,
         onStart: function (): void {
@@ -29,7 +30,7 @@ export function getUsernameDisplay(instance: GameInstance): PixiAnimation {
         onEnd: function (): void {
             // console.log('end');
         },
-        onCancel: function (): void {
+        cleanUp: function (): void {
             nameText.destroy();
         },
     };

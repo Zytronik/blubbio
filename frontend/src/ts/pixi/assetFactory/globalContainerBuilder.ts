@@ -1,17 +1,16 @@
-import { usePixiStore } from '@/stores/pixiStore';
 import { AllContainers } from '@/ts/_interface/pixi/allContainers';
 import { Container, Graphics } from 'pixi.js';
 
-export function createGlobalContainer(): AllContainers {
+export function createGlobalContainer(stage: Container, canvasHeight: number, canvasWidth: number): AllContainers {
     const main = new Container();
     const game = new Container({ visible: false });
     const overlay = new Container({ visible: false });
 
-    usePixiStore().getPixiApp().stage.addChild(main);
+    stage.addChild(main);
     main.addChild(game);
     main.addChild(overlay);
 
-    drawMainContainerLayoutRect(main);
+    drawMainContainerLayoutRect(main, canvasHeight, canvasWidth);
     drawGameContainerLayoutRect(game);
     drawOverlayContainerLayoutRect(overlay);
 
@@ -22,15 +21,15 @@ export function createGlobalContainer(): AllContainers {
     };
 }
 
-function drawMainContainerLayoutRect(mainContainer: Container): void {
+function drawMainContainerLayoutRect(mainContainer: Container, canvasHeight: number, canvasWidth: number): void {
     const padding = 20;
     const backgroundColor = 'red';
 
     mainContainer.x = padding;
     mainContainer.y = padding;
 
-    const width = usePixiStore().getCanvasWidth() - padding * 2;
-    const height = usePixiStore().getCanvasHeight() - padding * 2;
+    const width = canvasWidth - padding * 2;
+    const height = canvasHeight - padding * 2;
 
     const background = new Graphics().rect(0, 0, width, height).fill({ color: backgroundColor });
 

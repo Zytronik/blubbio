@@ -1,7 +1,6 @@
 import { Bubble } from './bubble';
 import { GameStats } from './gameStats';
 import { Grid } from './grid';
-import { PixiAnimation } from '../pixi/pixiAnimation';
 import { GameSettings } from './gameSettings';
 import { HandlingSettings } from './handlingSettings';
 import { GameSprites } from '../pixi/gameSprites';
@@ -35,6 +34,4 @@ export interface GameInstance {
 
     gameSprites: GameSprites;
     gameSubContainers: GameSubContainers;
-
-    ongoingAnimations: Set<string>;
 }

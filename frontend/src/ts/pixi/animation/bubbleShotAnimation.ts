@@ -7,6 +7,7 @@ export function getBubbleShotAnimation(instance: GameInstance): PixiAnimation {
     const now = performance.now();
     const travelTime = instance.handlingSettings.bubbleTravelDurationMS;
     const animation: PixiAnimation = {
+        context: instance.playerName,
         name: 'bubbleShot',
         startMS: now,
         endMS: now + travelTime,
@@ -26,7 +27,7 @@ export function getBubbleShotAnimation(instance: GameInstance): PixiAnimation {
         onEnd: function (): void {
             console.log('end');
         },
-        onCancel: function (): void {
+        cleanUp: function (): void {
             // console.log('cancel');
         },
     };

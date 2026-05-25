@@ -1,12 +1,13 @@
-import { Text } from 'pixi.js';
+import { Container, Text } from 'pixi.js';
 import { countDownFont } from '../data/allFonts';
 import { PixiAnimation } from '../../_interface/pixi/pixiAnimation';
 import { usePixiStore } from '@/stores/pixiStore';
 import { getLerpT } from '../math/animationCurves';
-import { useContainerStore } from '@/stores/containerStore';
+import { ANIMATION_CONTEXT } from '@/ts/_enum/animationContext';
 
-export const COUNTDOWN_ANIMATIONNAME = "countdown";
-export function getCountdownAnimation(duration: number, afterCountdown: () => void): PixiAnimation {
+export const COUNTDOWN_ANIMATION_CONTEXT = ANIMATION_CONTEXT.GAME_OVERLAY;
+export const COUNTDOWN_ANIMATION_NAME = "countdown";
+export function getCountdownAnimation(container: Container, duration: number, afterCountdown: () => void): PixiAnimation {
     const segmentPercentages = [0.2, 0.4, 0.6, 0.8];
     const now = performance.now();
     const t0 = now;
@@ -48,19 +49,20 @@ export function getCountdownAnimation(duration: number, afterCountdown: () => vo
     graphics.forEach(text => {
         text.visible = false;
         text.anchor.set(0.5);
-        text.x = useContainerStore().getOverlayContainer().width / 2;
-        text.y = useContainerStore().getOverlayContainer().height / 2;
+        text.x = container.width / 2;
+        text.y = container.height / 2;
 
-        useContainerStore().getOverlayContainer().addChild(text);
+        container.addChild(text);
     });
     three.y = -(three.height / 2);
-    const threeTravelDistance = three.height / 2 + usePixiStore().getCanvasHeight() / 2;
+    const threeTravelDistance = three.height / 2 + container.height / 2;
     const countdownAnimation: PixiAnimation = {
-        name: COUNTDOWN_ANIMATIONNAME,
+        context: COUNTDOWN_ANIMATION_CONTEXT,
+        name: COUNTDOWN_ANIMATION_NAME,
         startMS: now,
         endMS: now + duration,
         onStart: function (): void {
-            useContainerStore().getOverlayContainer().visible = true;
+            container.visible = true;
             three.visible = true;
         },
         renderFrame: function (currentTime: number): void {
@@ -112,7 +114,7 @@ export function getCountdownAnimation(duration: number, afterCountdown: () => vo
                 text.destroy();
             });
         },
-        onCancel: function (): void {
+        cleanUp: function (): void {
             graphics.forEach(text => {
                 text.destroy();
             });

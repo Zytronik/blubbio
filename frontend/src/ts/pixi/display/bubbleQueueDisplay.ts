@@ -11,7 +11,8 @@ export function getBubbleQueueDisplay(instance: GameInstance): PixiAnimation {
     const spriteHeight = spriteWidth;
 
     const display: PixiAnimation = {
-        name: instance.playerName + '-queueAnimation',
+        context: instance.playerName,
+        name: 'queueAnimation',
         startMS: 0,
         endMS: Infinity,
         onStart: function (): void {
@@ -38,7 +39,7 @@ export function getBubbleQueueDisplay(instance: GameInstance): PixiAnimation {
         onEnd: function (): void {
             // console.log('end');
         },
-        onCancel: function (): void {
+        cleanUp: function (): void {
             instance.gameSprites.bubbleQueue.forEach(sprite => {
                 sprite.destroy();
             });
