@@ -2,12 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { UpdateProfileImageResponseDto } from './dto/update-profile-image-response.dto';
+import { UpdateProfileImageResponseDto } from '@shared/types';
 import { BlobService } from 'src/blob/blob.service';
-import { SettingsDto } from './dto/settings.dto';
-import { GetUserRatingResponseDto } from './dto/get-user-rating.response.dto';
+import { SettingsDto } from '@shared/types';
+import { GetUserRatingResponseDto } from '@shared/types';
 import { RankedService } from 'src/ranked/ranked.service';
-import { GetUserProfileResponseDto } from './dto/get-user-profile.response.dto';
+import { GetUserProfileResponseDto } from '@shared/types';
 
 @Injectable()
 export class UserService {

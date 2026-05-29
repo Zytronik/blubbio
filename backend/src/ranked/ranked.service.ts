@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Rank } from './types/rank.type';
+import { Rank } from '@shared/types';
 import { ranks } from './data/rank.data';
 import { unrankedRatingDeviation } from './data/unranked-rating-deviation.data';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LessThan, Repository } from 'typeorm';
 import { UserRating } from 'src/ranked/entities/user-rating.entity';
-import { GetUserRatingResponseDto } from 'src/user/dto/get-user-rating.response.dto';
+import { GetUserRatingResponseDto } from '@shared/types';
 
 @Injectable()
 export class RankedService {

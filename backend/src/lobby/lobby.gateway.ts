@@ -6,9 +6,9 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { LobbyService } from './lobby.service';
-import { JoinLobbyRequestDto } from './dto/join-lobby-request.dto';
-import { LeaveLobbyRequestDto } from './dto/leave-lobby-request.dto';
-import { StartLobbyRequestDto } from './dto/start-lobby-request.dto';
+import { JoinLobbyRequestDto } from '@shared/types';
+import { LeaveLobbyRequestDto } from '@shared/types';
+import { StartLobbyRequestDto } from '@shared/types';
 
 @WebSocketGateway({
   connectionStateRecovery: {

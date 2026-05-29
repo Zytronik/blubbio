@@ -1,13 +1,13 @@
 import { Body, Controller, Post, Req } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { RegisterRequestDto } from './dto/register-request.dto';
-import { LoginRequestDto } from './dto/login-request.dto';
-import { LoginResponseDto } from './dto/login-response.dto';
-import { ForgotPwRequestDto } from './dto/forgot-pw-request.dto';
-import { ForgotPwResponseDto } from './dto/forgot-pw-response.dto';
-import { VerifyResetTokenRequestDto } from './dto/verify-reset-token-request.dto';
-import { ChangePasswordRequestDto } from './dto/change-password-request.dto';
+import { RegisterRequestDto } from '@shared/types';
+import { LoginRequestDto } from '@shared/types';
+import { LoginResponseDto } from '@shared/types';
+import { ForgotPwRequestDto } from '@shared/types';
+import { ForgotPwResponseDto } from '@shared/types';
+import { VerifyResetTokenRequestDto } from '@shared/types';
+import { ChangePasswordRequestDto } from '@shared/types';
 import type { Request } from 'express';
 
 @ApiTags('Auth')

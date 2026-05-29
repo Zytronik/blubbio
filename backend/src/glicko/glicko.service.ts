@@ -2,9 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRating } from 'src/ranked/entities/user-rating.entity';
 import { Repository } from 'typeorm';
-import { GlickoRatings } from './types/glicko-rating.type';
+import { GlickoRatings } from '@shared/types';
 import * as Glicko2Lib from 'glicko2';
-import { Glicko2Constructor } from './types/glicko2-constructor.type';
+import { Glicko2Constructor } from '@shared/types';
 
 const Glicko2 = Glicko2Lib.Glicko2 as unknown as Glicko2Constructor;
 
