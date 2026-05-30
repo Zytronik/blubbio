@@ -9,4 +9,5 @@ export enum PAGE {
     roomListing = 'roomListing',
     roomPage = 'roomPage',
     gamePage = 'gamePage',
+    soloResultsPage = 'soloResultsPage',
 }

@@ -5,7 +5,7 @@ import { PAGE } from '../_enum/page';
 import { GAME_MODE } from '../_enum/gameMode';
 import { usePixiStore } from '@/stores/pixiStore';
 
-export function transitionOutOfGame(gameMode: GAME_MODE) {
+export function transitionOutOfGame(gameMode: GAME_MODE, pageToGo?: PAGE): void {
     useSoundStore().playSound('menu_back');
     const main = document.querySelector('main') as HTMLElement;
     const overlay = document.createElement('div');
@@ -25,17 +25,25 @@ export function transitionOutOfGame(gameMode: GAME_MODE) {
     const tl = gsap.timeline();
 
     tl.set(".gameTransitionOverlay", { x: '-100vw', opacity: 1 }, 0);
-    tl.to('#pixiCanvas', { duration: 0.15, x: '100vw' }, 0);
-    tl.to(".gameTransitionOverlay", { duration: 0.15, x: '0' }, 0);
+    tl.to('#pixiCanvas', { duration: 0.25, x: '100vw' }, 0);
+    tl.to(".gameTransitionOverlay", { duration: 0.25, x: '0' }, 0);
     tl.set('#pixiCanvas', { x: '0vw' });
     tl.call(() => {
         usePixiStore().destroyAllGameContainers();
         usePixiStore().hideGame();
         showTopAndBottomBars();
         if (gameMode === GAME_MODE.SPRINT) {
-            setPage(PAGE.sprintPage);
+            if (pageToGo) {
+                setPage(pageToGo);
+            } else {
+                setPage(PAGE.soloResultsPage);
+            }
         } else if (gameMode === GAME_MODE.MULTI_PLAYER) {
-            setPage(PAGE.roomPage);
+            if (pageToGo) {
+                setPage(pageToGo);
+            } else {
+                setPage(PAGE.roomPage);
+            }
         }
     });
     tl.to(".gameTransitionOverlay", { duration: 0.5, opacity: 0, delay: 0.2 });

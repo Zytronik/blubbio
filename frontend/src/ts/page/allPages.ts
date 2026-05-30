@@ -9,6 +9,7 @@ import RankedPage from '../../pages/RankedPage.vue';
 import RoomListing from '../../pages/RoomListing.vue';
 import RoomPage from '@/pages/RoomPage.vue';
 import GamePage from '@/pages/GamePage.vue';
+import SoloResultsPage from '@/pages/SoloResultsPage.vue';
 import { PAGE } from '../_enum/page';
 
 export const allPages: Pages = {
@@ -176,6 +177,12 @@ export const allPages: Pages = {
         title: 'Game Page',
         color: 'rgb(0, 0, 0)',
         component: GamePage,
-        allowedTransitions: [PAGE.sprintPage, PAGE.roomPage],
+        allowedTransitions: [PAGE.sprintPage, PAGE.roomPage, PAGE.soloResultsPage],
+    },
+    [PAGE.soloResultsPage]: {
+        title: 'Solo Results Page',
+        color: 'rgb(0, 0, 0)',
+        component: SoloResultsPage,
+        allowedTransitions: [PAGE.sprintPage, PAGE.gamePage],
     }
 };
