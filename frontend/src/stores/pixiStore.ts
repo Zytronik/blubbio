@@ -18,7 +18,7 @@ import { getUsernameDisplay } from '@/ts/pixi/display/userNameDisplay';
 import { getStatsDisplay } from '@/ts/pixi/display/statsDisplay';
 import { getBackToQuitDisplay } from '@/ts/pixi/display/backDisplay';
 import { getPreviewBubbleDisplay } from '@/ts/pixi/display/previewBubbleDisplay';
-import { getMonkeyAnimation } from '@/ts/debug/monkeyActions';
+//import { getMonkeyAnimation } from '@/ts/debug/monkeyActions';
 
 //Map<contextName: string, Map<animationID: string, PixiAnimation>>
 const allAnimationsMap: Map<string, Map<string, PixiAnimation>> = new Map();
@@ -126,10 +126,10 @@ export const usePixiStore = defineStore('pixi', () => {
         });
     }
 
-    function DEBUG_addMonkeyPlayer(instance: GameInstance, monkeyName: string): void {
-        const animation = getMonkeyAnimation(instance, monkeyName);
-        addAnimation(animation);
-    }
+    /*  function DEBUG_addMonkeyPlayer(instance: GameInstance, monkeyName: string): void {
+         const animation = getMonkeyAnimation(instance, monkeyName);
+         addAnimation(animation);
+     } */
     return {
         pixiApp,
         initPixiApp,

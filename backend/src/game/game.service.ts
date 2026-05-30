@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { LobbyService } from 'src/lobby/lobby.service';
-import { GameCommandRequestDto } from './dto/game-command-request.dto';
-import { GameCommandResponseDto } from './dto/game-command-response.dto';
+import { GameCommandRequestDto } from '@shared/types';
+import { GameCommandResponseDto } from '@shared/types';
 
 @Injectable()
 export class GameService {

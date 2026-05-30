@@ -4,7 +4,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { GameCommandRequestDto } from './dto/game-command-request.dto';
+import { GameCommandRequestDto } from '@shared/types';
 import { GameService } from './game.service';
 
 @WebSocketGateway()

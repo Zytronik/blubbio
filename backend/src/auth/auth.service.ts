@@ -8,20 +8,20 @@ import * as bcrypt from 'bcrypt';
 import { DeepPartial, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
-import { LoginResponseDto } from './dto/login-response.dto';
-import { JwtPayload } from './types/jwt-payload.type';
-import { RegisterRequestDto } from './dto/register-request.dto';
-import { LoginRequestDto } from './dto/login-request.dto';
-import { ForgotPwRequestDto } from './dto/forgot-pw-request.dto';
+import { LoginResponseDto } from '@shared/types';
+import { JwtPayload } from '@shared/types';
+import { RegisterRequestDto } from '@shared/types';
+import { LoginRequestDto } from '@shared/types';
+import { ForgotPwRequestDto } from '@shared/types';
 import { createHash, randomBytes } from 'crypto';
-import { ForgotPwResponseDto } from './dto/forgot-pw-response.dto';
-import { ChangePasswordRequestDto } from './dto/change-password-request.dto';
+import { ForgotPwResponseDto } from '@shared/types';
+import { ChangePasswordRequestDto } from '@shared/types';
 import { PasswordResetToken } from 'src/user/entities/pw-reset-token.entity';
 import { MailService } from 'src/mail/mail.service';
 import { UserRating } from 'src/ranked/entities/user-rating.entity';
 import axios from 'axios';
 import { Request } from 'express';
-import { IpApiResponse } from './dto/ip-api-response.dto';
+import { IpApiResponse } from '@shared/types';
 
 @Injectable()
 export class AuthService {

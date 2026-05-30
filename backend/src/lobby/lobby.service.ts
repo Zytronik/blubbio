@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { SessionService } from 'src/session/session.service';
-import { Lobby } from './types/lobby.type';
-import { JoinLobbyRequestDto } from './dto/join-lobby-request.dto';
-import { LeaveLobbyRequestDto } from './dto/leave-lobby-request.dto';
-import { StartLobbyRequestDto } from './dto/start-lobby-request.dto';
-import { FailureResponseDto } from './dto/failure-response.dto';
-import { LobbyStartedResponseDto } from './dto/lobby-started-response.dto';
-import { LobbyCreatedResponseDto } from './dto/lobby-created-response.dto';
-import { LobbyJoinedResponseDto } from './dto/lobby-joined-response.dto';
-import { LobbyListResponseDto } from './dto/lobby-list-response-dto';
-import { LobbyUpdateResponseDto } from './dto/lobby-update-response-dto';
-import { LobbyUser } from './types/lobby-user.type';
+import { Lobby } from '@shared/types';
+import { JoinLobbyRequestDto } from '@shared/types';
+import { LeaveLobbyRequestDto } from '@shared/types';
+import { StartLobbyRequestDto } from '@shared/types';
+import { FailureResponseDto } from '@shared/types';
+import { LobbyStartedResponseDto } from '@shared/types';
+import { LobbyCreatedResponseDto } from '@shared/types';
+import { LobbyJoinedResponseDto } from '@shared/types';
+import { LobbyListResponseDto } from '@shared/types';
+import { LobbyUpdateResponseDto } from '@shared/types';
+import { LobbyUser } from '@shared/types';
 
 @Injectable()
 export class LobbyService {

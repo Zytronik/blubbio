@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Socket, Server } from 'socket.io';
-import { Session } from './types/session.type';
-import { JwtPayload } from 'src/auth/types/jwt-payload.type';
-import { UpdateUserPageRequestDto } from './dto/update-user-page-request.dto';
-import { UserConnectedResponseDto } from './dto/user-connected-response.dto';
-import { UpdateUserResponseDto } from './dto/update-user.response.dto';
+import { Socket } from 'socket.io';
+import { Session } from '@shared/types';
+import { JwtPayload } from '@shared/types';
+import { UpdateUserPageRequestDto } from '@shared/types';
+import { UserConnectedResponseDto } from '@shared/types';
+import { UpdateUserResponseDto } from '@shared/types';
 
 @Injectable()
 export class SessionService {
@@ -15,11 +15,7 @@ export class SessionService {
     private readonly configService: ConfigService,
   ) {}
 
-  handleConnection(
-    client: Socket,
-    server: Server,
-    activeUsers: Map<string, Session>,
-  ): void {
+  handleConnection(client: Socket, activeUsers: Map<string, Session>): void {
     const token = client.handshake.query.token as string;
     const isGuest = client.handshake.query.isGuest === 'true';
     const guestUsername = client.handshake.query.guestUsername as string;

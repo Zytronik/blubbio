@@ -1,30 +1,24 @@
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "strict": true,
-    "jsx": "preserve",
-    "moduleResolution": "node",
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "useDefineForClassFields": true,
-    "sourceMap": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      "%/*": ["public/*"],
+    "compilerOptions": {
+        "ignoreDeprecations": "6.0",
+        "target": "esnext",
+        "module": "esnext",
+        "strict": true,
+        "jsx": "preserve",
+        "moduleResolution": "bundler",
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "useDefineForClassFields": true,
+        "sourceMap": true,
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"],
+            "%/*": ["public/*"]
+        },
+        "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
     },
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx",
-    "../backend/src/game/settings/settings.i.min-max-setting.ts"
-  ],
-  "exclude": ["node_modules"]
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx", "../backend/src/game/settings/settings.i.min-max-setting.ts"],
+    "exclude": ["node_modules"]
 }

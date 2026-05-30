@@ -1,4 +1,4 @@
-import { Rank } from '../types/rank.type';
+import { Rank } from '@shared/types';
 
 const e_minus: Rank = {
   name: 'E-',

@@ -17,14 +17,13 @@ import {
   ApiBody,
   ApiConsumes,
 } from '@nestjs/swagger';
-
 import { UserService } from './user.service';
-import { UsernameAvailabilityRequestDto } from './dto/username-availability-request.dto';
-import { UpdateProfileImageResponseDto } from './dto/update-profile-image-response.dto';
-import { SettingsDto } from './dto/settings.dto';
+import { UsernameAvailabilityRequestDto } from '@shared/types';
+import { UpdateProfileImageResponseDto } from '@shared/types';
+import { SettingsDto } from '@shared/types';
 import { ValidateImagePipe } from './pipes/validate-image.pipe';
-import { GetUserRatingResponseDto } from './dto/get-user-rating.response.dto';
-import { GetUserProfileResponseDto } from './dto/get-user-profile.response.dto';
+import { GetUserRatingResponseDto } from '@shared/types';
+import { GetUserProfileResponseDto } from '@shared/types';
 
 @ApiTags('Users')
 @Controller('users')

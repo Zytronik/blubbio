@@ -7,8 +7,8 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { SessionService } from './session.service';
-import { UpdateUserPageRequestDto } from './dto/update-user-page-request.dto';
-import { Session } from './types/session.type';
+import { UpdateUserPageRequestDto } from '@shared/types';
+import { Session } from '@shared/types';
 
 @WebSocketGateway({
   connectionStateRecovery: {
@@ -27,7 +27,7 @@ export class SessionGateway
   constructor(private readonly sessionService: SessionService) {}
 
   handleConnection(client: Socket): void {
-    this.sessionService.handleConnection(client, this.server, this.activeUsers);
+    this.sessionService.handleConnection(client, this.activeUsers);
   }
 
   handleDisconnect(client: Socket): void {

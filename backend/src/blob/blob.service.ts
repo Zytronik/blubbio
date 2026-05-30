@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { put, del } from '@vercel/blob';
-import { ImageType } from './types/image-type';
+import { ImageType } from '@shared/types';
 import type { Express } from 'express';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { Multer } from 'multer';
