@@ -20,6 +20,7 @@ import { useMultiplayerStore } from './multiplayerStore';
 import { transitionOutOfGame } from '@/ts/cssAnimation/transitionOutOfGame';
 import { usePixiStore } from './pixiStore';
 
+
 //game should keep track of layouting. its part of the games animation.
 //similarly, who is currently the main spectator target should also be tracked by the game
 export const useGameStore = defineStore('game', () => {
