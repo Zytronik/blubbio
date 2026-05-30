@@ -1,7 +1,6 @@
 import { useInputStore } from "@/stores/inputStore";
 import { Input } from "../_interface/input";
 import { allInputs, defaultBlocker } from "./allInputs";
-import { INPUT_CONTEXT } from "../_enum/inputContext";
 
 export function attachInputReader() {
     document.addEventListener("keydown", (event) => handleKeyDown(event));
