@@ -33,6 +33,9 @@ export * from './dto/user/get-user-rating.response.dto';
 export * from './dto/user/settings.dto';
 export * from './dto/user/update-profile-image-response.dto';
 export * from './dto/user/username-availability-request.dto';
+//Sprint
+export * from './dto/sprint/create-sprint-request.dto';
+export * from './dto/sprint/create-sprint-response.dto';
 
 //Types
 //Auth

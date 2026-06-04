@@ -7,7 +7,7 @@ import { useSocketStore } from '@/stores/socketStore';
 import { Session } from '../_interface/session';
 import { transitionPageBackwardsAnimation } from '../cssAnimation/transitionPageBackwards';
 import { PAGE } from '../_enum/page';
-import { LoginResponseDto } from '../_dto/login-response.dto';
+import { LoginResponseDto } from '@shared/types';
 import { useUserStore } from '@/stores/userStore';
 
 export async function checkIfUsernameIsTakenAndValid(username: string): Promise<AuthResponse> {

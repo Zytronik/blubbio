@@ -1,7 +1,7 @@
 import axios from "axios";
 import { httpClient } from "./httpClient";
-import { GetUserRatingResponseDto } from "../_dto/get-user-rating.response.dto";
-import { GetUserProfileResponseDto } from "../_dto/get-user-profile.response.dto";
+import { GetUserRatingResponseDto } from "@shared/types";
+import { GetUserProfileResponseDto } from "@shared/types";
 
 export async function fetchUserRating(userId: string): Promise<GetUserRatingResponseDto | null> {
     try {

@@ -2,8 +2,8 @@ import { NETWORK_COMMAND } from '@/ts/_enum/networkCommand';
 import { useSocketStore } from './socketStore';
 import { defineStore } from 'pinia';
 import { useGameStore } from './gameStore';
-import { GameCommandRequestDto } from '@/ts/_dto/game-command-request.dto';
-import { GameCommandResponseDto } from '@/ts/_dto/game-command-response.dto';
+import { GameCommandRequestDto } from '@shared/types';
+import { GameCommandResponseDto } from '@shared/types';
 
 export const useMultiplayerStore = defineStore('multiplayer', () => {
     function notifyEnemies(networkCommand: NETWORK_COMMAND): void {
