@@ -178,6 +178,8 @@ export const useGameStore = defineStore('game', () => {
             }
             nextBubble(instance);
             if (shotResult.hasDied) {
+                //TODO game mode based input state?
+                useInputStore().countdownInputs();
                 showDeathOverlay(game.gameMode);
             }
         }
