@@ -1,5 +1,5 @@
-import { GetUserProfileResponseDto } from '@/ts/_dto/get-user-profile.response.dto';
-import { GetUserRatingResponseDto } from '@/ts/_dto/get-user-rating.response.dto';
+import { GetUserProfileResponseDto } from '@shared/types';
+import { GetUserRatingResponseDto } from '@shared/types';
 import type { Session } from '@/ts/_interface/session';
 import { fetchUserProfile, fetchUserRating } from '@/ts/network/user';
 import { defineStore } from 'pinia';

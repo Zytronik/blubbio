@@ -11,7 +11,7 @@ import { isLocal, socketIoHost, socketIoPath } from '@/ts/page/paths';
 import { Session } from '@/ts/_interface/session';
 import { loadSettings } from '@/ts/page/settings';
 import { useLobbyStore } from './lobbyStore';
-import { UserConnectedResponseDto } from '@/ts/_dto/user-connected-response.dto';
+import { UserConnectedResponseDto } from '@shared/types';
 import { logUserOut } from '@/ts/network/auth';
 
 export const useSocketStore = defineStore('socket', {

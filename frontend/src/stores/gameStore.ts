@@ -20,6 +20,7 @@ import { useMultiplayerStore } from './multiplayerStore';
 import { transitionOutOfGame } from '@/ts/cssAnimation/transitionOutOfGame';
 import { usePixiStore } from './pixiStore';
 import { showDeathOverlay } from '@/ts/cssAnimation/showDeathOverlay';
+import { createSprint } from '@/ts/network/sprint';
 
 
 //game should keep track of layouting. its part of the games animation.
@@ -162,13 +163,16 @@ export const useGameStore = defineStore('game', () => {
             swapHoldBubble(instance);
         }
     }
-    function pressedShoot(userName: string): void {
+    async function pressedShoot(userName: string): Promise<void> {
         const instance = game.instancesMap.get(userName);
         if (instance) {
             const shotResult = shootBubble(instance);
             applyShotResultToGrid(shotResult);
             if (shotResult.hasPassedClearCondition) {
                 // TODO: wining animation
+                //await createSprint({
+                //TODO
+                //})
                 showResultScreen();
             }
             if (shotResult.refillAmount) {

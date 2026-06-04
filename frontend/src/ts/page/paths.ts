@@ -1,4 +1,4 @@
-import { GetUserProfileResponseDto } from '../_dto/get-user-profile.response.dto';
+import { GetUserProfileResponseDto } from '@shared/types';
 import { UploadFileType } from '../_enum/uploadFileType';
 
 const host: string = window.location.hostname;

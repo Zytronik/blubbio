@@ -1,20 +1,20 @@
 import { defineStore } from 'pinia';
 import { useSocketStore } from '@/stores/socketStore';
-import { Lobby } from '@/ts/_interface/lobby';
+import { Lobby } from '@shared/types';
 import { transitionPageForwardsAnimation } from '@/ts/cssAnimation/transitionPageForwards';
 import { PAGE } from '@/ts/_enum/page';
 import { transitionIntoGame } from '@/ts/cssAnimation/transitionIntoGame';
 import { GAME_MODE } from '@/ts/_enum/gameMode';
 import { useToastStore } from './toastStore';
-import { LobbyUpdateResponseDto } from '@/ts/_dto/lobby-update-response-dto';
-import { LobbyCreatedResponseDto } from '@/ts/_dto/lobby-created-response.dto';
-import { LobbyJoinedResponseDto } from '@/ts/_dto/lobby-joined-response.dto';
-import { LobbyStartedResponseDto } from '@/ts/_dto/lobby-started-response.dto';
-import { LobbyListResponseDto } from '@/ts/_dto/lobby-list-response-dto';
-import { JoinLobbyRequestDto } from '@/ts/_dto/join-lobby-request.dto';
-import { LeaveLobbyRequestDto } from '@/ts/_dto/leave-lobby-request.dto';
-import { StartLobbyRequestDto } from '@/ts/_dto/start-lobby-request.dto';
-import { FailureResponseDto } from '@/ts/_dto/failure-response.dto';
+import { LobbyUpdateResponseDto } from '@shared/types';
+import { LobbyCreatedResponseDto } from '@shared/types';
+import { LobbyJoinedResponseDto } from '@shared/types';
+import { LobbyStartedResponseDto } from '@shared/types';
+import { LobbyListResponseDto } from '@shared/types';
+import { JoinLobbyRequestDto } from '@shared/types';
+import { LeaveLobbyRequestDto } from '@shared/types';
+import { StartLobbyRequestDto } from '@shared/types';
+import { FailureResponseDto } from '@shared/types';
 
 export const useLobbyStore = defineStore('lobby', {
   state: () => ({

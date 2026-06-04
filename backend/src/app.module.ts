@@ -10,6 +10,7 @@ import { LobbyModule } from './lobby/lobby.module';
 import { RankedModule } from './ranked/ranked.module';
 import { GlickoModule } from './glicko/glicko.module';
 import { GameModule } from './game/game.module';
+import { SprintModule } from './sprint/sprint.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { GameModule } from './game/game.module';
     RankedModule,
     GlickoModule,
     GameModule,
+    SprintModule,
   ],
   providers: [],
   controllers: [],
