@@ -9,8 +9,6 @@
 <script setup lang="ts">
 import { useGameStore } from '@/stores/gameStore';
 import { GAME_MODE } from '@/ts/_enum/gameMode';
-import { PAGE } from '@/ts/_enum/page';
-import { transitionOutOfGame } from '@/ts/cssAnimation/transitionOutOfGame';
 
 defineOptions({
     name: 'DeathOverlay',
@@ -21,15 +19,16 @@ const props = defineProps<{
     onClose: () => void;
 }>();
 
-const gameStore = useGameStore();
 
 function backToMenu(): void {
-    transitionOutOfGame(props.gameMode, PAGE.sprintPage);
+    // transitionOutOfGame(props.gameMode, PAGE.sprintPage);
+    useGameStore().cancelGame();
     props.onClose();
 }
 
 function startSprint(): void {
-    gameStore.setupSprint();
+    // gameStore.setupSprint();
+    useGameStore().resetGame();
     props.onClose();
 }
 </script>
