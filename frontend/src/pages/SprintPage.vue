@@ -16,10 +16,10 @@
                 </button>
             </div>
             <div v-if="activeLeaderboard === 'Global'" class="tab-content">
-                <LeaderboardList />
+                <LeaderboardList :entries="leaderboardData?.entries ?? []" :loading="isLoadingLeaderboard" />
             </div>
             <div v-if="activeLeaderboard === 'National'" class="tab-content">
-                <LeaderboardList />
+                <LeaderboardList :entries="leaderboardData?.entries ?? []" :loading="isLoadingLeaderboard" />
             </div>
             <div v-if="activeLeaderboard === 'Me'" class="tab-content">
                 <p v-if="isLoggedIn(userSession)">
@@ -35,11 +35,13 @@
 import { useUserStore } from '@/stores/userStore';
 import { PAGE } from '@/ts/_enum/page';
 import { isLoggedIn } from '@/ts/network/auth';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import LeaderboardList from '@/components/LeaderboardList.vue';
 import HistoryList from '@/components/HistoryList.vue';
 import { transitionIntoGame } from '@/ts/cssAnimation/transitionIntoGame';
 import { GAME_MODE } from '@/ts/_enum/gameMode';
+import { GetLeaderboardResponseDto } from '@shared/types';
+import { fetchSprintLeaderboard } from '@/ts/network/sprint';
 
 export default {
     name: 'SprintPage',
@@ -50,6 +52,35 @@ export default {
         const userStore = useUserStore();
         const userSession = computed(() => userStore.userSession);
         const userProfile = computed(() => userStore.userProfile);
+        const leaderboardData = ref<GetLeaderboardResponseDto | null>(null);
+        const isLoadingLeaderboard = ref(false);
+
+        async function loadLeaderboard() {
+            isLoadingLeaderboard.value = true;
+
+            try {
+                const type =
+                    activeLeaderboard.value === "Global" ? "global" : "country";
+
+                const res = await fetchSprintLeaderboard({
+                    type,
+                    countryCode: userProfile.value?.countryCode,
+                    limit: 10,
+                });
+
+                leaderboardData.value = res;
+            } finally {
+                isLoadingLeaderboard.value = false;
+            }
+        }
+
+        onMounted(() => {
+            loadLeaderboard();
+        });
+
+        watch(activeLeaderboard, () => {
+            loadLeaderboard();
+        });
 
         function startSprint(): void {
             transitionIntoGame(GAME_MODE.SPRINT);
@@ -62,7 +93,9 @@ export default {
             activeLeaderboard,
             userSession,
             isLoggedIn,
-            userProfile
+            userProfile,
+            leaderboardData,
+            isLoadingLeaderboard
         };
     },
 };

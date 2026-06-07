@@ -27,7 +27,7 @@ export function showDeathOverlay(gameMode: GAME_MODE) {
   );
 }
 
-function hideDeathOverlay() {
+export function hideDeathOverlay() {
   if (!overlayEl) return;
 
   gsap.to(overlayEl, {

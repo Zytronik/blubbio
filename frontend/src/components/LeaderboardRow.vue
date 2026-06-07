@@ -5,7 +5,7 @@
     </div>
     <div class="cell">
       <div class="user-info">
-        <img :src="profilePicture" />
+        <img :src="profilePicture" @error="onImgError" />
         <p>{{ name }}</p>
       </div>
     </div>
@@ -19,6 +19,8 @@
 </template>
 
 <script lang="ts">
+import { getUserProfilePicturePlaceholderUrl } from '@/ts/page/paths';
+
 
 export default {
   name: 'LeaderboardRow',
@@ -27,13 +29,19 @@ export default {
     profilePicture: String,
     name: String,
     duration: String,
-    bps: String,
+    bps: Number,
     isMe: Boolean
   },
   setup() {
-    return {
-    };
-  },
+    const fallback = getUserProfilePicturePlaceholderUrl();
+
+    function onImgError(event: Event) {
+      const img = event.target as HTMLImageElement;
+      img.src = fallback;
+    }
+
+    return { onImgError };
+  }
 };
 </script>
 

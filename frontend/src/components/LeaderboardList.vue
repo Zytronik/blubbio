@@ -1,27 +1,56 @@
 <template>
   <div class="leaderboard">
-    <LeaderboardRow v-for="i in 10" :key="i" :rank="i"
-      :profilePicture="'https://9svghmex86z5bzh4.public.blob.vercel-storage.com/pb/1777928663326-208350.jpg'"
-      :name="'Player ' + i" :duration="getRandomTimeString()" :bps="(Math.random() * 2).toFixed(2)" :isMe="i === 4" />
+    <div v-if="loading" class="loader">
+    </div>
+
+    <div v-else-if="entries.length === 0" class="no-entries">
+      No leaderboard data yet
+    </div>
+    <div v-if="!loading && entries.length > 0">
+      <LeaderboardRow v-for="entry in entries" :key="entry.rank" :rank="entry.rank" :name="entry.username"
+        :duration="formatTime(entry.gameDuration)" :bps="entry.bubblesPerSecond" :isMe="entry.userId === userId"
+        :profilePicture="entry.profilePicture || getUserProfilePicturePlaceholderUrl()" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
+import { LeaderboardEntryDto } from '@shared/types';
+import { getUserProfilePicturePlaceholderUrl } from '@/ts/page/paths';
 import LeaderboardRow from './LeaderboardRow.vue';
-
+import { computed } from 'vue';
+import { useUserStore } from '@/stores/userStore';
 
 export default {
   name: 'LeaderboardList',
   components: { LeaderboardRow },
+  props: {
+    entries: {
+      type: Array as () => LeaderboardEntryDto[],
+      default: () => [],
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+  },
   setup() {
-    function getRandomTimeString() {
-      const minutes = String(Math.floor(Math.random() * 60)).padStart(2, '0');
-      const seconds = String(Math.floor(Math.random() * 60)).padStart(2, '0');
-      const hundredths = String(Math.floor(Math.random() * 100)).padStart(2, '0');
+    const userStore = useUserStore();
+    const userId = computed(() => userStore.userSession?.userId);
+
+    function formatTime(ms: number) {
+      const totalSeconds = ms / 1000;
+
+      const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
+      const seconds = String(Math.floor(totalSeconds % 60)).padStart(2, "0");
+      const hundredths = String(Math.floor((totalSeconds % 1) * 100)).padStart(2, "0");
+
       return `${minutes}:${seconds}.${hundredths}`;
     }
     return {
-      getRandomTimeString
+      formatTime,
+      getUserProfilePicturePlaceholderUrl,
+      userId
     };
   },
 };
@@ -38,5 +67,20 @@ export default {
 
 .cell:nth-child(3) {
   color: var(--sprint-color);
+}
+
+.no-entries {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  font-size: 16px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.no-entries,
+.loader {
+  transform: skewX(-10deg);
 }
 </style>

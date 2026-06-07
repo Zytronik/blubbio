@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { PAGE } from '../_enum/page';
 import { GAME_MODE } from '../_enum/gameMode';
 import { usePixiStore } from '@/stores/pixiStore';
+import { hideDeathOverlay } from './showDeathOverlay';
 
 export function transitionOutOfGame(gameMode: GAME_MODE, pageToGo?: PAGE): void {
     useSoundStore().playSound('menu_back');
@@ -32,6 +33,7 @@ export function transitionOutOfGame(gameMode: GAME_MODE, pageToGo?: PAGE): void 
         usePixiStore().destroyAllGameContainers();
         usePixiStore().hideGame();
         showTopAndBottomBars();
+        hideDeathOverlay();
         if (gameMode === GAME_MODE.SPRINT) {
             if (pageToGo) {
                 setPage(pageToGo);

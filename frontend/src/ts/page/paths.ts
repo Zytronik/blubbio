@@ -23,13 +23,15 @@ if (host === 'localhost' || ipRegex.test(host)) {
   socketIoPath = '/blubbio-backend/socket.io';
 }
 
-export function getUserPbUrl(userProfile: GetUserProfileResponseDto): string {
-  if (userProfile) {
-    return (
-      userProfile.pbUrl ||
-      require(`../../assets/img/default/pbPlaceholder.png`)
-    );
-  }
+export function getUserPbUrl(userProfile?: GetUserProfileResponseDto | null): string {
+  const fallback = getUserProfilePicturePlaceholderUrl();
+
+  if (!userProfile?.pbUrl) return fallback;
+
+  return userProfile.pbUrl;
+}
+
+export function getUserProfilePicturePlaceholderUrl(): string {
   return require(`../../assets/img/default/pbPlaceholder.png`);
 }
 

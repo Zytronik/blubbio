@@ -36,6 +36,9 @@ export * from './dto/user/username-availability-request.dto';
 //Sprint
 export * from './dto/sprint/create-sprint-request.dto';
 export * from './dto/sprint/create-sprint-response.dto';
+export * from './dto/sprint/get-leaderboard-request.dto';
+export * from './dto/sprint/get-leaderboard-response.dto';
+export * from './dto/sprint/leaderboard-entry.dto';
 
 //Types
 //Auth
