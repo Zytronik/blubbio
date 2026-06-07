@@ -10,6 +10,7 @@ export function getBackToQuitDisplay(overlayContainer: Container, gameInstance: 
 
     let loaderCircle: Graphics;
     let circleRadius = 0;
+    let triggered = false;
 
     const loaderText = new Text({
         text: 'Hold to quit',
@@ -45,7 +46,8 @@ export function getBackToQuitDisplay(overlayContainer: Container, gameInstance: 
 
         renderFrame: function (): void {
             const now = performance.now();
-            if (gameInstance.backPressedAt + CONFIRMATION_DURATION < now) {
+            if (gameInstance.backPressedAt + CONFIRMATION_DURATION < now && !triggered) {
+                triggered = true;
                 useGameStore().cancelGame();
                 return;
             }
