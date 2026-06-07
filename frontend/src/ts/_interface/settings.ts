@@ -1,4 +1,4 @@
-import { AudioSettings } from './audioSettings';
+import { AudioSettings } from '@shared/types';
 import { Input } from './input';
 
 export interface Settings {
