@@ -10,7 +10,7 @@ export const SPRINT_SETTINGS: GameSettings = {
     queuePreviewSize: 5,
     widthPrecisionUnits: 10000000,
     collisionRangeFactor: 0.8,
-    sprintVictoryCondition: 100,
+    sprintVictoryCondition: 10,
     prefillBoard: true,
     prefillBoardAmount: 0,
     prefillMessiness: GARBAGE_MESSINESS.WORST,

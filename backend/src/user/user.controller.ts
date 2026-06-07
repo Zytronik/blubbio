@@ -6,6 +6,7 @@ import {
   Post,
   Query,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -24,11 +25,12 @@ import { SettingsDto } from '@shared/types';
 import { ValidateImagePipe } from './pipes/validate-image.pipe';
 import { GetUserRatingResponseDto } from '@shared/types';
 import { GetUserProfileResponseDto } from '@shared/types';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 
 @ApiTags('Users')
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Get('username-available')
   @ApiOperation({ summary: 'Check if username is available' })
@@ -39,6 +41,7 @@ export class UserController {
     return this.userService.isUsernameAvailable(query.username);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post(':id/profile-picture')
   @ApiOperation({ summary: 'Upload profile picture' })
   @ApiParam({ name: 'id', type: String })
@@ -63,6 +66,7 @@ export class UserController {
     return this.userService.updateProfilePicture(userId, file);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post(':id/profile-banner')
   @ApiOperation({ summary: 'Upload profile banner' })
   @ApiParam({ name: 'id', type: String })
@@ -87,6 +91,7 @@ export class UserController {
     return this.userService.updateProfileBanner(userId, file);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post(':id/settings')
   @ApiOperation({ summary: 'Save user settings' })
   @ApiParam({ name: 'id', type: String })
@@ -98,6 +103,7 @@ export class UserController {
     return this.userService.saveSettings(userId, dto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id/settings')
   @ApiOperation({ summary: 'Get user settings' })
   @ApiParam({ name: 'id', type: String })

@@ -302,7 +302,7 @@ export function shootBubble(instance: GameInstance): ShotResult {
     function applyBubbleStats(): boolean {
         instance.stats.bubblesShot++;
         instance.stats.bubblesCleared += clearedBubbleFields.length;
-        return instance.stats.bubbleClearToWin <= instance.stats.bubblesCleared;
+        return instance.stats.bubblesClearToWin <= instance.stats.bubblesCleared;
     }
 }
 

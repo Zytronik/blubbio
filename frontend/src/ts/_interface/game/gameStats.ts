@@ -6,7 +6,7 @@ export interface GameStats {
     bubblesShot: number;
     bubblesPerSecond: number;
 
-    bubbleClearToWin: number;
+    bubblesClearToWin: number;
     bubblesCleared: number;
 }
 

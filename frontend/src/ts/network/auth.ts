@@ -4,7 +4,7 @@ import { httpClient } from './httpClient';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { usePageStore } from '@/stores/pageStore';
 import { useSocketStore } from '@/stores/socketStore';
-import { Session } from '../_interface/session';
+import { Session } from '@shared/types';
 import { transitionPageBackwardsAnimation } from '../cssAnimation/transitionPageBackwards';
 import { PAGE } from '../_enum/page';
 import { LoginResponseDto } from '@shared/types';

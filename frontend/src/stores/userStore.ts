@@ -1,6 +1,6 @@
 import { GetUserProfileResponseDto } from '@shared/types';
 import { GetUserRatingResponseDto } from '@shared/types';
-import type { Session } from '@/ts/_interface/session';
+import type { Session } from '@shared/types';
 import { fetchUserProfile, fetchUserRating } from '@/ts/network/user';
 import { defineStore } from 'pinia';
 

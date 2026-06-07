@@ -8,7 +8,7 @@ import {
 import { useUserStore } from '@/stores/userStore';
 import { usePageStore } from '@/stores/pageStore';
 import { isLocal, socketIoHost, socketIoPath } from '@/ts/page/paths';
-import { Session } from '@/ts/_interface/session';
+import { Session } from '@shared/types';
 import { loadSettings } from '@/ts/page/settings';
 import { useLobbyStore } from './lobbyStore';
 import { UserConnectedResponseDto } from '@shared/types';
