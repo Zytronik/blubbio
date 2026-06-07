@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { GAME_MODE } from '@/ts/_enum/gameMode';
 import { useUserStore } from './userStore';
 import { useInputStore } from './inputStore';
-import { startGameLogicLoop } from '@/ts/gameLogic/gameLogicLoop';
+import { startGameLogicLoop, stopGameLogicLoop } from '@/ts/gameLogic/gameLogicLoop';
 import { centerAngle, changeAPS, mirrorAngle } from '@/ts/gameLogic/actions/aiming';
 import { shootBubble } from '@/ts/gameLogic/actions/shoot';
 import { applyShotResultToGrid } from '@/ts/gameLogic/bubble/grid';
@@ -21,6 +21,7 @@ import { transitionOutOfGame } from '@/ts/cssAnimation/transitionOutOfGame';
 import { usePixiStore } from './pixiStore';
 import { showDeathOverlay } from '@/ts/cssAnimation/showDeathOverlay';
 import { createSprint } from '@/ts/network/sprint';
+import { PAGE } from '@/ts/_enum/page';
 
 
 //game should keep track of layouting. its part of the games animation.
@@ -52,6 +53,10 @@ export const useGameStore = defineStore('game', () => {
         usePixiStore().playCountdown(countDownDuration, afterCountdown);
         function afterCountdown(): void {
             startGameLogicLoop(game);
+            const now = performance.now();
+            game.instancesMap.forEach((instance, playerName) => {
+                instance.stats.gameStartTime = now;
+            });
             if (game.gameMode === GAME_MODE.SPRINT) {
                 useInputStore().gameWithResetInputs();
             }
@@ -67,10 +72,11 @@ export const useGameStore = defineStore('game', () => {
         });
         useInputStore().disableInput();
         game.instancesMap.clear();
-        transitionOutOfGame(game.gameMode);
+        transitionOutOfGame(game.gameMode, PAGE.sprintPage);
         useInputStore().menuInputs();
     }
     function resetGame(): void {
+        stopGameLogicLoop();
         usePixiStore().cancelCountdown();
         game.instancesMap.forEach((instance, playerName) => {
             usePixiStore().stopInstanceAnimations(instance);
@@ -163,12 +169,16 @@ export const useGameStore = defineStore('game', () => {
             swapHoldBubble(instance);
         }
     }
-    async function pressedShoot(userName: string): Promise<void> {
+    //todo this does more than just shoot
+    function pressedShoot(userName: string): void {
         const instance = game.instancesMap.get(userName);
         if (instance) {
             const shotResult = shootBubble(instance);
             applyShotResultToGrid(shotResult);
             if (shotResult.hasPassedClearCondition) {
+                instance.stats.gameEndTime = performance.now();
+                stopGameLogicLoop();
+                instance.stats.gameDuration = instance.stats.gameEndTime - instance.stats.gameStartTime;
                 // TODO: wining animation
                 //await createSprint({
                 //TODO
@@ -183,6 +193,9 @@ export const useGameStore = defineStore('game', () => {
             nextBubble(instance);
             if (shotResult.hasDied) {
                 //TODO game mode based input state?
+                instance.stats.gameEndTime = performance.now();
+                stopGameLogicLoop();
+                instance.stats.gameDuration = instance.stats.gameEndTime - instance.stats.gameStartTime;
                 useInputStore().countdownInputs();
                 showDeathOverlay(game.gameMode);
             }

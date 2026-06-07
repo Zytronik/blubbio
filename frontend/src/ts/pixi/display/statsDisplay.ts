@@ -2,6 +2,7 @@ import { PixiAnimation } from '../../_interface/pixi/pixiAnimation';
 import { GameInstance } from '../../_interface/game/gameInstance';
 import { Text } from 'pixi.js';
 import { defaultFont } from '../data/allFonts';
+import { milliesToReadable } from '@/ts/gameLogic/timeStats';
 
 export function getStatsDisplay(instance: GameInstance): PixiAnimation {
     const statsContainer = instance.gameSubContainers.statsContainer;
@@ -85,7 +86,7 @@ export function getStatsDisplay(instance: GameInstance): PixiAnimation {
         },
 
         renderFrame: function (): void {
-            timerText.text = instance.stats.gameDuration;
+            timerText.text = milliesToReadable(instance.stats.gameDuration);
             bpsText.text = instance.stats.bubblesPerSecond;
             // console.log('render frame');
         },
