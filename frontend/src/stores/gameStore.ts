@@ -82,14 +82,18 @@ export const useGameStore = defineStore('game', () => {
         setupSprint();
         startGame();
     }
-    function showResultScreen(): void {
+    async function showResultScreen(): Promise<void> {
         game.instancesMap.forEach((instance, playerName) => {
             usePixiStore().stopInstanceAnimations(instance);
         });
+        if (game.gameMode === GAME_MODE.SPRINT) {
+            const username = useUserStore().getUserName();
+            const stats = game.instancesMap.get(username)!.stats;
+            await createSprint({ ...stats });
+        }
         transitionOutOfGame(game.gameMode);
         useInputStore().menuInputs();
     }
-
     function refreshLayout(): void {
         applyGameLayout([...game.instancesMap.values()]);
     }
@@ -163,16 +167,13 @@ export const useGameStore = defineStore('game', () => {
             swapHoldBubble(instance);
         }
     }
-    async function pressedShoot(userName: string): Promise<void> {
+    function pressedShoot(userName: string): void {
         const instance = game.instancesMap.get(userName);
         if (instance) {
             const shotResult = shootBubble(instance);
             applyShotResultToGrid(shotResult);
             if (shotResult.hasPassedClearCondition) {
                 // TODO: wining animation
-                //await createSprint({
-                //TODO
-                //})
                 showResultScreen();
             }
             if (shotResult.refillAmount) {

@@ -8,7 +8,7 @@ export function getEmptyStats(settings: GameSettings): GameStats {
         gameDuration: 0,
         bubblesShot: 0,
         bubblesPerSecond: 0,
-        bubbleClearToWin: settings.sprintVictoryCondition,
+        bubblesClearToWin: settings.sprintVictoryCondition,
         bubblesCleared: 0,
     };
 }
