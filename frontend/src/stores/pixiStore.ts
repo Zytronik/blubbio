@@ -18,6 +18,8 @@ import { getUsernameDisplay } from '@/ts/pixi/display/userNameDisplay';
 import { getStatsDisplay } from '@/ts/pixi/display/statsDisplay';
 import { getBackToQuitDisplay } from '@/ts/pixi/display/backDisplay';
 import { getPreviewBubbleDisplay } from '@/ts/pixi/display/previewBubbleDisplay';
+import { buildFrames } from '@/ts/pixi/graphics/cursorGraphic';
+import { ANIMATION_CONTEXT } from '@/ts/_enum/animationContext';
 //import { getMonkeyAnimation } from '@/ts/debug/monkeyActions';
 
 //Map<contextName: string, Map<animationID: string, PixiAnimation>>
@@ -44,6 +46,7 @@ export const usePixiStore = defineStore('pixi', () => {
         allFonts.forEach(async font => {
             await Assets.load(font.src);
         });
+        buildFrames();
     }
 
     /*------------------------------------------------------
@@ -65,12 +68,6 @@ export const usePixiStore = defineStore('pixi', () => {
     }
     function createGameSubContainers(): GameSubContainers {
         return setupGameSubContainers(allContainers.gameContainer);
-    }
-    function createBubbleSprite(): Container {
-        const container = new Container();
-        const sprite = new Sprite({ texture: bubbleTexture.texture });
-        container.addChild(sprite);
-        return container;
     }
     /*------------------------------------------------------
         ANIMATIONS
@@ -126,6 +123,10 @@ export const usePixiStore = defineStore('pixi', () => {
         });
     }
 
+    function stopGameOverlayAnimations(): void {
+        cancelAllAnimationsOfContext(ANIMATION_CONTEXT.GAME_OVERLAY);
+    }
+
     /*  function DEBUG_addMonkeyPlayer(instance: GameInstance, monkeyName: string): void {
          const animation = getMonkeyAnimation(instance, monkeyName);
          addAnimation(animation);
@@ -137,12 +138,12 @@ export const usePixiStore = defineStore('pixi', () => {
         hideGame,
         destroyAllGameContainers,
         createGameSubContainers,
-        createBubbleSprite,
         playCountdown,
         cancelCountdown,
         garbagePreview,
         displayInstance,
         stopInstanceAnimations,
+        stopGameOverlayAnimations,
     };
 });
 

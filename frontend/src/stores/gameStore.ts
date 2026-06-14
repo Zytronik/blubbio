@@ -70,6 +70,7 @@ export const useGameStore = defineStore('game', () => {
         game.instancesMap.forEach((instance, playerName) => {
             usePixiStore().stopInstanceAnimations(instance);
         });
+        usePixiStore().stopGameOverlayAnimations();
         useInputStore().disableInput();
         game.instancesMap.clear();
         transitionOutOfGame(game.gameMode, PAGE.sprintPage);

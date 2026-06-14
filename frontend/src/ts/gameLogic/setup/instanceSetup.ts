@@ -3,7 +3,7 @@ import { SPRINT_SETTINGS } from '../settings/sprintSettings';
 import { HANDLING_SETTINGS } from '../settings/handlingSettings';
 import { getEmptyStats } from './statsSetup';
 import { getEmptyGrid } from './gridSetup';
-import { getAllGameSprites } from '../../pixi/assetFactory/gameSpritesBuilder';
+import { getGameSprites } from '../../pixi/assetFactory/gameSpritesBuilder';
 import { allBubbles } from '../bubble/bubbleTypes';
 import { nextBubble } from '../bubble/queue';
 import { XORRandom } from '../rng';
@@ -14,7 +14,7 @@ import { usePixiStore } from '@/stores/pixiStore';
 export function newSprintInstance(playerName: string): GameInstance {
     const startBubbleSeed = { value: Date.now() };
     const startGarbageSeed = { value: Date.now() + 123456789 };
-    const sprites = getAllGameSprites(SPRINT_SETTINGS);
+    const sprites = getGameSprites(SPRINT_SETTINGS);
     const instance: GameInstance = {
         playerName,
         gameSettings: SPRINT_SETTINGS,

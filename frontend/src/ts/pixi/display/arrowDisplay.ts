@@ -1,5 +1,7 @@
 import { PixiAnimation } from '../../_interface/pixi/pixiAnimation';
 import { GameInstance } from '../../_interface/game/gameInstance';
+import { Graphics } from 'pixi.js';
+import { cursorGraphicFrames } from '../graphics/cursorGraphic';
 
 export function getArrowDisplay(instance: GameInstance): PixiAnimation {
     const arrowContainer = instance.gameSubContainers.arrowContainer;
@@ -15,6 +17,8 @@ export function getArrowDisplay(instance: GameInstance): PixiAnimation {
     const bubbleFullRadius = instance.playGrid.bubbleFullRadius;
     const bubbleWidth = (bubbleFullRadius / precisionWidth) * gridBackground.width * 2;
     const bubbleHeight = bubbleWidth;
+
+    const clockHand = new Graphics(cursorGraphicFrames[3]);
 
     const display: PixiAnimation = {
         context: instance.playerName,
@@ -36,6 +40,7 @@ export function getArrowDisplay(instance: GameInstance): PixiAnimation {
 
             arrowContainer.addChild(currentBubble);
             arrowContainer.addChild(arrowSprite);
+            arrowContainer.addChild(clockHand);
         },
         renderFrame: function (): void {
             arrowContainer.angle = instance.angle;
@@ -43,6 +48,9 @@ export function getArrowDisplay(instance: GameInstance): PixiAnimation {
                 currentBubbleSprite.visible = true;
                 currentBubbleSprite.tint = instance.currentBubble.tint;
             }
+            const now = performance.now() % 1000;
+            if (now < 500) clockHand.context = cursorGraphicFrames[3];
+            if (now > 500) clockHand.context = cursorGraphicFrames[0];
         },
         onEnd: function (): void {
             // console.log('end');

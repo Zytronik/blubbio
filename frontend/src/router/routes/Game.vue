@@ -75,7 +75,7 @@ export default {
       soundStore.playMusic("menu_soundtrack");
       checkIfCanJoinRoomByUrl();
       debugStore.initDebugChannel();
-      debugStore.openDebugWindow();
+      // debugStore.openDebugWindow();
     });
 
     onUnmounted(() => {

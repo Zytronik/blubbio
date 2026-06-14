@@ -55,7 +55,6 @@ export function getBackToQuitDisplay(overlayContainer: Container, gameInstance: 
                 loaderText.visible = true;
                 loaderCircle.visible = true;
                 const progress = Math.min((now - gameInstance.backPressedAt) / CONFIRMATION_DURATION, 1);
-
                 loaderCircle.clear();
                 loaderCircle.setStrokeStyle({
                     width: 6,
@@ -75,6 +74,7 @@ export function getBackToQuitDisplay(overlayContainer: Container, gameInstance: 
         },
 
         cleanUp: function (): void {
+            console.log("destroy back")
             loaderCircle.destroy();
             loaderText.destroy();
         },

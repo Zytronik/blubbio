@@ -44,8 +44,8 @@ export function drawGameContainerLayoutRect(gameContainer: Container): void {
     gameContainer.x = paddingX;
     gameContainer.y = paddingY;
 
-    const width = parent.width - paddingX * 2;
-    const height = parent.height - paddingY * 2;
+    const width = parent!.width - paddingX * 2;
+    const height = parent!.height - paddingY * 2;
 
     const background = new Graphics().rect(0, 0, width, height).fill({ color: 'blue' });
 
@@ -60,8 +60,8 @@ function drawOverlayContainerLayoutRect(overlayContainer: Container): void {
 
     const parent = overlayContainer.parent;
 
-    const width = parent.width;
-    const height = parent.height;
+    const width = parent!.width;
+    const height = parent!.height;
     const background = new Graphics().rect(0, 0, width, height).fill({ color: 0x000000, alpha: 0 });
     overlayContainer.addChild(background);
 }

@@ -82,7 +82,7 @@ function drawNameContainerLayoutRect(layoutProperties: LayoutProperties, nameCon
 
 function drawBoardContainerLayoutRect(layoutProperties: LayoutProperties, boardContainer: Container): void {
     const gameContainer = boardContainer.parent;
-    const boardHeight = gameContainer.height * layoutProperties.maxHeightPercent;
+    const boardHeight = gameContainer!.height * layoutProperties.maxHeightPercent;
     const paddingBoardTop = boardHeight * layoutProperties.paddingBoardTop;
     const boardWidthNoPadding = (boardHeight - paddingBoardTop) * layoutProperties.precisionAspectRatio;
     const paddingBoardLeft = boardWidthNoPadding * layoutProperties.paddingBoardLeft;
@@ -174,7 +174,7 @@ function drawHoldContainerLayoutRect(layoutProperties: LayoutProperties, holdCon
 }
 
 function drawArrowContainerLayoutRect(layoutProperties: LayoutProperties, arrowContainer: Container): void {
-    const boardContainer = arrowContainer.parent.parent as Container;
+    const boardContainer = arrowContainer.parent!.parent as Container;
 
     const width = getBoardPaddingLeft(boardContainer, layoutProperties);
     const height = width;
@@ -185,7 +185,7 @@ function drawArrowContainerLayoutRect(layoutProperties: LayoutProperties, arrowC
     arrowContainer.width = width;
     arrowContainer.height = height;
 
-    const background = new Graphics().rect(0, 0, width, height).fill({ color: 'transparent' });
+    const background = new Graphics().rect(0, 0, width, height).fill({ color: 'green' });
     background.label = 'arrowContainerBackground';
     arrowContainer.addChild(background);
 }

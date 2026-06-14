@@ -18,8 +18,8 @@ function drawSoloLayout(gameInstance: GameInstance): void {
     const gameContainer = gameInstance.gameSubContainers.boardContainer.parent;
     const board = gameInstance.gameSubContainers.boardContainer;
 
-    const relativeX = (gameContainer.width - board.width) / 2;
-    const relativeY = (gameContainer.height - board.height) / 2;
+    const relativeX = (gameContainer!.width - board.width) / 2;
+    const relativeY = (gameContainer!.height - board.height) / 2;
 
     board.x = relativeX;
     board.y = relativeY;
@@ -31,13 +31,13 @@ function draw1VS1Layout(playerLeft: GameInstance, playerRight: GameInstance): vo
     const boardLeft = playerLeft.gameSubContainers.boardContainer;
     const boardRight = playerRight.gameSubContainers.boardContainer;
 
-    const relativeY = (gameContainer.height - boardLeft.height) / 2;
+    const relativeY = (gameContainer!.height - boardLeft.height) / 2;
 
-    const relativeXLeft = gameContainer.width * 0.25 - boardLeft.width / 2;
+    const relativeXLeft = gameContainer!.width * 0.25 - boardLeft.width / 2;
     boardLeft.x = relativeXLeft;
     boardLeft.y = relativeY;
 
-    const relativeXRight = gameContainer.width * 0.75 - boardRight.width / 2;
+    const relativeXRight = gameContainer!.width * 0.75 - boardRight.width / 2;
     boardRight.x = relativeXRight;
     boardRight.y = relativeY;
 }
@@ -51,8 +51,8 @@ function drawMultiLayout(instances: GameInstance[]): void {
     const aspectRatio = layoutProperties.precisionAspectRatio;
     const gridPadding = layoutProperties.multiLayoutGridPadding;
 
-    const mainX = (gameContainer.width * 0.5 - mainBoard.width) / 2;
-    const mainY = (gameContainer.height - mainBoard.height) / 2;
+    const mainX = (gameContainer!.width * 0.5 - mainBoard.width) / 2;
+    const mainY = (gameContainer!.height - mainBoard.height) / 2;
 
     mainBoard.x = mainX;
     mainBoard.y = mainY;
@@ -61,7 +61,7 @@ function drawMultiLayout(instances: GameInstance[]): void {
     const gridCount = remainingBoards.length;
     const gridSize = Math.ceil(Math.sqrt(gridCount));
 
-    const rightAvailableWidth = gameContainer.width / 2;
+    const rightAvailableWidth = gameContainer!.width / 2;
     const rightAvailableHeight = mainBoard.height;
 
     const cellHeight = (rightAvailableHeight - gridPadding * (gridSize - 1)) / gridSize;
@@ -72,7 +72,7 @@ function drawMultiLayout(instances: GameInstance[]): void {
     const cellWidth = gridBoardWidthNoPadding + paddingBoardLeftGrid + paddingBoardRightGrid;
 
     const totalGridWidth = gridSize * cellWidth + (gridSize - 1) * gridPadding;
-    const offsetX = gameContainer.width / 2 + (rightAvailableWidth - totalGridWidth) / 2;
+    const offsetX = gameContainer!.width / 2 + (rightAvailableWidth - totalGridWidth) / 2;
     const offsetY = mainY;
 
     for (let i = 0; i < gridCount; i++) {
